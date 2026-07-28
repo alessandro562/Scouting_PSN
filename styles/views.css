@@ -40,13 +40,13 @@
 }
 .bulk-bar label { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: #cdd9e6; }
 .bulk-bar select, .bulk-bar input { border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: #fff; border-radius: 8px; padding: 6px 8px; font-family: var(--font); font-size: 12.5px; }
-.bulk-count { font-weight: 800; }
+.bulk-count { font-weight: 700; }
 
 .table-scroll { overflow-x: auto; border: 1px solid var(--line-soft); border-radius: 14px; box-shadow: var(--shadow-soft); background: var(--surface); }
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .data-table thead th {
   position: sticky; top: 0; background: var(--surface-soft); z-index: 2;
-  text-align: left; padding: 11px 12px; font-size: 11px; font-weight: 800; text-transform: uppercase;
+  text-align: left; padding: 11px 12px; font-size: 11px; font-weight: 700; text-transform: uppercase;
   letter-spacing: .05em; color: var(--muted); border-bottom: 1px solid var(--line); white-space: nowrap;
 }
 .data-table th.th-sort { cursor: pointer; user-select: none; }
@@ -73,8 +73,8 @@
 .kpi-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
 .kpi-tile { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow-soft); position: relative; overflow: hidden; }
 .kpi-tile::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--psn-gradient); }
-.kpi-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
-.kpi-value { font-size: 30px; font-weight: 900; letter-spacing: -.03em; color: var(--psn-indigo); line-height: 1.1; margin-top: 4px; }
+.kpi-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+.kpi-value { font-size: 30px; font-weight: 700; letter-spacing:-.01em; color: var(--psn-indigo); line-height: 1.1; margin-top: 4px; }
 .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
 .an-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
@@ -90,26 +90,26 @@
 .bar-label { font-size: 12.5px; color: var(--text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-track { background: var(--surface-soft); border-radius: 8px; height: 16px; overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 8px; transition: width .4s ease; }
-.bar-value { font-size: 12.5px; font-weight: 800; color: var(--ink); text-align: right; }
+.bar-value { font-size: 12.5px; font-weight: 700; color: var(--ink); text-align: right; }
 
 /* Funnel */
 .funnel { display: flex; flex-direction: column; gap: 10px; }
 .funnel-row { display: flex; align-items: center; gap: 14px; }
 .funnel-bar { height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; min-width: 46px; transition: width .4s ease; }
-.funnel-val { color: #fff; font-weight: 900; font-size: 15px; }
+.funnel-val { color: #fff; font-weight: 700; font-size: 15px; }
 .funnel-meta { display: flex; flex-direction: column; }
 .funnel-meta strong { font-size: 13px; color: var(--ink); }
 .funnel-meta span { font-size: 11.5px; color: var(--muted); }
 
 /* Donut */
 .donut-wrap { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-.donut-total { font-size: 26px; font-weight: 900; fill: var(--psn-indigo); }
+.donut-total { font-size: 26px; font-weight: 700; fill: var(--psn-indigo); }
 .donut-sub { font-size: 10px; fill: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
 .donut-legend { display: flex; flex-direction: column; gap: 7px; }
 .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
 .legend-dot { width: 11px; height: 11px; border-radius: 3px; flex: 0 0 auto; }
 .legend-label { color: var(--text); }
-.legend-val { color: var(--ink); font-weight: 800; margin-left: 4px; }
+.legend-val { color: var(--ink); font-weight: 700; margin-left: 4px; }
 
 @media (max-width: 1000px) {
   .kpi-row { grid-template-columns: repeat(2, minmax(0,1fr)); }

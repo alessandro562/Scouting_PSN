@@ -81,9 +81,9 @@
 }
 .kcol-head:active { cursor: grabbing; }
 .kcol-head-left { display: flex; align-items: center; gap: 8px; }
-.kcol-name { font-weight: 800; font-size: 13.5px; color: var(--ink); letter-spacing: -0.01em; }
+.kcol-name { font-weight: 700; font-size: 13.5px; color: var(--ink); letter-spacing: -0.01em; }
 .kcol-count {
-  background: #E3ECF5; color: #46617c; font-size: 11px; font-weight: 800;
+  background: #E3ECF5; color: #46617c; font-size: 11px; font-weight: 700;
   padding: 1px 8px; border-radius: 999px;
 }
 .kcol-body {
@@ -115,7 +115,7 @@
 .kcard-ghost { opacity: 0.4; }
 .kcard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .kcard-notes { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.kcard-title { margin: 2px 0 5px; font-size: 14.5px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
+.kcard-title { margin: 2px 0 5px; font-size: 14.5px; font-weight: 700; color: var(--ink); letter-spacing: -0.01em; }
 .kcard-what {
   margin: 0 0 9px; font-size: 12px; color: var(--text); line-height: 1.45;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
