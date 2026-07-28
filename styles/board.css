@@ -133,3 +133,43 @@
 @media (max-width: 860px) {
   .kcol { flex-basis: 264px; width: 264px; }
 }
+
+/* ===========================================================================
+   Rifiniture brand PSN
+   =========================================================================== */
+/* Sidebar: fondo con gradiente indaco PSN */
+aside { background: var(--psn-gradient-dark) !important; }
+/* Titolo sidebar con accento */
+aside .brand h1 { background: none; }
+
+/* Nav attivo: accento ciano/gradiente a sinistra */
+.nav-list a { position: relative; }
+.nav-list a.active {
+  background: rgba(63, 216, 232, 0.12) !important;
+  color: #fff !important;
+}
+.nav-list a.active::before {
+  content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+  border-radius: 3px; background: var(--psn-gradient);
+}
+
+/* Hero: barra gradiente PSN in alto + accento */
+.hero { position: relative; overflow: hidden; }
+.hero::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: var(--psn-gradient);
+}
+
+/* CTA accento corallo (per azioni primarie in evidenza) */
+.btn.accent { background: var(--psn-coral); border-color: var(--psn-coral); color: #fff; }
+.btn.accent:hover { background: #e0562f; }
+
+/* Header colonne board: sottile accento gradiente */
+.kcol-head { border-bottom: 1px solid var(--line-soft); }
+.kcol { border-top: 3px solid transparent; border-image: var(--psn-gradient) 1; }
+
+/* Metriche hero: numero con colore brand */
+.metric .value { color: var(--psn-indigo); }
+
+/* Pill settore piu' coerenti col brand (bordo tenue) */
+.kcard .pill, .modal .pill { border: 1px solid rgba(10,19,80,.06); }

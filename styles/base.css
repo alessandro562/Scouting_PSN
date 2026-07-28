@@ -3,38 +3,57 @@
    Token :root, layout, card, pill, tabelle, accordion, ecc. Riutilizzati dal CRM.
    =========================================================================== */
 
+    /* ---- Font ufficiale PA: Titillium Web (vendorizzato, nessuna CDN) ---- */
+    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/titillium-web-400.woff2) format("woff2");}
+    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/titillium-web-600.woff2) format("woff2");}
+    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/titillium-web-700.woff2) format("woff2");}
+    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:900;font-display:swap;src:url(../assets/fonts/titillium-web-900.woff2) format("woff2");}
+
     :root{
-      --bg:#F5F8FB;
+      /* Palette PSN (campionata da logo + deck ufficiale) */
+      --psn-indigo:#05103A;
+      --psn-indigo-2:#0A1350;
+      --psn-indigo-3:#1A1560;
+      --psn-cyan:#3FD8E8;
+      --psn-blue:#3D7DEB;
+      --psn-violet:#6A5AF0;
+      --psn-coral:#F0663F;
+      --psn-gradient:linear-gradient(90deg,#3FD8E8 0%,#3D7DEB 52%,#6A5AF0 100%);
+      --psn-gradient-dark:linear-gradient(135deg,#05103A 0%,#0A1350 55%,#1A1560 100%);
+
+      --bg:#F4F6FD;
       --surface:#FFFFFF;
-      --surface-soft:#F8FAFC;
-      --ink:#0F172A;
-      --text:#344054;
-      --muted:#667085;
-      --line:#DFE7F0;
-      --line-soft:#EAF0F6;
-      --nav:#0A1624;
-      --nav-2:#102236;
-      --wda-blue:#3B6D94;
-      --wda-cyan:#30A8DD;
-      --wda-mid:#3289AC;
-      --wda-accent:#4E5AA5;
-      --blue:#3B6D94;
-      --blue-2:#30A8DD;
-      --blue-soft:#EEF7FC;
-      --green:#1F7A5C;
-      --green-soft:#EDF8F4;
-      --amber:#9A5B18;
-      --amber-soft:#FFF7EB;
-      --red:#8F2E2E;
-      --red-soft:#FFF3F3;
-      --purple:#4E5AA5;
-      --purple-soft:#F2F4FF;
-      --teal:#3289AC;
-      --teal-soft:#EFFAFC;
-      --shadow:0 16px 42px rgba(15,23,42,.065);
-      --shadow-soft:0 8px 22px rgba(15,23,42,.038);
-      --radius:18px;
-      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --surface-soft:#F7F9FE;
+      --ink:#0B1437;
+      --text:#3A4468;
+      --muted:#6B7398;
+      --line:#E2E7F5;
+      --line-soft:#EDF0FA;
+      --nav:#05103A;
+      --nav-2:#0A1350;
+      --wda-blue:#3D7DEB;
+      --wda-cyan:#3FD8E8;
+      --wda-mid:#2FA9D6;
+      --wda-accent:#6A5AF0;
+      --accent:#F0663F;
+      --accent-soft:#FEEEE8;
+      --blue:#3D7DEB;
+      --blue-2:#3FD8E8;
+      --blue-soft:#EAF2FE;
+      --green:#1F9D74;
+      --green-soft:#E9F8F2;
+      --amber:#C0721A;
+      --amber-soft:#FFF4E6;
+      --red:#D14A3B;
+      --red-soft:#FDEEEB;
+      --purple:#6A5AF0;
+      --purple-soft:#EEECFE;
+      --teal:#2FA9D6;
+      --teal-soft:#E8F6FC;
+      --shadow:0 18px 44px rgba(10,19,80,.10);
+      --shadow-soft:0 8px 22px rgba(10,19,80,.06);
+      --radius:16px;
+      --font:"Titillium Web", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     *{box-sizing:border-box}

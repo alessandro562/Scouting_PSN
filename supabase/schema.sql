@@ -154,3 +154,44 @@ begin
   begin execute 'alter publication supabase_realtime add table public.notes';    exception when duplicate_object then null; end;
   begin execute 'alter publication supabase_realtime add table public.glossary'; exception when duplicate_object then null; end;
 end $$;
+
+-- ============================================================================
+-- saved_views — viste salvate (filtri/ordinamento) condivise nel team
+-- ----------------------------------------------------------------------------
+-- Aggiunta successiva: se lo schema base è già stato eseguito, basta eseguire
+-- da qui in giù nel SQL Editor.
+-- ============================================================================
+create table if not exists public.saved_views (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  owner_email text,
+  config      jsonb not null default '{}'::jsonb,
+  is_shared   boolean not null default true,
+  created_by  uuid references auth.users(id) default auth.uid(),
+  created_at  timestamptz not null default now()
+);
+create index if not exists saved_views_created_idx on public.saved_views (created_at);
+
+alter table public.saved_views enable row level security;
+
+drop policy if exists saved_views_select on public.saved_views;
+create policy saved_views_select on public.saved_views
+  for select to authenticated using (true);
+
+drop policy if exists saved_views_insert on public.saved_views;
+create policy saved_views_insert on public.saved_views
+  for insert to authenticated
+  with check (created_by is null or created_by = auth.uid());
+
+drop policy if exists saved_views_update on public.saved_views;
+create policy saved_views_update on public.saved_views
+  for update to authenticated using (created_by = auth.uid()) with check (created_by = auth.uid());
+
+drop policy if exists saved_views_delete on public.saved_views;
+create policy saved_views_delete on public.saved_views
+  for delete to authenticated using (created_by = auth.uid());
+
+do $$
+begin
+  begin execute 'alter publication supabase_realtime add table public.saved_views'; exception when duplicate_object then null; end;
+end $$;
