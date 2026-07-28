@@ -29,23 +29,25 @@ export function setNoteCounts(map) {
   noteCountMap = map || {};
 }
 
-const SECTOR_CLASS = {
-  AI: "purple",
-  Cybersecurity: "red",
-  GovTech: "teal",
-  "IoT/Edge": "amber",
-  Data: "blue",
-  FinTech: "green",
-  HealthTech: "teal",
+// Colore per settore (accento card) e per fase (identità colonna) — palette PSN.
+const SECTOR_COLOR = {
+  AI: "#8360C2",
+  Cybersecurity: "#F96954",
+  "IoT/Edge": "#48E6EA",
+  Data: "#5F75C5",
+  GovTech: "#2FA9D6",
+  FinTech: "#1F9D74",
+  HealthTech: "#0F98B5",
 };
+const STAGE_PALETTE = ["#5F75C5", "#8360C2", "#48E6EA", "#F96954", "#2FA9D6", "#9B6FD0"];
 
 function esc(v) {
   if (v == null) return "";
   return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function sectorClass(sector) {
-  return SECTOR_CLASS[sector] || "blue";
+function sectorColor(sector) {
+  return SECTOR_COLOR[sector] || "#5F75C5";
 }
 
 function cardsForColumn(col, index) {
@@ -59,25 +61,35 @@ function tileHtml(card) {
   const primary = card.psn?.primary || card.data?.area || "";
   const what = card.data?.what || "";
   const notes = noteCountMap[card.id] || 0;
+  const sector = card.sector || "Settore n/d";
+  const color = sectorColor(card.sector);
+  const trl = card.data?.trl;
   return `
-    <article class="kcard searchable" data-id="${esc(card.id)}" tabindex="0" role="button" aria-label="Apri ${esc(card.name)}">
-      <div class="kcard-top">
-        ${card.sector ? `<span class="pill ${sectorClass(card.sector)}">${esc(card.sector)}</span>` : `<span class="pill neutral">Settore n/d</span>`}
-        ${notes ? `<span class="kcard-notes" title="${notes} note">🗒 ${notes}</span>` : ""}
+    <article class="kcard searchable" data-id="${esc(card.id)}" style="--sector:${color}" tabindex="0" role="button" aria-label="Apri ${esc(card.name)}">
+      <div class="kcard-inner">
+        <div class="kcard-top">
+          <span class="kcard-sector"><span class="kcard-dot"></span>${esc(sector)}</span>
+          ${notes ? `<span class="kcard-notes" title="${notes} note">💬 ${notes}</span>` : ""}
+        </div>
+        <h4 class="kcard-title">${esc(card.name)}</h4>
+        ${what ? `<p class="kcard-what">${esc(what)}</p>` : ""}
+        <div class="kcard-meta">
+          ${primary ? `<span class="kchip">${esc(primary)}</span>` : ""}
+          ${trl ? `<span class="kchip kchip-ghost">TRL ${esc(trl)}</span>` : ""}
+        </div>
       </div>
-      <h4 class="kcard-title">${esc(card.name)}</h4>
-      ${what ? `<p class="kcard-what">${esc(what)}</p>` : ""}
-      ${primary ? `<div class="kcard-meta"><span class="pill blue">${esc(primary)}</span></div>` : ""}
     </article>
   `;
 }
 
 function columnHtml(col, index) {
   const cards = cardsForColumn(col, index);
+  const color = STAGE_PALETTE[index % STAGE_PALETTE.length];
   return `
-    <section class="kcol" data-stage-id="${esc(col.id)}">
+    <section class="kcol" data-stage-id="${esc(col.id)}" style="--stage:${color}">
       <header class="kcol-head" title="Trascina per riordinare">
         <div class="kcol-head-left">
+          <span class="kcol-dot"></span>
           <span class="kcol-name">${esc(col.name)}</span>
           <span class="kcol-count">${cards.length}</span>
         </div>
@@ -86,7 +98,7 @@ function columnHtml(col, index) {
       <div class="kcol-body" data-stage-id="${esc(col.id)}">
         ${cards.map(tileHtml).join("")}
       </div>
-      <button class="kcol-add" data-add-in="${esc(col.id)}">+ Aggiungi startup</button>
+      <button class="kcol-add" data-add-in="${esc(col.id)}"><span>+</span> Aggiungi startup</button>
     </section>
   `;
 }
