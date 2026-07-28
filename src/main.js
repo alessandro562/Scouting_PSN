@@ -6,8 +6,12 @@ import { isConfigured } from "./supabase.js";
 import { getSession, onAuthChange, signIn, signUp, signOut } from "./auth.js";
 import { state, subscribe, reloadAll, noteCounts } from "./store.js";
 import { ensureSeeded } from "./data/seed-runner.js";
-import { renderBoard, setNoteCounts, setSectorFilter } from "./ui/board.js";
+import { renderBoard, setNoteCounts } from "./ui/board.js";
 import { renderReport } from "./ui/report.js";
+import { renderTable, setTableNoteCounts } from "./ui/table.js";
+import { renderAnalytics } from "./ui/analytics.js";
+import { mountFilterBar, syncControls, renderSavedViews } from "./ui/filterBar.js";
+import { onFiltersChange } from "./ui/filters.js";
 import { openStartupForm } from "./ui/startupForm.js";
 import { openStageMenu } from "./ui/stages.js";
 import { cardsForStage } from "./store.js";
@@ -15,9 +19,16 @@ import { subscribeRealtime, unsubscribeRealtime } from "./realtime.js";
 import { toast, toastError } from "./ui/toast.js";
 
 const el = (id) => document.getElementById(id);
-let currentSector = "all";
+let currentView = "board";
 let booted = false;
 let rendering = false;
+
+const VIEWS = {
+  board: { showHero: true, showFilter: true },
+  table: { showHero: false, showFilter: true },
+  analytics: { showHero: true, showFilter: true },
+  report: { showHero: false, showFilter: false },
+};
 
 // --------------------------------------------------------------------------
 // Rendering
@@ -29,13 +40,15 @@ async function render() {
     try {
       const counts = await noteCounts();
       setNoteCounts(counts);
+      setTableNoteCounts(counts);
     } catch (e) { /* i conteggi note sono best-effort */ }
 
-    renderSectorFilter();
-    setSectorFilter(currentSector);
     renderHeroMetrics();
     renderBoard(el("board"));
+    renderTable(el("table-view"));
+    renderAnalytics(el("analytics-view"));
     renderReport();
+    renderSavedViews();
   } finally {
     rendering = false;
   }
@@ -67,17 +80,6 @@ function renderHeroMetrics() {
     .join("");
 }
 
-function renderSectorFilter() {
-  const select = el("sector-filter");
-  if (!select) return;
-  const sectors = Array.from(new Set(state.startups.map((s) => s.sector).filter(Boolean))).sort();
-  const opts = ['<option value="all">Tutti i settori</option>']
-    .concat(sectors.map((s) => `<option value="${s}">${s}</option>`))
-    .join("");
-  select.innerHTML = opts;
-  select.value = currentSector;
-}
-
 // --------------------------------------------------------------------------
 // Boot dell'app (dopo login valido)
 // --------------------------------------------------------------------------
@@ -98,8 +100,12 @@ async function boot(session) {
     toastError("Errore nel caricamento dei dati", e);
   }
 
+  mountFilterBar(el("filter-bar"));
   subscribe(() => { render(); });
+  onFiltersChange(() => { render(); });
   await render();
+  syncControls();
+  setView(currentView);
   subscribeRealtime();
 }
 
@@ -117,16 +123,11 @@ function wireChrome() {
   const onClick = (id, fn) =>
     el(id)?.addEventListener("click", (e) => { e.preventDefault(); fn(); });
 
-  // Toggle Board / Report
+  // Switcher 4 viste
   onClick("view-board-btn", () => setView("board"));
+  onClick("view-table-btn", () => setView("table"));
+  onClick("view-analytics-btn", () => setView("analytics"));
   onClick("view-report-btn", () => setView("report"));
-
-  // Filtro settore
-  el("sector-filter")?.addEventListener("change", (e) => {
-    currentSector = e.target.value;
-    setSectorFilter(currentSector);
-    renderBoard(el("board"));
-  });
 
   // Nuova startup / nuova colonna (sidebar + hero)
   onClick("nav-add-startup", () => openStartupForm(null, {}));
@@ -139,29 +140,17 @@ function wireChrome() {
     await signOut();
     toast("Sei uscito", "info");
   });
-
-  // Ricerca globale (board + report)
-  const search = el("search-input");
-  search?.addEventListener("input", () => {
-    const q = search.value.trim().toLowerCase();
-    document.querySelectorAll(".searchable").forEach((node) => {
-      node.classList.remove("search-hit");
-      if (!q) { node.classList.remove("hide"); return; }
-      const hit = node.innerText.toLowerCase().includes(q);
-      node.classList.toggle("hide", !hit);
-      if (hit && q.length > 2) node.classList.add("search-hit");
-    });
-  });
 }
 
 function setView(view) {
-  const boardView = el("board-view");
-  const reportView = el("report-view");
-  const isBoard = view === "board";
-  boardView?.classList.toggle("hidden", !isBoard);
-  reportView?.classList.toggle("hidden", isBoard);
-  el("view-board-btn")?.classList.toggle("active", isBoard);
-  el("view-report-btn")?.classList.toggle("active", !isBoard);
+  currentView = view;
+  const cfg = VIEWS[view] || VIEWS.board;
+  ["board", "table", "analytics", "report"].forEach((v) => {
+    el(`${v}-view`)?.classList.toggle("hidden", v !== view);
+    el(`view-${v}-btn`)?.classList.toggle("active", v === view);
+  });
+  el("overview")?.classList.toggle("hidden", !cfg.showHero);
+  el("filter-bar")?.classList.toggle("hidden", !cfg.showFilter);
 }
 
 // --------------------------------------------------------------------------

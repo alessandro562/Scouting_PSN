@@ -15,18 +15,14 @@ import { openStartupModal } from "./modal.js";
 import { openStageMenu } from "./stages.js";
 import { openStartupForm } from "./startupForm.js";
 import { toastError } from "./toast.js";
+import { applyFilters } from "./filters.js";
 
-let currentSector = "all";
 let noteCountMap = {};
 let dragging = false;
 let sortables = [];
 
 export function isBoardDragging() {
   return dragging;
-}
-
-export function setSectorFilter(sector) {
-  currentSector = sector;
 }
 
 export function setNoteCounts(map) {
@@ -52,14 +48,11 @@ function sectorClass(sector) {
   return SECTOR_CLASS[sector] || "blue";
 }
 
-function sectorMatch(card) {
-  return currentSector === "all" || (card.sector || "—") === currentSector;
-}
-
 function cardsForColumn(col, index) {
   let cards = cardsForStage(col.id);
   if (index === 0) cards = [...orphanCards(), ...cards];
-  return cards.filter(sectorMatch);
+  const allowed = new Set(applyFilters(state.startups).map((s) => s.id));
+  return cards.filter((c) => allowed.has(c.id));
 }
 
 function tileHtml(card) {

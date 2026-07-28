@@ -8,6 +8,7 @@ export const state = {
   stages: [],   // [{id, name, position, created_at}]
   startups: [], // [{id, slug, name, sector, stage_id, position, data, psn, ...}]
   glossary: [], // [{id, term, text, refs, position}]
+  savedViews: [], // [{id, name, owner_email, config, is_shared, created_at}]
 };
 
 const listeners = new Set();
@@ -54,8 +55,22 @@ export async function reloadGlossary() {
   state.glossary = data || [];
 }
 
+export async function reloadSavedViews() {
+  const { data, error } = await supabase
+    .from("saved_views")
+    .select("*")
+    .order("created_at", { ascending: true });
+  if (error) {
+    // La tabella potrebbe non esistere ancora: non bloccare il resto dell'app.
+    console.warn("saved_views non disponibile:", error.message);
+    state.savedViews = [];
+    return;
+  }
+  state.savedViews = data || [];
+}
+
 export async function reloadAll() {
-  await Promise.all([reloadStages(), reloadStartups(), reloadGlossary()]);
+  await Promise.all([reloadStages(), reloadStartups(), reloadGlossary(), reloadSavedViews()]);
   emitChange();
 }
 
@@ -216,4 +231,24 @@ export async function noteCounts() {
     counts[n.startup_id] = (counts[n.startup_id] || 0) + 1;
   });
   return counts;
+}
+
+// --------------------------------------------------------------------------
+// Viste salvate (saved_views) — condivise nel team
+// --------------------------------------------------------------------------
+export async function addSavedView(name, config) {
+  const { data: userData } = await supabase.auth.getUser();
+  const email = userData?.user?.email ?? null;
+  const { data, error } = await supabase
+    .from("saved_views")
+    .insert({ name, config, owner_email: email, is_shared: true })
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteSavedView(id) {
+  const { error } = await supabase.from("saved_views").delete().eq("id", id);
+  if (error) throw error;
 }
