@@ -76,6 +76,7 @@ function tileHtml(card) {
         <div class="kcard-meta">
           ${primary ? `<span class="kchip">${esc(primary)}</span>` : ""}
           ${trl ? `<span class="kchip kchip-ghost">TRL ${esc(trl)}</span>` : ""}
+          ${Array.isArray(card.data?.toConfirm) && card.data.toConfirm.length ? `<span class="kchip kchip-warn" title="Contiene dati da confermare">⚠ da confermare</span>` : ""}
         </div>
       </div>
     </article>
