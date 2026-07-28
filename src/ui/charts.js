@@ -5,8 +5,8 @@
 
 // Palette categoriale derivata dal brand PSN.
 export const PALETTE = [
-  "#3D7DEB", "#3FD8E8", "#6A5AF0", "#F0663F",
-  "#2FA9D6", "#1F9D74", "#C0721A", "#8B5CF6", "#EC6F9E", "#0EA5E9",
+  "#5F75C5", "#48E6EA", "#8360C2", "#F96954", "#00004F",
+  "#4A5AA8", "#0F98B5", "#C0721A", "#1F9D74", "#B0519E",
 ];
 export const colorFor = (i) => PALETTE[i % PALETTE.length];
 
