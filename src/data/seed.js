@@ -207,6 +207,317 @@ export const startups = [
         next1:"Individuare un’area urbana delimitata e un casi d’uso misurabile, per esempio parcheggi o incrocio critico.",
         next2:"Verificare data flow, autorizzazioni, trattamento immagini, requisiti device e benchmark di accuratezza.",
         nextOut:"Piano PoC urbano con perimetro, dati trattati, metriche, autorizzazioni e criteri privacy."
+      },
+      {
+        id:"cyberevolution",
+        name:"Cyberevolution",
+        area:"Cybersecurity",
+        what:"Protezione cyber per impianti industriali tramite hardware dedicato.",
+        description:"Cyber Evolution sviluppa soluzioni avanzate di cybersecurity industriale che combinano componenti hardware dedicati e algoritmi di intelligenza artificiale per proteggere infrastrutture critiche, reti OT/IT e impianti produttivi da minacce informatiche evolute.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Intelligenza artificiale · Hardware dedicato",
+        differentiator:"Cyber Evolution offre LECS, una piattaforma plug & play per la protezione continua di reti industriali e sistemi critici, combinando hardware dedicato e monitoraggio intelligente; facilmente integrabile nei sistemi esistenti.",
+        usecases:[
+          "Protezione attiva e continuativa delle reti industriali",
+          "Isolamento avanzato di dispositivi critici",
+          "Integrazione rapida in ecosistemi industriali esistenti"
+        ],
+        technologies:[
+          ["AI predittiva","Rilevamento delle minacce in tempo reale"],
+          ["Air-Gap energetico","Sistemi di isolamento fisico dei dispositivi critici"],
+          ["Notarizzazione su blockchain","Integrità e tracciabilità dei log"],
+          ["Appliance industriale","Dispositivo di sicurezza pronto all’installazione"]
+        ],
+        poc:"Soluzione (LECS) in fase avanzata di industrializzazione, stadio maturo orientato a roll-out e scalabilità. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Maturità industriale, referenze e adattabilità al contesto PSN.",
+        why:"Verificare referenze su reti OT/IT della PA, requisiti d’installazione dell’appliance e modello di gestione/manutenzione.",
+        sede:"Ascoli Piceno",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Marco Camerinisi, Roberto Camerinisi"
+      },
+      {
+        id:"truescreen",
+        name:"Truescreen",
+        area:"Cybersecurity & Legal-Tech",
+        what:"Certificazione legale e immodificabile di documenti e contenuti digitali.",
+        description:"TrueScreen è una piattaforma di cybersecurity e legal-tech specializzata nell’acquisizione, certificazione e gestione di dati digitali con valore legale e probatorio. La soluzione consente di garantire autenticità, integrità e immodificabilità di contenuti digitali.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Piattaforma data authenticity",
+        differentiator:"Piattaforma per l’acquisizione forense e la certificazione di contenuti digitali (immagini, video, documenti, file), a supporto della gestione di evidenze digitali e della riduzione del rischio di contestazioni.",
+        usecases:[
+          "Acquisizione e certificazione forense di contenuti digitali",
+          "Firma digitale e notarizzazione dei documenti",
+          "Gestione sicura di dati con valore probatorio"
+        ],
+        technologies:[
+          ["Metodologia forense brevettata","Acquisizione sicura e verificabile di dati digitali"],
+          ["Signing & notarizzazione","Firma e notarizzazione digitale cross-platform"],
+          ["API di integrazione","Integrazione con sistemi e tool di processo"]
+        ],
+        poc:"Soluzione operativa e adottata in contesti reali ad alti standard di affidabilità e sicurezza; fase avanzata di maturità. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Valore probatorio, conformità normativa e casi d’uso nella PA.",
+        why:"Verificare il valore legale/probatorio riconosciuto, la conformità e i casi d’uso applicabili nei procedimenti della PA.",
+        sede:"Bologna",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Fabio Ugolini, Leonardo Baruzzi"
+      },
+      {
+        id:"cylock",
+        name:"CyLock",
+        area:"Cybersecurity",
+        what:"Identificazione automatica di vulnerabilità e rischi cyber esterni.",
+        description:"CyLock è una piattaforma di cybersecurity AI-based, progettata per supportare le organizzazioni nella gestione proattiva del rischio cyber. Automatizza l’identificazione di vulnerabilità e superfici di attacco, fornendo indicazioni operative per la sicurezza IT.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Intelligenza artificiale e machine learning",
+        differentiator:"Piattaforma AI-driven che automatizza analisi delle vulnerabilità e valutazione del rischio informatico, offrendo una visione continua e aggiornata dell’esposizione al rischio.",
+        usecases:[
+          "Analisi automatizzata delle vulnerabilità IT",
+          "Supporto continuo alla valutazione del rischio cyber",
+          "Reportistica strutturata per decisioni operative"
+        ],
+        technologies:[
+          ["AI & ML","Vulnerability assessment e risk scoring"],
+          ["OSINT & Dark Web Monitoring","Analisi delle superfici di attacco"],
+          ["Automazione test","Esecuzione automatizzata dei test di sicurezza IT"]
+        ],
+        poc:"Soluzione operativa e già utilizzata in contesti reali di analisi del rischio cyber e sicurezza IT; fase avanzata di maturità. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Accuratezza dell’analisi, copertura e integrazione nei processi PA.",
+        why:"Verificare accuratezza/copertura del vulnerability assessment, gestione dei falsi positivi e integrazione con i processi di sicurezza della PA.",
+        sede:"Roma",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Diego Padovan, Paolo Antoniani"
+      },
+      {
+        id:"resilientx",
+        name:"ResilientX",
+        area:"Cybersecurity",
+        what:"Monitoraggio continuo dei rischi cyber provenienti dall’esterno.",
+        description:"ResilientX è una piattaforma di cybersecurity specializzata nella gestione del rischio cyber esterno. La soluzione combina moduli per il monitoraggio continuo degli asset esposti, l’identificazione di vulnerabilità e la gestione automatizzata dei rischi.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · EASM & threat intelligence",
+        differentiator:"Piattaforma SaaS per la gestione proattiva del rischio cyber su asset digitali esposti, punti di attacco esterni e supply chain; progettata per ambienti enterprise e regolamentati.",
+        usecases:[
+          "Scoperta automatica di asset esposti e vulnerabilità",
+          "Monitoraggio continuo delle superfici di attacco digitali",
+          "Gestione automatizzata dei rischi nella supply chain"
+        ],
+        technologies:[
+          ["EASM","External Attack Surface Management"],
+          ["Threat Intelligence","Identificazione di segnali di rischio"],
+          ["Automazione remediation","Workflow di remediation e monitoraggio"]
+        ],
+        poc:"Adozioni internazionali con clienti enterprise e istituzionali in più paesi, con capacità di scalabilità in contesti regolamentati. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Copertura EASM, referenze istituzionali e conformità.",
+        why:"Verificare copertura del monitoraggio delle superfici esterne, referenze in contesti regolamentati e adattabilità alle esigenze PA.",
+        sede:"Lecco",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Lorenzo Rea"
+      },
+      {
+        id:"intrusa",
+        name:"Intrusa",
+        area:"Cybersecurity",
+        what:"Piattaforma centralizzata per monitoraggio log e conformità normativa.",
+        description:"Intrusa è una piattaforma di cybersecurity e compliance che supporta le organizzazioni nella gestione centralizzata della sicurezza IT. La soluzione è progettata per semplificare attività complesse di controllo e governance.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Piattaforma cloud",
+        differentiator:"Piattaforma cloud-based per la gestione strutturata della sicurezza informatica e della compliance, che riduce la complessità operativa e migliora prevenzione e risposta agli incidenti.",
+        usecases:[
+          "Gestione centralizzata dei log di sicurezza",
+          "Rilevamento in tempo reale di anomalie e vulnerabilità",
+          "Supporto alla conformità normativa (GDPR, ISO 27001, NIS2)"
+        ],
+        technologies:[
+          ["Cloud log management","Log management e security monitoring cloud-based"],
+          ["Microsoft 365 & DLP","Moduli dedicati per M365 e Data Loss Prevention"],
+          ["Integrazione IT","Integrazione con sistemi IT e piattaforme aziendali"]
+        ],
+        poc:"Soluzione operativa e già utilizzata in contesti reali di gestione della sicurezza IT e compliance normativa, con clienti paganti. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Copertura normativa (GDPR/ISO 27001/NIS2) e scalabilità.",
+        why:"Verificare la copertura normativa (in particolare NIS2), l’integrazione con l’ecosistema IT della PA e la scalabilità del log management.",
+        sede:"Udine",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Andrea Zwirner, Gigliola Sartor"
+      },
+      {
+        id:"aigarage",
+        name:"AI Garage",
+        area:"Cybersecurity & Reg-Tech",
+        what:"Automazione della compliance cyber nella gestione fornitori.",
+        description:"AI Garage è una piattaforma di cybersecurity e compliance che automatizza la gestione del rischio cyber nella supply chain, supportando le aziende nel monitoraggio continuo dei fornitori e nell’adeguamento alle principali normative europee.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 8 · Intelligenza artificiale · LLM",
+        differentiator:"Piattaforma end-to-end per valutazione del rischio cyber dei fornitori, workflow di compliance e audit readiness, monitoraggio continuo di minacce e reportistica avanzata; riduce il carico operativo e aumenta la capacità di risposta.",
+        usecases:[
+          "Valutazione del rischio cyber dei fornitori",
+          "Workflow di compliance e audit readiness",
+          "Monitoraggio continuo di minacce e vulnerabilità",
+          "Reportistica avanzata per stakeholder interni ed esterni"
+        ],
+        technologies:[
+          ["AI & LLM","Automazione tramite modelli AI e LLM"],
+          ["Semantic retrieval","Analisi documentale e recupero semantico"],
+          ["Integrazione dati","Integrazione con sistemi aziendali e database interni"],
+          ["Privacy-by-design","Approccio privacy-by-design e sicurezza infrastrutturale"]
+        ],
+        poc:"Piattaforma operativa e già utilizzata in contesti reali di valutazione del rischio e compliance supply chain. PoC completati, prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Robustezza dei modelli AI/LLM e affidabilità della compliance automatizzata.",
+        why:"Verificare l’affidabilità dei modelli AI/LLM sulla compliance, la gestione del dato dei fornitori e la conformità alle normative europee applicabili alla PA.",
+        sede:"Milano",
+        trl:"8",
+        valuation:"Early traction / Ready to scale",
+        traction:"PoC completati · Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Alessandra Caringella, Roberto Troiani"
+      },
+      {
+        id:"cyberaware",
+        name:"CyberAware",
+        area:"Cybersecurity",
+        what:"Piattaforma di formazione per ridurre il rischio umano nella cybersecurity.",
+        description:"CyberAware è una piattaforma di Cybersecurity Awareness e formazione progettata per rafforzare la consapevolezza dei rischi digitali all’interno delle organizzazioni.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 7 · Piattaforma LMS",
+        differentiator:"Sistema di formazione continua sulla cybersecurity con contenuti interattivi e certificati, ideato per mitigare il rischio umano e trasformare il personale da vulnerabilità a primo presidio di difesa.",
+        usecases:[
+          "Programmi formativi in ambito cybersecurity awareness",
+          "Quiz, percorsi didattici e certificazioni",
+          "Contenuti aggiornati su phishing e protezione dati"
+        ],
+        technologies:[
+          ["LMS avanzato","Erogazione e gestione dei corsi di formazione"],
+          ["Gamification","Engagement e apprendimento tramite meccaniche di gioco"]
+        ],
+        poc:"Piattaforma formativa già operativa, con un’offerta strutturata di corsi e percorsi dedicati alla cybersecurity awareness. PoC completati, prodotto sul mercato, clienti attivi.",
+        deepen:"Efficacia formativa misurabile e integrazione nei programmi PA.",
+        why:"Verificare metriche di efficacia (riduzione del rischio umano), aggiornamento dei contenuti e integrazione nei piani formativi della PA.",
+        sede:"Salerno",
+        trl:"7",
+        valuation:"Early traction",
+        traction:"PoC completati · Prodotto sul mercato · Clienti attivi",
+        keyPeople:"Domenico Campeglia"
+      },
+      {
+        id:"pugliai",
+        name:"PugliAI",
+        area:"Intelligenza artificiale / Generative AI",
+        what:"Automazione di contenuti e processi aziendali con AI generativa.",
+        description:"PugliAI è una piattaforma di intelligenza artificiale specializzata nell’automazione dei processi di analisi e generazione di contenuti, integrando tecnologie generative e modelli di linguaggio naturale.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Generative AI",
+        differentiator:"Piattaforma end-to-end che combina Generative AI (GPT-4 e custom NLP) con workflow automatizzati; semplifica la produzione di contenuti, l’analisi di dati e l’estrazione di insight significativi.",
+        usecases:[
+          "Generazione AI di contenuti testuali e semantici",
+          "Automazione dei workflow basati su dati reali",
+          "Conversione di dati grezzi in insight operativi"
+        ],
+        technologies:[
+          ["Generative AI & NLP","Generazione di contenuti e comprensione del linguaggio"],
+          ["GDPR-compliant AI","Trattamento sicuro dei dati"],
+          ["Machine Learning","Ottimizzazione continua dei modelli"]
+        ],
+        poc:"Soluzione operativa e adottata in contesti reali per l’automazione dell’analisi dati e la generazione di contenuti. Prodotti sviluppati e validati. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Affidabilità dei contenuti generati e trattamento del dato per la PA.",
+        why:"Verificare qualità/controllo dei contenuti generati, governance del dato e conformità (GDPR) nell’uso su processi della PA.",
+        sede:"Bari",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Gregor Maric"
+      },
+      {
+        id:"tiledesk",
+        name:"Tiledesk",
+        area:"Customer service automation",
+        what:"Agenti AI personalizzabili per automatizzare assistenza e processi interni.",
+        description:"TileDesk è una piattaforma di intelligenza artificiale per l’automazione del customer service che consente alle organizzazioni di creare e gestire agenti conversazionali intelligenti per il supporto a clienti e utenti interni.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Conversational AI",
+        differentiator:"Piattaforma AI end-to-end per la creazione di agenti conversazionali automatizzati, utilizzabili sia nel customer service sia come copilot interni; riduce il carico sui team di supporto e migliora qualità e scalabilità dei servizi.",
+        usecases:[
+          "Agenti AI per customer service e supporto interno",
+          "Automazione conversazionale multi-canale",
+          "Creazione di soluzioni custom tramite builder no-code"
+        ],
+        technologies:[
+          ["API OpenAI & LLM","Integrazione con modelli linguistici di grandi dimensioni"],
+          ["AI Training","Automazione di task ripetitivi"],
+          ["No-code builder","Sviluppo rapido di agenti conversazionali"]
+        ],
+        poc:"Soluzione matura e già adottata in contesti enterprise ad alta intensità di interazione con utenti e clienti, con un modello commerciale strutturato. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Integrazione con i canali della PA e governance delle risposte AI.",
+        why:"Verificare integrazione con i canali/servizi della PA, accuratezza e controllo delle risposte (grounding), e requisiti di gestione del dato.",
+        sede:"Milano",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Michele Pomposo"
+      },
+      {
+        id:"ganiga",
+        name:"Ganiga",
+        area:"GreenTech & Smart Cities",
+        what:"Trasforma i rifiuti in dati tramite riconoscimento automatico con AI.",
+        description:"Ganiga sviluppa soluzioni di smart waste management basate su intelligenza artificiale e computer vision, con l’obiettivo di trasformare la gestione dei rifiuti da processo manuale e inefficiente a sistema intelligente e data-driven.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 9 · Intelligenza artificiale & computer vision",
+        differentiator:"Nuova generazione di infrastrutture intelligenti per la raccolta e gestione dei rifiuti, che supera l’approccio tradizionale privo di dati; riduce contaminazione, aumenta il riciclo e ottimizza costi logistici e ambientali.",
+        usecases:[
+          "Riconoscimento e classificazione automatica dei rifiuti",
+          "Raccolta dati su volumi, peso, tipologia e impatto",
+          "Ottimizzazione operativa e logistica tramite insight AI-driven"
+        ],
+        technologies:[
+          ["Generative AI & computer vision","Waste recognition con precisione superiore al 95% in meno di un secondo"],
+          ["Dataset proprietario","Addestrato su 10 milioni di immagini, in continua espansione"],
+          ["API di integrazione","Integrazione con sistemi industriali e pubblici"]
+        ],
+        poc:"Fase avanzata di industrializzazione, con dispositivi installati in Europa e clienti di primo livello; crescita significativa con pipeline ricorrente. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Accuratezza del riconoscimento e integrazione con i gestori pubblici dei rifiuti.",
+        why:"Verificare accuratezza sul mix rifiuti italiano, integrazione con municipalizzate/gestori pubblici e modello di installazione/manutenzione.",
+        sede:"Pisa",
+        trl:"9",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Nicolas Zeoli"
+      },
+      {
+        id:"i2d",
+        name:"i2d",
+        area:"Intelligenza artificiale / Generative AI",
+        what:"Analisi e interpretazione dei feedback clienti tramite Generative AI.",
+        description:"i2d è una piattaforma di intelligenza artificiale e generative AI che consente alle aziende di raccogliere, interpretare e trasformare il feedback dei clienti in insight operativi e strategie data-driven. La soluzione integra componenti software e hardware.",
+        audience:"PMI, corporate, pubblica amministrazione",
+        maturity:"TRL 7 · Generative AI",
+        differentiator:"Combina InsightGPT e YouFeed in una piattaforma end-to-end di raccolta e analisi dei feedback da molteplici touchpoint (fisici e digitali); trasforma dati qualitativi non strutturati in insight immediatamente utilizzabili.",
+        usecases:[
+          "Raccolta continua di feedback multi-canale",
+          "Analisi AI-driven di dati qualitativi e quantitativi",
+          "Generazione di insight operativi"
+        ],
+        technologies:[
+          ["Generative AI","Interpretazione e sintesi dei feedback"],
+          ["RAG framework","Insight contestuali e affidabili"],
+          ["NFC technology","Raccolta dati in tempo reale"],
+          ["Integrazione hw-sw","Ecosistemi fisici e digitali"]
+        ],
+        poc:"Soluzione operativa e già utilizzata in contesti reali di raccolta e analisi dei feedback. PoC completati, prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Qualità degli insight e applicabilità ai servizi al cittadino.",
+        why:"Verificare l’affidabilità degli insight (grounding/RAG), la gestione del dato dei cittadini e l’applicabilità alla raccolta feedback sui servizi pubblici.",
+        sede:"Milano",
+        trl:"7",
+        valuation:"Early traction",
+        traction:"PoC completati · Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Tommaso Castelli"
       }
     ];
 
@@ -269,6 +580,83 @@ export const psnTaxonomy = {
         innovation: "AI · Edge · Data",
         usecase: "Monitoraggio urbano, traffico, parcheggi, deviazioni e anomalie",
         note: "Rientra nel verticale Smart Cities per la lettura dello spazio urbano tramite dispositivi edge e generazione di metadati operativi."
+      },
+      cyberevolution: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "OT/IT · Infrastrutture critiche",
+        innovation: "AI · Hardware · Blockchain",
+        usecase: "Protezione continua di reti industriali e sistemi critici",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity per la protezione di reti OT/IT e infrastrutture critiche tramite hardware dedicato e AI."
+      },
+      truescreen: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Legal-Tech · Data authenticity",
+        innovation: "Digital forensics · Notarizzazione",
+        usecase: "Acquisizione forense e certificazione legale di contenuti digitali",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity con estensione Legal-Tech per il valore probatorio e l’integrità dei dati digitali."
+      },
+      cylock: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Vulnerability management",
+        innovation: "AI · ML · OSINT",
+        usecase: "Vulnerability assessment e risk scoring automatizzati",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity per l’identificazione automatica di vulnerabilità e superfici di attacco."
+      },
+      resilientx: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "EASM · Supply chain",
+        innovation: "EASM · Threat Intelligence · Cloud",
+        usecase: "Gestione del rischio cyber esterno e delle superfici di attacco",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity per il monitoraggio continuo di asset esposti e rischi di supply chain."
+      },
+      intrusa: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Log management · Compliance",
+        innovation: "Cloud · SIEM · Compliance",
+        usecase: "Monitoraggio log e conformità normativa (GDPR, ISO 27001, NIS2)",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity per la gestione centralizzata della sicurezza IT e della compliance."
+      },
+      aigarage: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Reg-Tech · Third-party risk",
+        innovation: "AI · LLM · Semantic retrieval",
+        usecase: "Compliance e rischio cyber della supply chain / fornitori",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity con estensione Reg-Tech per l’automazione della compliance e del rischio fornitori."
+      },
+      cyberaware: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Security awareness · Formazione",
+        innovation: "LMS · Gamification",
+        usecase: "Formazione e riduzione del rischio umano nella cybersecurity",
+        note: "Rientra nel verticale Sicurezza & Cybersecurity per la formazione e l’awareness a mitigazione del rischio umano."
+      },
+      pugliai: {
+        primary: "Data Intelligence",
+        secondary: "Generative AI · Automazione contenuti",
+        innovation: "Generative AI · NLP · ML",
+        usecase: "Automazione dell’analisi dati e generazione di contenuti",
+        note: "Rientra nel verticale Data Intelligence per la trasformazione di dati grezzi in contenuti e insight operativi tramite Generative AI."
+      },
+      tiledesk: {
+        primary: "Help Desk",
+        secondary: "Customer service · Conversational AI",
+        innovation: "LLM · Conversational AI · No-code",
+        usecase: "Agenti conversazionali per assistenza e supporto interno",
+        note: "Rientra nel verticale Help Desk per l’automazione conversazionale multi-canale dell’assistenza a cittadini e operatori."
+      },
+      ganiga: {
+        primary: "Ambiente",
+        secondary: "Smart Cities · GreenTech",
+        innovation: "Computer vision · Generative AI · IoT",
+        usecase: "Smart waste management con riconoscimento automatico dei rifiuti",
+        note: "Rientra nel verticale Ambiente per la digitalizzazione e ottimizzazione data-driven della gestione dei rifiuti."
+      },
+      i2d: {
+        primary: "Data Intelligence",
+        secondary: "Citizen Feedback · Generative AI",
+        innovation: "Generative AI · RAG · NFC",
+        usecase: "Raccolta e analisi dei feedback in insight operativi",
+        note: "Rientra nel verticale Data Intelligence per la trasformazione di feedback non strutturati in insight decisionali."
       }
     };
 
@@ -289,6 +677,17 @@ export const SLUG_SECTOR = {
   act4city: "GovTech",
   ask4pa: "GovTech",
   civimatica: "IoT/Edge",
+  cyberevolution: "Cybersecurity",
+  truescreen: "Cybersecurity",
+  cylock: "Cybersecurity",
+  resilientx: "Cybersecurity",
+  intrusa: "Cybersecurity",
+  aigarage: "Cybersecurity",
+  cyberaware: "Cybersecurity",
+  pugliai: "AI",
+  tiledesk: "AI",
+  ganiga: "AI",
+  i2d: "AI",
 };
 
 // Elenco di settori suggeriti per il form (l'utente può comunque digitarne altri).

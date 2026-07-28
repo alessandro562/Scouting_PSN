@@ -33,6 +33,27 @@ function psn(s) {
   );
 }
 
+// Blocco opzionale "Scheda pipeline": mostrato solo se sono presenti i campi
+// tipici delle startup importate dal deck (sede, TRL, traction, key people).
+function pipelineBlock(s) {
+  const rows = [
+    ["Sede", s.sede],
+    ["TRL", s.trl],
+    ["Maturità / Valuation", s.valuation],
+    ["Traction", s.traction],
+    ["Key people", s.keyPeople],
+  ].filter(([, v]) => v && String(v).trim());
+  if (!rows.length) return "";
+  return `
+      <div class="callout psn-callout"><strong>Scheda pipeline</strong></div>
+      <div class="info-grid">
+        ${rows
+          .map(([k, v]) => `<div class="ibox"><div class="k">${esc(k)}</div><div class="v">${val(v)}</div></div>`)
+          .join("")}
+      </div>
+  `;
+}
+
 export function renderStartupDetail(s) {
   const p = psn(s);
   const id = s.id || s.slug || "startup";
@@ -49,6 +70,8 @@ export function renderStartupDetail(s) {
         <div class="ibox"><div class="k">Target potenziale</div><div class="v">${val(s.audience)}</div></div>
         <div class="ibox"><div class="k">Verifica preliminare</div><div class="v">${val(s.deepen)}</div></div>
       </div>
+
+      ${pipelineBlock(s)}
 
       <div class="grid cols-2" id="${esc(id)}-descrizione">
         <div class="card inner-card">
