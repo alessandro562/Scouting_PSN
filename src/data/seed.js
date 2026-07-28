@@ -593,6 +593,53 @@ export const startups = [
         traction:"Prodotto sul mercato (Asfalto Sicuro®) con deployment in municipalità italiane; progetto EIT Urban Mobility (Raptor, Las Rozas de Madrid); supportata da ESA BIC, Google for Startups, NVIDIA Inception e dal programma Get It! (Fondazione Social Venture Giordano Dell’Amore). 2-10 dipendenti.",
         keyPeople:"Da confermare",
         toConfirm:["trl","valuation","keyPeople"]
+      },
+      {
+        id:"nextgcloud",
+        name:"Next G Cloud",
+        area:"Cybersecurity / Cloud sovrano & Confidential Computing",
+        what:"AI privata e sovrana e confidential computing per l’edge cloud: proteggere dati e workload AI nel continuum edge-cloud con sovranità europea.",
+        description:"Next G Cloud (NEXT G CLOUD Technologies SRL) è un’azienda tecnologica specializzata in servizi cloud gestiti, confidential computing e AI privata e sovrana nel continuum edge-cloud. Sfruttando edge computing, intelligenza artificiale e tecnologie quantistiche, offre soluzioni per proteggere infrastrutture, dati e applicazioni AI di sviluppatori e aziende senza sacrificare sovranità dei dati, sicurezza e conformità normativa.",
+        problem:"Adottare AI e cloud senza esporre dati sensibili e proprietà intellettuale a terze parti: negli ambienti cloud condivisi misure deboli espongono modelli e dati, e l’AI amplia la superficie d’attacco (estrazione del modello, data poisoning). Serve elaborare dati sensibili mantenendoli protetti anche in uso, con sovranità e conformità (GDPR, NIS2, DORA, AI Act, CRA).",
+        relevance:"Molto rilevante per PA e imprese che devono usare AI/cloud mantenendo sovranità dei dati e conformità normativa; abilita AI privata on-premise/cloud privato per settori regolati (legale, sanità, finance, industria, smart cities).",
+        audience:"B2B e B2G: imprese e PA che necessitano di cloud sicuro e sovrano UE (finance, legal, industrial, smart cities, PA), incluse applicazioni dual-use.",
+        maturity:"Startup (fondata ott. 2024), pre-seed, con MVP e live pilot, 3 PoP e primi clienti ricorrenti; certificazioni ISO 9001/27001/27017.",
+        usecases:[
+          "AI privata e sovrana per studi legali: accesso a banche dati giuridiche, elaborazione sicura in enclave, deploy on-premise/cloud privato",
+          "Smart Cities: live pilot a Torino ‘Edge Data 4 Safety’ (Digital Twin ToMove, edge alerts per sicurezza/InsurTech)",
+          "AI sovrana per il FinTech: KYC/AML, compliance, knowledge management e ‘Crypto Data Room’ per M&A e due diligence",
+          "AI sicura per centri medici privati: elaborazione dati pazienti in confidential computing",
+          "Industrial edge AI per PMI manifatturiere/food: manutenzione predittiva, computer vision, protezione dell’IP"
+        ],
+        technologies:[
+          ["Confidential Computing (TEE)","Dati in uso crittografati in Trusted Execution Environment a livello hardware"],
+          ["Security enclave + attestation","Attestation server e policy management, catena di fiducia"],
+          ["Edge-to-cloud continuum","Elaborazione vicino alla fonte, supporto cloud multi-vendor (AWS/GCP/Azure)"],
+          ["AI privata e sovrana","LLM/AI locali su cloud privato e sovrano: ottimizzazione processi, knowledge management, workflow"],
+          ["Data center Rated-4","Cloud privato in co-location (Nord Italia, ISO 22237, carrier-neutral)"]
+        ],
+        differentiator:"Combina sovranità/compliance UE e ampiezza tecnologica (posizionata in alto a destra nella matrice competitiva vs Retelit, CYSEC, Edgeless Systems, MADANA…): infrastruttura ibrida sicura e vendor-agnostic, confidential computing end-to-end, AI privata e certificazioni ISO 9001/27001/27017.",
+        input:"Dati sensibili e modelli AI di imprese/PA nel continuum edge-cloud.",
+        processing:"Elaborazione confidenziale in enclave/TEE con attestation; AI/LLM locali; policy e conformità normativa.",
+        output:"AI privata e sovrana con dati protetti anche in uso, conformità normativa e controllo completo del dato.",
+        poc:"Live pilot ‘Edge Data 4 Safety’ con il Comune di Torino (Digital Twin ToMove); 3 PoP; MVP showcase 2025 (We Make Future, UN Virtual Worlds, ETSI, Digital SME).",
+        duration:"",
+        prereq:"Perimetro applicativo (settore/dati) e scelta di deployment on-premise/cloud privato/ibrido.",
+        kpi:"Dati/workload protetti, conformità (GDPR/NIS2/DORA/AI Act/CRA), riduzione del rischio e dell’esposizione, ROI.",
+        deepen:"Maturità della piattaforma (enclave/attestation), referenze PA e conformità regolatoria.",
+        why:"Il valore dipende dalla maturità di enclave/attestation, dalle referenze in contesti regolati e dall’integrazione con l’infrastruttura del cliente.",
+        material:"Architettura tecnica (TEE/attestation), certificazioni ISO, referenze pilot (Torino), roadmap e pricing.",
+        next1:"Individuare un ente/PA o un’impresa regolata con un caso d’uso di AI sovrana / confidential computing.",
+        next2:"Definire perimetro dati, requisiti di conformità e modalità di deployment (on-premise/cloud privato).",
+        nextOut:"Piano PoC con enclave/attestation, dati trattati, metriche di sicurezza/conformità e criteri di adozione.",
+        sede:"Torino (Via Garibaldi 18/4)",
+        founded:"2024",
+        website:"https://www.nextgcloud.com",
+        trl:"7",
+        valuation:"Early traction · pre-seed (round 300 K€, 1,5 M€ post-money)",
+        traction:"26 aziende qualificate, 16 contatti qualificati, 100 K€+ ricavi da 4 clienti (ricorrente ~7 K€/mese), 1 live pilot, 3 PoP; 4 NDA, 2 MOU, 2 programmi di accelerazione, 4 EOI. Premio Innovazione America (Camera dei Deputati, apr 2025). Advisory board (ToMove): TIM, IVECO, INWIT, NTT Data. Round pre-seed 300 K€ (1,5 M€ post-money), in cerca di 175 K€.",
+        keyPeople:"Dario Sabella (CEO, chairman ETSI MEC, 50+ brevetti), Federica Bozzi (Founding Partner – Operations, EU STF701 Cyber Resilience Act), Maurizio Bulgarini (Founding Partner – Compliance & Data, DPO)",
+        toConfirm:["trl"]
       }
     ];
 
@@ -746,6 +793,13 @@ export const psnTaxonomy = {
         innovation: "AI · Computer Vision · Edge/IoT · GNSS",
         usecase: "Monitoraggio della manutenzione stradale e dell’accessibilità pedonale",
         note: "Rientra nel verticale Smart Cities per il monitoraggio data-driven di strade e spazio urbano e per l’accessibilità; forte rilevanza per manutenzione predittiva e sicurezza."
+      },
+      nextgcloud: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Cloud sovrano · Confidential Computing · AI privata",
+        innovation: "Confidential Computing · TEE/Enclave · Edge-Cloud · AI/LLM · Quantum",
+        usecase: "Elaborazione di dati sensibili in enclave sicure lungo il continuum edge-cloud",
+        note: "Rientra nella Sicurezza & Cybersecurity per il confidential computing (TEE, attestazione) e l’AI privata e sovrana; forte rilevanza per PA, sanità, fintech e infrastrutture critiche che devono trattare dati riservati con garanzie di sovranità."
       }
     };
 
@@ -779,6 +833,7 @@ export const SLUG_SECTOR = {
   i2d: "AI",
   yourease: "IoT/Edge",
   loki: "IoT/Edge",
+  nextgcloud: "Cybersecurity",
 };
 
 // Elenco di settori suggeriti per il form (l'utente può comunque digitarne altri).
