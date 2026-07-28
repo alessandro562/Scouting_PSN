@@ -518,6 +518,35 @@ export const startups = [
         valuation:"Early traction",
         traction:"PoC completati · Prodotto sul mercato · Clienti attivi · Ricavi generati",
         keyPeople:"Tommaso Castelli"
+      },
+      {
+        id:"yourease",
+        name:"Yourease",
+        area:"Silver economy / Senior living",
+        what:"Piattaforma digitale IoT per migliorare autonomia e gestione nel senior living.",
+        description:"Yourease è una piattaforma tecnologica dedicata al Senior Living e alla cura assistita, progettata per migliorare il benessere, l’indipendenza e la qualità della vita delle persone anziane.",
+        audience:"Assisted Living, Independent Living, gestori di comunità residenziali senior",
+        maturity:"TRL 8 · IoT",
+        differentiator:"Piattaforma integrata che combina piattaforma software, dispositivi IoT, app e integrazioni per creare un ecosistema digitale dedicato al senior living; abilita una gestione moderna delle strutture assistite favorendo autonomia, efficienza e comunicazione.",
+        usecases:[
+          "Piattaforma di gestione comunitaria per strutture senior",
+          "Integrazione con Alexa Smart Properties",
+          "Sensori e IoT per ambienti assistiti"
+        ],
+        technologies:[
+          ["IoT & Sensor Integration","Monitoraggio ambientale degli spazi assistiti"],
+          ["Voice Technology","Interfacce vocali per residenti e staff"],
+          ["Community Management Platform","Gestione cloud-based delle strutture"],
+          ["App dedicate","App per residenti, familiari e staff"]
+        ],
+        poc:"Piattaforma tecnologica completa e pronta per l’implementazione in contesti di senior living. Prodotto sul mercato, clienti attivi, ricavi generati.",
+        deepen:"Adozione in strutture assistite pubbliche e gestione del dato personale/sanitario.",
+        why:"Verificare compatibilità con RSA/strutture socio-assistenziali pubbliche, gestione del dato personale/sanitario e integrazione con i servizi di welfare territoriale.",
+        sede:"Bologna",
+        trl:"8",
+        valuation:"Ready to scale",
+        traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
+        keyPeople:"Anna Maria Gentile"
       }
     ];
 
@@ -657,6 +686,13 @@ export const psnTaxonomy = {
         innovation: "Generative AI · RAG · NFC",
         usecase: "Raccolta e analisi dei feedback in insight operativi",
         note: "Rientra nel verticale Data Intelligence per la trasformazione di feedback non strutturati in insight decisionali."
+      },
+      yourease: {
+        primary: "Servizi al cittadino & Welfare",
+        secondary: "Silver economy · Smart Living",
+        innovation: "IoT · Voice · Cloud",
+        usecase: "Ecosistema digitale per il senior living e la cura assistita",
+        note: "Rientra tra i Servizi al cittadino/Welfare per la gestione digitale delle strutture assistite e il supporto all’autonomia degli anziani."
       }
     };
 
@@ -688,6 +724,7 @@ export const SLUG_SECTOR = {
   tiledesk: "AI",
   ganiga: "AI",
   i2d: "AI",
+  yourease: "IoT/Edge",
 };
 
 // Elenco di settori suggeriti per il form (l'utente può comunque digitarne altri).
