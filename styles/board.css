@@ -1,63 +1,29 @@
 /* ===========================================================================
-   board.css — CRM: chrome applicativo, toolbar, board Kanban e tile.
-   Usa i token definiti in base.css (:root).
+   board.css — CRM: sidebar co-branded, hero, board Kanban e tile.
+   Riusa i token e i componenti (aside/brand/hero/metric/footer) di base.css.
    =========================================================================== */
 
 .hidden { display: none !important; }
 .muted { color: var(--muted); }
 .pill.neutral { background: #EEF2F7; color: #475467; }
 
-/* ---- App shell ---------------------------------------------------------- */
-#app { min-height: 100vh; display: flex; flex-direction: column; }
-
-.app-header {
-  position: sticky; top: 0; z-index: 40;
-  display: flex; align-items: center; gap: 18px;
-  padding: 12px 22px;
-  background: var(--nav);
-  color: #fff;
-  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.14);
-}
-.app-brand { display: flex; flex-direction: column; line-height: 1.1; }
-.app-brand strong { font-size: 15px; letter-spacing: 0.2px; }
-.app-brand span { font-size: 11px; color: #9fb4c8; text-transform: uppercase; letter-spacing: 0.12em; }
-
-.view-toggle { display: inline-flex; background: rgba(255, 255, 255, 0.08); border-radius: 999px; padding: 3px; }
-.view-toggle button {
-  border: 0; background: transparent; color: #cdd9e6;
-  padding: 6px 16px; border-radius: 999px; cursor: pointer;
-  font-weight: 600; font-size: 13px; font-family: var(--font);
-}
-.view-toggle button.active { background: var(--wda-cyan); color: #05263a; }
-
-.header-spacer { flex: 1; }
-
-.header-search {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #fff; border-radius: 10px;
-  padding: 8px 12px; font-size: 13px; min-width: 220px; font-family: var(--font);
-}
-.header-search::placeholder { color: #9fb4c8; }
-
-.user-chip { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #cdd9e6; }
-.user-chip .email { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* La app usa la griglia .app (sidebar + main) definita in base.css */
 
 /* ---- Buttons ------------------------------------------------------------ */
 .btn {
   border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-  padding: 8px 16px; border-radius: 10px; cursor: pointer;
-  font-weight: 600; font-size: 13px; font-family: var(--font);
-  transition: transform 0.05s ease, box-shadow 0.15s ease;
+  padding: 9px 16px; border-radius: 11px; cursor: pointer;
+  font-weight: 700; font-size: 13px; font-family: var(--font);
+  transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
+  text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
 }
 .btn:hover { box-shadow: var(--shadow-soft); }
 .btn:active { transform: translateY(1px); }
-.btn.primary { background: var(--wda-blue); border-color: var(--wda-blue); color: #fff; }
-.btn.primary:hover { background: #345f82; }
+.btn.primary { background: var(--nav); border-color: var(--nav); color: #fff; }
+.btn.primary:hover { background: var(--nav-2); }
 .btn.ghost { background: transparent; }
 .btn.ghost.danger { color: var(--red); border-color: #E7C4C4; }
 .btn.ghost.danger:hover { background: var(--red-soft); }
-.btn.header-btn { background: var(--wda-cyan); border-color: var(--wda-cyan); color: #05263a; }
 .icon-btn {
   border: 0; background: transparent; cursor: pointer; color: inherit;
   font-size: 16px; line-height: 1; padding: 6px; border-radius: 8px; font-family: var(--font);
@@ -65,83 +31,105 @@
 .icon-btn:hover { background: rgba(0, 0, 0, 0.06); }
 .btn-inline { border: 0; background: none; color: var(--wda-blue); cursor: pointer; font-weight: 600; text-decoration: underline; }
 
-/* ---- Board toolbar ------------------------------------------------------ */
-.board-toolbar {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 22px; background: var(--surface); border-bottom: 1px solid var(--line-soft);
+/* ---- Sidebar extras ----------------------------------------------------- */
+.sidebar-select {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff; border-radius: 11px; padding: 9px 10px;
+  font-size: 12.5px; font-family: var(--font); outline: none; cursor: pointer;
 }
-.board-toolbar select {
-  border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px;
-  font-size: 13px; font-family: var(--font); color: var(--ink); background: var(--surface);
+.sidebar-select option { color: #0f172a; }
+
+.sidebar-foot {
+  margin-top: 24px; padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
 }
-.toolbar-spacer { flex: 1; }
+.sidebar-user { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.sidebar-user-dot { width: 8px; height: 8px; border-radius: 50%; background: #34d399; flex: 0 0 auto; box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.18); }
+.sidebar-user .email { color: #cdd9e6; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-logout {
+  border: 1px solid rgba(255, 255, 255, 0.16); background: rgba(255, 255, 255, 0.04);
+  color: #dbe3ee; border-radius: 9px; padding: 6px 12px; cursor: pointer;
+  font-size: 12px; font-family: var(--font); flex: 0 0 auto;
+}
+.sidebar-logout:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+/* Nav-list come pulsanti (il click è gestito via JS) */
+.nav-list a { cursor: pointer; }
 
 /* ---- Board -------------------------------------------------------------- */
-#board-view, #report-view { flex: 1; }
-#report-view { padding: 26px 30px 80px; max-width: 1180px; margin: 0 auto; width: 100%; }
-#report-view section { margin-bottom: 34px; }
-
-.board-empty { padding: 60px; text-align: center; color: var(--muted); }
+#board { margin-top: 24px; }
+.board-empty { padding: 50px; text-align: center; color: var(--muted); }
 
 .kboard {
   display: flex; align-items: flex-start; gap: 16px;
-  padding: 22px; overflow-x: auto; min-height: calc(100vh - 170px);
+  overflow-x: auto; padding-bottom: 14px;
 }
 .kcol {
   flex: 0 0 300px; width: 300px;
   background: var(--surface-soft);
-  border: 1px solid var(--line-soft); border-radius: 16px;
-  display: flex; flex-direction: column; max-height: calc(100vh - 200px);
+  border: 1px solid var(--line-soft); border-radius: 18px;
+  display: flex; flex-direction: column;
+  max-height: calc(100vh - 96px);
+  box-shadow: var(--shadow-soft);
 }
 .kcol-head {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 14px; cursor: grab; border-bottom: 1px solid var(--line-soft);
+  padding: 13px 15px; cursor: grab; border-bottom: 1px solid var(--line-soft);
 }
 .kcol-head:active { cursor: grabbing; }
 .kcol-head-left { display: flex; align-items: center; gap: 8px; }
-.kcol-name { font-weight: 700; font-size: 13.5px; color: var(--ink); }
+.kcol-name { font-weight: 800; font-size: 13.5px; color: var(--ink); letter-spacing: -0.01em; }
 .kcol-count {
-  background: #E3ECF5; color: #46617c; font-size: 11px; font-weight: 700;
+  background: #E3ECF5; color: #46617c; font-size: 11px; font-weight: 800;
   padding: 1px 8px; border-radius: 999px;
 }
 .kcol-body {
-  padding: 10px; display: flex; flex-direction: column; gap: 10px;
-  overflow-y: auto; flex: 1; min-height: 40px;
+  padding: 11px; display: flex; flex-direction: column; gap: 11px;
+  overflow-y: auto; flex: 1; min-height: 46px;
 }
 .kcol-add {
   border: 0; background: none; color: var(--muted); cursor: pointer;
-  padding: 10px 14px; text-align: left; font-size: 12.5px; font-family: var(--font);
+  padding: 11px 15px; text-align: left; font-size: 12.5px; font-family: var(--font); font-weight: 600;
   border-top: 1px solid var(--line-soft);
 }
 .kcol-add:hover { color: var(--wda-blue); }
 .kcol-add-column {
-  flex: 0 0 auto; align-self: flex-start; margin: 22px 0;
+  flex: 0 0 auto; align-self: flex-start; margin-top: 2px;
   border: 1.5px dashed var(--line); background: transparent; color: var(--muted);
-  border-radius: 14px; padding: 12px 18px; cursor: pointer; font-weight: 600; font-family: var(--font);
+  border-radius: 16px; padding: 14px 20px; cursor: pointer; font-weight: 700; font-family: var(--font);
+  min-height: 96px; white-space: nowrap;
 }
 .kcol-add-column:hover { border-color: var(--wda-cyan); color: var(--wda-blue); }
 
 /* ---- Card tile ---------------------------------------------------------- */
 .kcard {
   background: var(--surface); border: 1px solid var(--line-soft);
-  border-radius: 12px; padding: 12px; cursor: pointer;
-  box-shadow: var(--shadow-soft); transition: box-shadow 0.15s ease, transform 0.05s ease;
+  border-radius: 14px; padding: 13px; cursor: pointer;
+  box-shadow: var(--shadow-soft); transition: box-shadow 0.15s ease, transform 0.05s ease, border-color 0.15s ease;
 }
-.kcard:hover { box-shadow: var(--shadow); }
+.kcard:hover { box-shadow: var(--shadow); border-color: #D3E2EF; }
 .kcard:focus-visible { outline: 2px solid var(--wda-cyan); outline-offset: 2px; }
-.kcard-ghost { opacity: 0.45; }
-.kcard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.kcard-ghost { opacity: 0.4; }
+.kcard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .kcard-notes { font-size: 11px; color: var(--muted); white-space: nowrap; }
-.kcard-title { margin: 2px 0 4px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.kcard-title { margin: 2px 0 5px; font-size: 14.5px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
 .kcard-what {
-  margin: 0 0 8px; font-size: 12px; color: var(--text); line-height: 1.4;
+  margin: 0 0 9px; font-size: 12px; color: var(--text); line-height: 1.45;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .kcard-meta { display: flex; flex-wrap: wrap; gap: 6px; }
 
+/* ---- Auth overlay: loghi co-branded sopra la card ----------------------- */
+.auth-wrap { display: flex; flex-direction: column; align-items: center; gap: 22px; width: 100%; }
+.auth-logos { display: flex; align-items: center; gap: 16px; min-height: 70px; }
+.auth-logos .brand-logo-wda { width: 84px; max-height: 64px; }
+.auth-logos .brand-logo-psn { width: 132px; max-height: 62px; }
+.auth-logos .cobrand-divider { width: 1px; height: 42px; background: rgba(255, 255, 255, 0.22); display: inline-block; }
+
 /* ---- Responsive --------------------------------------------------------- */
-@media (max-width: 720px) {
-  .header-search { min-width: 130px; }
-  .user-chip .email { display: none; }
-  .kcol { flex-basis: 260px; width: 260px; }
+@media (max-width: 860px) {
+  .kcol { flex-basis: 264px; width: 264px; }
 }

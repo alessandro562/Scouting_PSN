@@ -9,6 +9,8 @@ import { ensureSeeded } from "./data/seed-runner.js";
 import { renderBoard, setNoteCounts, setSectorFilter } from "./ui/board.js";
 import { renderReport } from "./ui/report.js";
 import { openStartupForm } from "./ui/startupForm.js";
+import { openStageMenu } from "./ui/stages.js";
+import { cardsForStage } from "./store.js";
 import { subscribeRealtime, unsubscribeRealtime } from "./realtime.js";
 import { toast, toastError } from "./ui/toast.js";
 
@@ -31,11 +33,38 @@ async function render() {
 
     renderSectorFilter();
     setSectorFilter(currentSector);
+    renderHeroMetrics();
     renderBoard(el("board"));
     renderReport();
   } finally {
     rendering = false;
   }
+}
+
+function renderHeroMetrics() {
+  const host = el("hero-metrics");
+  if (!host) return;
+  const total = state.startups.length;
+  const cards = [
+    { label: "Startup totali", value: total, text: "Soluzioni in pipeline nel CRM di scouting." },
+  ];
+  state.stages.slice(0, 3).forEach((st) => {
+    cards.push({
+      label: st.name,
+      value: cardsForStage(st.id).length,
+      text: `Startup attualmente in fase “${st.name}”.`,
+    });
+  });
+  host.innerHTML = cards
+    .map(
+      (m) => `
+      <div class="metric">
+        <div class="label">${m.label}</div>
+        <div class="value">${m.value}</div>
+        <div class="text">${m.text}</div>
+      </div>`
+    )
+    .join("");
 }
 
 function renderSectorFilter() {
@@ -85,9 +114,12 @@ function teardown() {
 // Toolbar / interazioni globali
 // --------------------------------------------------------------------------
 function wireChrome() {
+  const onClick = (id, fn) =>
+    el(id)?.addEventListener("click", (e) => { e.preventDefault(); fn(); });
+
   // Toggle Board / Report
-  el("view-board-btn")?.addEventListener("click", () => setView("board"));
-  el("view-report-btn")?.addEventListener("click", () => setView("report"));
+  onClick("view-board-btn", () => setView("board"));
+  onClick("view-report-btn", () => setView("report"));
 
   // Filtro settore
   el("sector-filter")?.addEventListener("change", (e) => {
@@ -96,8 +128,11 @@ function wireChrome() {
     renderBoard(el("board"));
   });
 
-  // Nuova startup
-  el("add-startup-btn")?.addEventListener("click", () => openStartupForm(null, {}));
+  // Nuova startup / nuova colonna (sidebar + hero)
+  onClick("nav-add-startup", () => openStartupForm(null, {}));
+  onClick("hero-add-startup", () => openStartupForm(null, {}));
+  onClick("nav-add-column", () => openStageMenu(null, "create"));
+  onClick("hero-add-column", () => openStageMenu(null, "create"));
 
   // Logout
   el("logout-btn")?.addEventListener("click", async () => {

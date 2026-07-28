@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scouting PSN — CRM</title>
+  <title>Startup Scouting Dashboard — CRM</title>
   <link rel="stylesheet" href="styles/base.css" />
   <link rel="stylesheet" href="styles/board.css" />
   <link rel="stylesheet" href="styles/modal.css" />
@@ -12,190 +12,260 @@
 
   <!-- ===================== Setup overlay (config mancante) ===================== -->
   <div id="setup-overlay" class="fullscreen-overlay hidden">
-    <div class="auth-card setup-card">
-      <h1>Configurazione richiesta</h1>
-      <p class="subtitle">Per attivare il CRM condiviso occorre collegare un progetto Supabase.</p>
-      <ol>
-        <li>Crea un progetto gratuito su <code>supabase.com</code>.</li>
-        <li>Apri <strong>SQL Editor</strong> ed esegui il file <code>supabase/schema.sql</code>.</li>
-        <li>In <strong>Authentication → Providers</strong> abilita <strong>Email</strong> e crea gli account del team.</li>
-        <li>Copia <code>Project URL</code> e <code>anon key</code> da <strong>Project Settings → API</strong>.</li>
-        <li>Incollali in <code>config.js</code> e ricarica la pagina.</li>
-      </ol>
+    <div class="auth-wrap">
+      <div class="auth-logos">
+        <img class="brand-logo brand-logo-wda" src="assets/logo-wda.png" alt="WDA" />
+        <span class="cobrand-divider"></span>
+        <img class="brand-logo brand-logo-psn" src="assets/logo-psn.png" alt="Polo Strategico Nazionale" />
+      </div>
+      <div class="auth-card setup-card">
+        <h1>Configurazione richiesta</h1>
+        <p class="subtitle">Per attivare il CRM condiviso occorre collegare un progetto Supabase.</p>
+        <ol>
+          <li>Crea un progetto gratuito su <code>supabase.com</code>.</li>
+          <li>Apri <strong>SQL Editor</strong> ed esegui il file <code>supabase/schema.sql</code>.</li>
+          <li>In <strong>Authentication → Providers</strong> abilita <strong>Email</strong> e crea gli account del team.</li>
+          <li>Copia <code>Project URL</code> e <code>anon key</code> da <strong>Project Settings → API</strong>.</li>
+          <li>Incollali in <code>config.js</code> e ricarica la pagina.</li>
+        </ol>
+      </div>
     </div>
   </div>
 
   <!-- ===================== Login overlay ===================== -->
   <div id="login-overlay" class="fullscreen-overlay hidden">
-    <div class="auth-card">
-      <h1>Scouting PSN</h1>
-      <p class="subtitle">Accedi per gestire la pipeline delle startup.</p>
-      <form id="login-form" data-mode="signin">
-        <input type="email" id="login-email" placeholder="Email" autocomplete="username" required />
-        <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required />
-        <div class="auth-error" id="login-error"></div>
-        <button type="submit" class="btn primary" id="login-submit">Accedi</button>
-      </form>
-      <button type="button" class="auth-toggle" id="toggle-signup">Crea un nuovo account</button>
+    <div class="auth-wrap">
+      <div class="auth-logos">
+        <img class="brand-logo brand-logo-wda" src="assets/logo-wda.png" alt="WDA" />
+        <span class="cobrand-divider"></span>
+        <img class="brand-logo brand-logo-psn" src="assets/logo-psn.png" alt="Polo Strategico Nazionale" />
+      </div>
+      <div class="auth-card">
+        <h1>Startup Scouting Dashboard</h1>
+        <p class="subtitle">Accedi per gestire la pipeline delle startup per la Pubblica Amministrazione.</p>
+        <form id="login-form" data-mode="signin">
+          <input type="email" id="login-email" placeholder="Email" autocomplete="username" required />
+          <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" required />
+          <div class="auth-error" id="login-error"></div>
+          <button type="submit" class="btn primary" id="login-submit">Accedi</button>
+        </form>
+        <button type="button" class="auth-toggle" id="toggle-signup">Crea un nuovo account</button>
+      </div>
     </div>
   </div>
 
   <!-- ===================== App ===================== -->
-  <div id="app" class="hidden">
-    <header class="app-header">
-      <div class="app-brand">
-        <strong>Scouting PSN</strong>
-        <span>CRM Startup</span>
+  <div id="app" class="app hidden">
+    <aside>
+      <div class="brand">
+        <div class="brand-logo-wrap cobrand-logos">
+          <img class="brand-logo brand-logo-wda" src="assets/logo-wda.png" alt="WDA" />
+          <span class="cobrand-divider"></span>
+          <img class="brand-logo brand-logo-psn" src="assets/logo-psn.png" alt="Polo Strategico Nazionale" />
+        </div>
+        <h1>Startup Scouting Dashboard</h1>
+        <p>Startup per ambiti di interesse della Pubblica Amministrazione.</p>
       </div>
-      <div class="view-toggle">
-        <button id="view-board-btn" class="active">Board</button>
-        <button id="view-report-btn">Report</button>
-      </div>
-      <div class="header-spacer"></div>
-      <input type="search" id="search-input" class="header-search" placeholder="Cerca…" />
-      <button id="add-startup-btn" class="btn header-btn">+ Startup</button>
-      <div class="user-chip">
-        <span class="email" id="user-email"></span>
-        <button id="logout-btn" class="icon-btn" title="Esci" aria-label="Esci">⎋</button>
-      </div>
-    </header>
 
-    <!-- Board view -->
-    <div id="board-view">
-      <div class="board-toolbar">
-        <select id="sector-filter" aria-label="Filtra per settore">
+      <div class="search">
+        <input id="search-input" type="search" placeholder="Cerca startup, ambito, tecnologia..." />
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Vista</div>
+        <nav class="nav-list">
+          <a id="view-board-btn" class="active" href="#overview">Board pipeline</a>
+          <a id="view-report-btn" href="#overview">Report &amp; sintesi</a>
+        </nav>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Azioni</div>
+        <nav class="nav-list">
+          <a id="nav-add-startup" href="#">+ Nuova startup</a>
+          <a id="nav-add-column" href="#">+ Nuova colonna</a>
+        </nav>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Filtra per settore</div>
+        <select id="sector-filter" class="sidebar-select" aria-label="Filtra per settore">
           <option value="all">Tutti i settori</option>
         </select>
-        <div class="toolbar-spacer"></div>
       </div>
-      <div id="board"></div>
-    </div>
 
-    <!-- Report view -->
-    <div id="report-view" class="hidden">
-      <section id="summary" class="searchable">
-        <div class="section-head">
+      <div class="sidebar-foot">
+        <div class="sidebar-user">
+          <span class="sidebar-user-dot"></span>
+          <span class="email" id="user-email"></span>
+        </div>
+        <button id="logout-btn" class="sidebar-logout">Esci</button>
+      </div>
+    </aside>
+
+    <main>
+      <!-- Hero -->
+      <section id="overview" class="hero searchable">
+        <div class="hero-top">
           <div>
-            <h3>Sintesi portfolio</h3>
-            <p>Vista comparativa delle startup rispetto a verticale PSN, area di innovazione, prodotto e percorso di approfondimento suggerito.</p>
+            <div class="eyebrow">Startup scouting · Pubblica Amministrazione</div>
+            <h2>Pipeline di scouting delle startup per la PA.</h2>
+            <p>
+              Gestisci le startup candidate al PSN: sposta le card tra le fasi, annota le informazioni,
+              classifica per settore e verticale PSN. Tutto condiviso con il team in tempo reale.
+            </p>
+          </div>
+          <div class="actions">
+            <a class="btn primary" id="hero-add-startup" href="#">+ Nuova startup</a>
+            <a class="btn" id="hero-add-column" href="#">+ Nuova colonna</a>
+            <button class="btn" onclick="window.print()">Esporta PDF</button>
           </div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Startup</th>
-                <th>Verticale PSN</th>
-                <th>Aree di innovazione PSN</th>
-                <th>Cosa fa</th>
-                <th>Percorso suggerito</th>
-              </tr>
-            </thead>
-            <tbody id="summaryRows"></tbody>
-          </table>
-        </div>
+
+        <div class="hero-grid" id="hero-metrics"></div>
       </section>
 
-      <section id="psn-map" class="searchable">
-        <div class="section-head">
-          <div>
-            <h3>Mappatura sui verticali PSN</h3>
-            <p>Classificazione delle startup secondo il lessico dei verticali PSN e delle aree di innovazione.</p>
-          </div>
-        </div>
-        <div class="table-wrap visual-table psn-map-table">
-          <table>
-            <thead>
-              <tr>
-                <th>Startup</th>
-                <th>Verticale PSN</th>
-                <th>Aree di innovazione PSN</th>
-                <th>Caso d’uso PSN</th>
-                <th>Nota di classificazione</th>
-              </tr>
-            </thead>
-            <tbody id="psnRows"></tbody>
-          </table>
-        </div>
-      </section>
+      <!-- Board view -->
+      <div id="board-view">
+        <div id="board"></div>
+      </div>
 
-      <section id="poc" class="searchable">
-        <div class="section-head">
-          <div>
-            <h3>Possibili sperimentazioni / PoC</h3>
-            <p>Ipotesi di PoC o demo tecnica da validare con le startup e con eventuali enti coinvolti.</p>
+      <!-- Report view -->
+      <div id="report-view" class="hidden">
+        <section id="summary" class="searchable">
+          <div class="section-head">
+            <div>
+              <h3>Sintesi portfolio</h3>
+              <p>Vista comparativa delle startup rispetto a verticale PSN, area di innovazione, prodotto e percorso di approfondimento suggerito.</p>
+            </div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Startup</th>
-                <th>Sperimentazione / PoC possibile</th>
-                <th>Durata indicativa</th>
-                <th>Prerequisito principale</th>
-                <th>Indicatori di valutazione</th>
-              </tr>
-            </thead>
-            <tbody id="pocRows"></tbody>
-          </table>
-        </div>
-      </section>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Startup</th>
+                  <th>Verticale PSN</th>
+                  <th>Aree di innovazione PSN</th>
+                  <th>Cosa fa</th>
+                  <th>Percorso suggerito</th>
+                </tr>
+              </thead>
+              <tbody id="summaryRows"></tbody>
+            </table>
+          </div>
+        </section>
 
-      <section id="deepening" class="searchable">
-        <div class="section-head">
-          <div>
-            <h3>Verifiche preliminari prima di una sperimentazione</h3>
-            <p>Verifiche tecniche, operative e documentali utili per valutare fattibilità e condizioni di una eventuale sperimentazione.</p>
+        <section id="psn-map" class="searchable">
+          <div class="section-head">
+            <div>
+              <h3>Mappatura sui verticali PSN</h3>
+              <p>Classificazione delle startup secondo il lessico dei verticali PSN e delle aree di innovazione.</p>
+            </div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Startup</th>
-                <th>Verifica preliminare</th>
-                <th>Rilevanza della verifica</th>
-                <th>Documentazione utile</th>
-              </tr>
-            </thead>
-            <tbody id="deepeningRows"></tbody>
-          </table>
-        </div>
-      </section>
+          <div class="table-wrap visual-table psn-map-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Startup</th>
+                  <th>Verticale PSN</th>
+                  <th>Aree di innovazione PSN</th>
+                  <th>Caso d’uso PSN</th>
+                  <th>Nota di classificazione</th>
+                </tr>
+              </thead>
+              <tbody id="psnRows"></tbody>
+            </table>
+          </div>
+        </section>
 
-      <section id="next" class="searchable">
-        <div class="section-head">
-          <div>
-            <h3>Attività successive</h3>
-            <p>Attività successive differenziate per ciascuna startup, in funzione del tipo di soluzione.</p>
+        <section id="poc" class="searchable">
+          <div class="section-head">
+            <div>
+              <h3>Possibili sperimentazioni / PoC</h3>
+              <p>Ipotesi di PoC o demo tecnica da validare con le startup e con eventuali enti coinvolti.</p>
+            </div>
           </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Startup</th>
-                <th>Attività iniziale</th>
-                <th>Approfondimento successivo</th>
-                <th>Output atteso</th>
-              </tr>
-            </thead>
-            <tbody id="nextRows"></tbody>
-          </table>
-        </div>
-      </section>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Startup</th>
+                  <th>Sperimentazione / PoC possibile</th>
+                  <th>Durata indicativa</th>
+                  <th>Prerequisito principale</th>
+                  <th>Indicatori di valutazione</th>
+                </tr>
+              </thead>
+              <tbody id="pocRows"></tbody>
+            </table>
+          </div>
+        </section>
 
-      <section id="glossary" class="searchable">
-        <div class="section-head">
-          <div>
-            <h3>Glossario tecnico</h3>
-            <p>Appendice di supporto alla lettura dei principali termini tecnici presenti nelle schede.</p>
+        <section id="deepening" class="searchable">
+          <div class="section-head">
+            <div>
+              <h3>Verifiche preliminari prima di una sperimentazione</h3>
+              <p>Verifiche tecniche, operative e documentali utili per valutare fattibilità e condizioni di una eventuale sperimentazione.</p>
+            </div>
           </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Startup</th>
+                  <th>Verifica preliminare</th>
+                  <th>Rilevanza della verifica</th>
+                  <th>Documentazione utile</th>
+                </tr>
+              </thead>
+              <tbody id="deepeningRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="next" class="searchable">
+          <div class="section-head">
+            <div>
+              <h3>Attività successive</h3>
+              <p>Attività successive differenziate per ciascuna startup, in funzione del tipo di soluzione.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Startup</th>
+                  <th>Attività iniziale</th>
+                  <th>Approfondimento successivo</th>
+                  <th>Output atteso</th>
+                </tr>
+              </thead>
+              <tbody id="nextRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="glossary" class="searchable">
+          <div class="section-head">
+            <div>
+              <h3>Glossario tecnico</h3>
+              <p>Appendice di supporto alla lettura dei principali termini tecnici presenti nelle schede.</p>
+            </div>
+          </div>
+          <div class="grid cols-3" id="glossaryGrid"></div>
+        </section>
+      </div>
+
+      <!-- Footer co-branded -->
+      <div class="footer">
+        <div class="footer-brand">
+          <img class="footer-logo footer-logo-wda" src="assets/logo-wda.png" alt="WDA" />
+          <span class="footer-divider"></span>
+          <img class="footer-logo footer-logo-psn" src="assets/logo-psn.png" alt="Polo Strategico Nazionale" />
         </div>
-        <div class="grid cols-3" id="glossaryGrid"></div>
-      </section>
-    </div>
+        <div class="footer-copy">CRM di scouting delle startup per la Pubblica Amministrazione.</div>
+      </div>
+    </main>
   </div>
 
   <!-- Root dei layer dinamici -->
