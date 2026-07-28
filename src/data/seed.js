@@ -547,6 +547,52 @@ export const startups = [
         valuation:"Ready to scale",
         traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
         keyPeople:"Anna Maria Gentile"
+      },
+      {
+        id:"loki",
+        name:"LOKI",
+        area:"Smart Cities / Manutenzione stradale & accessibilità",
+        what:"Monitoraggio intelligente della manutenzione stradale e dell’accessibilità pedonale con hardware plug & play e AI.",
+        description:"LOKI (Laboratory Of Key Innovations) è una startup innovativa che sviluppa soluzioni di monitoraggio intelligente per la manutenzione stradale e l’accessibilità pedonale. Un sistema hardware plug & play installabile su veicoli standard e algoritmi di intelligenza artificiale individuano, geolocalizzano e classificano difetti della pavimentazione e barriere all’accessibilità, supportando amministrazioni pubbliche e operatori infrastrutturali nel passaggio alla manutenzione predittiva, con piena conformità GDPR e dati utilizzabili a fini assicurativi.",
+        problem:"La manutenzione stradale è spesso reattiva e basata su ispezioni manuali: difetti della pavimentazione e barriere all’accessibilità vengono rilevati tardi, con rischi per utenti vulnerabili (ciclisti, monopattini, pedoni), costi elevati e contenziosi assicurativi.",
+        relevance:"Rilevante per la PA nel passaggio a una manutenzione predittiva di strade e infrastrutture, nel migliorare accessibilità e sicurezza e nel ridurre costi e contenziosi assicurativi.",
+        audience:"Amministrazioni pubbliche, enti gestori di infrastrutture stradali, mobilità urbana, assicurazioni.",
+        maturity:"Startup innovativa (2023) con prodotti sul mercato (Asfalto Sicuro®) e pilot in progetti EU",
+        usecases:[
+          "Asfalto Sicuro®: rilevamento e classificazione di buche, crepe, deformazioni e dissesti della pavimentazione",
+          "AIPECRA: valutazione dello stato degli attraversamenti pedonali e identificazione delle barriere architettoniche",
+          "MUNINN: inventario automatico e gestione della segnaletica stradale",
+          "Dati geolocalizzati (accuratezza decimetrica) utilizzabili per manutenzione predittiva e claim assicurativi"
+        ],
+        technologies:[
+          ["Deep learning","Rilevamento e classificazione dei difetti stradali e delle barriere"],
+          ["Sensori IMU + camere + GNSS","Acquisizione dati fino a 130 km/h, accuratezza GNSS decimetrica"],
+          ["Hardware plug & play","Installabile su veicoli standard"],
+          ["Cloud + dashboard","Elaborazione dati e visualizzazione geolocalizzata"],
+          ["Privacy-by-design","Blurring automatico di veicoli e persone, conformità GDPR"]
+        ],
+        differentiator:"Rispetto a ispezioni manuali o soluzioni mono-scopo: rilevamento multi-modale (difetti, segnaletica, accessibilità), geolocalizzazione decimetrica per interventi mirati, privacy-by-design e — secondo l’azienda — fino all’80% di riduzione di costi, claim e tempi.",
+        input:"Immagini/video e dati inerziali (IMU) con posizione GNSS raccolti da veicoli in movimento.",
+        processing:"Deep learning per rilevamento/classificazione di difetti e barriere, geolocalizzazione e anonimizzazione dei dati.",
+        output:"Mappa geolocalizzata di difetti, barriere e segnaletica con classificazione, a supporto di manutenzione predittiva e claim.",
+        poc:"Deployment con municipalità italiane (Asfalto Sicuro®) e progetto EIT Urban Mobility (Raptor) a Las Rozas de Madrid.",
+        duration:"",
+        prereq:"Veicolo su cui installare l’hardware e perimetro stradale/urbano definito.",
+        kpi:"Km di rete mappati, difetti/barriere rilevati, riduzione di costi/claim/tempi.",
+        deepen:"Accuratezza del rilevamento su difetti reali, integrazione con i sistemi di manutenzione della PA e gestione privacy del dato.",
+        why:"Il valore dipende da accuratezza e copertura del rilevamento, integrazione nei processi di manutenzione e uso assicurativo del dato.",
+        material:"Scheda tecnica hardware/sensori, benchmark di accuratezza, referenze municipalità, modello di pricing/PoC.",
+        next1:"Selezionare un comune o ente gestore con una rete stradale pilota misurabile.",
+        next2:"Definire perimetro, KPI (difetti/barriere, costi/claim) e requisiti privacy/integrazione.",
+        nextOut:"Piano PoC con hardware su veicolo, area pilota, metriche e criteri di adozione.",
+        sede:"San Sebastiano da Po (TO)",
+        founded:"2023",
+        website:"https://www.lokisrl.eu",
+        trl:"7",
+        valuation:"Early traction",
+        traction:"Prodotto sul mercato (Asfalto Sicuro®) con deployment in municipalità italiane; progetto EIT Urban Mobility (Raptor, Las Rozas de Madrid); supportata da ESA BIC, Google for Startups, NVIDIA Inception e dal programma Get It! (Fondazione Social Venture Giordano Dell’Amore). 2-10 dipendenti.",
+        keyPeople:"Da confermare",
+        toConfirm:["trl","valuation","keyPeople"]
       }
     ];
 
@@ -693,6 +739,13 @@ export const psnTaxonomy = {
         innovation: "IoT · Voice · Cloud",
         usecase: "Ecosistema digitale per il senior living e la cura assistita",
         note: "Rientra tra i Servizi al cittadino/Welfare per la gestione digitale delle strutture assistite e il supporto all’autonomia degli anziani."
+      },
+      loki: {
+        primary: "Smart Cities",
+        secondary: "Mobilità · Infrastrutture · Accessibilità",
+        innovation: "AI · Computer Vision · Edge/IoT · GNSS",
+        usecase: "Monitoraggio della manutenzione stradale e dell’accessibilità pedonale",
+        note: "Rientra nel verticale Smart Cities per il monitoraggio data-driven di strade e spazio urbano e per l’accessibilità; forte rilevanza per manutenzione predittiva e sicurezza."
       }
     };
 
@@ -725,6 +778,7 @@ export const SLUG_SECTOR = {
   ganiga: "AI",
   i2d: "AI",
   yourease: "IoT/Edge",
+  loki: "IoT/Edge",
 };
 
 // Elenco di settori suggeriti per il form (l'utente può comunque digitarne altri).

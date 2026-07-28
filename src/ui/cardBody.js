@@ -33,22 +33,37 @@ function psn(s) {
   );
 }
 
+// Badge "da confermare" per i campi dedotti (chiavi elencate in s.toConfirm).
+function confirmBadge(s, key) {
+  const list = Array.isArray(s.toConfirm) ? s.toConfirm : [];
+  return list.includes(key)
+    ? ` <span class="confirm-badge" title="Dato dedotto, da verificare">da confermare</span>`
+    : "";
+}
+
 // Blocco opzionale "Scheda pipeline": mostrato solo se sono presenti i campi
-// tipici delle startup importate dal deck (sede, TRL, traction, key people).
+// tipici delle startup scoutate (sede, TRL, traction, key people, ecc.).
 function pipelineBlock(s) {
   const rows = [
-    ["Sede", s.sede],
-    ["TRL", s.trl],
-    ["Maturità / Valuation", s.valuation],
-    ["Traction", s.traction],
-    ["Key people", s.keyPeople],
+    ["Sede", s.sede, "sede"],
+    ["Fondazione", s.founded, "founded"],
+    ["TRL", s.trl, "trl"],
+    ["Maturità / Valuation", s.valuation, "valuation"],
+    ["Traction", s.traction, "traction"],
+    ["Key people", s.keyPeople, "keyPeople"],
+    ["Sito", s.website, "website"],
   ].filter(([, v]) => v && String(v).trim());
   if (!rows.length) return "";
   return `
       <div class="callout psn-callout"><strong>Scheda pipeline</strong></div>
       <div class="info-grid">
         ${rows
-          .map(([k, v]) => `<div class="ibox"><div class="k">${esc(k)}</div><div class="v">${val(v)}</div></div>`)
+          .map(([k, v, key]) => {
+            const value = key === "website"
+              ? `<a href="${esc(v)}" target="_blank" rel="noopener noreferrer">${esc(v)}</a>`
+              : val(v);
+            return `<div class="ibox"><div class="k">${esc(k)}</div><div class="v">${value}${confirmBadge(s, key)}</div></div>`;
+          })
           .join("")}
       </div>
   `;
@@ -66,9 +81,9 @@ export function renderStartupDetail(s) {
         <div class="ibox"><div class="k">Verticale PSN primario</div><div class="v">${val(p.primary)}</div></div>
         <div class="ibox"><div class="k">Aree PSN correlate</div><div class="v">${val(p.secondary)}</div></div>
         <div class="ibox"><div class="k">Aree di innovazione PSN</div><div class="v">${val(p.innovation)}</div></div>
-        <div class="ibox"><div class="k">Ambito applicativo</div><div class="v">${val(s.area)}</div></div>
-        <div class="ibox"><div class="k">Target potenziale</div><div class="v">${val(s.audience)}</div></div>
-        <div class="ibox"><div class="k">Verifica preliminare</div><div class="v">${val(s.deepen)}</div></div>
+        <div class="ibox"><div class="k">Ambito applicativo</div><div class="v">${val(s.area)}${confirmBadge(s, "area")}</div></div>
+        <div class="ibox"><div class="k">Target potenziale</div><div class="v">${val(s.audience)}${confirmBadge(s, "audience")}</div></div>
+        <div class="ibox"><div class="k">Verifica preliminare</div><div class="v">${val(s.deepen)}${confirmBadge(s, "deepen")}</div></div>
       </div>
 
       ${pipelineBlock(s)}

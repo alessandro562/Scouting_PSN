@@ -123,3 +123,14 @@
   .modal-scroll { padding: 16px; }
   .modal-head { padding: 14px 16px; }
 }
+
+/* Badge "da confermare" per i dati dedotti nella scheda dettaglio */
+.confirm-badge {
+  display: inline-block; margin-left: 6px; vertical-align: middle;
+  background: var(--amber-soft); color: var(--amber);
+  border: 1px solid color-mix(in srgb, var(--amber) 30%, #fff);
+  font-size: 10px; font-weight: 700; letter-spacing: .02em;
+  padding: 1px 7px; border-radius: 999px; white-space: nowrap;
+}
+.info-grid .v a { color: var(--wda-blue); text-decoration: none; word-break: break-all; }
+.info-grid .v a:hover { text-decoration: underline; }

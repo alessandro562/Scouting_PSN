@@ -173,3 +173,6 @@ aside { background: var(--psn-gradient-dark) !important; }
 @media (max-width: 860px) {
   .kcol { flex-basis: 276px; width: 276px; }
 }
+
+/* Chip "da confermare" sulla tile della board */
+.kchip.kchip-warn { background: var(--amber-soft); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 26%, #fff); }
