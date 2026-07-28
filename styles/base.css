@@ -3,57 +3,54 @@
    Token :root, layout, card, pill, tabelle, accordion, ecc. Riutilizzati dal CRM.
    =========================================================================== */
 
-    /* ---- Font ufficiale PA: Titillium Web (vendorizzato, nessuna CDN) ---- */
-    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/titillium-web-400.woff2) format("woff2");}
-    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:600;font-display:swap;src:url(../assets/fonts/titillium-web-600.woff2) format("woff2");}
-    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/titillium-web-700.woff2) format("woff2");}
-    @font-face{font-family:"Titillium Web";font-style:normal;font-weight:900;font-display:swap;src:url(../assets/fonts/titillium-web-900.woff2) format("woff2");}
+    /* ---- Font: Calibri, con Carlito (clone metrico libero) vendorizzato ---- */
+    @font-face{font-family:"Carlito";font-style:normal;font-weight:400;font-display:swap;src:url(../assets/fonts/carlito-400.woff2) format("woff2");}
+    @font-face{font-family:"Carlito";font-style:normal;font-weight:700;font-display:swap;src:url(../assets/fonts/carlito-700.woff2) format("woff2");}
 
     :root{
-      /* Palette PSN (campionata da logo + deck ufficiale) */
-      --psn-indigo:#05103A;
-      --psn-indigo-2:#0A1350;
-      --psn-indigo-3:#1A1560;
-      --psn-cyan:#3FD8E8;
-      --psn-blue:#3D7DEB;
-      --psn-violet:#6A5AF0;
-      --psn-coral:#F0663F;
-      --psn-gradient:linear-gradient(90deg,#3FD8E8 0%,#3D7DEB 52%,#6A5AF0 100%);
-      --psn-gradient-dark:linear-gradient(135deg,#05103A 0%,#0A1350 55%,#1A1560 100%);
+      /* Palette ufficiale PSN */
+      --psn-navy:#00004F;      /* base scura */
+      --psn-blue:#5F75C5;      /* blu-indaco */
+      --psn-violet:#8360C2;    /* viola */
+      --psn-cyan:#48E6EA;      /* ciano */
+      --psn-coral:#F96954;     /* corallo */
+      --psn-indigo:#00004F;
+      --psn-gradient:linear-gradient(90deg,#48E6EA 0%,#5F75C5 50%,#8360C2 100%);
+      --psn-gradient-dark:linear-gradient(150deg,#00004F 0%,#151563 55%,#2a1f74 100%);
 
-      --bg:#F4F6FD;
+      --bg:#F5F6FC;
       --surface:#FFFFFF;
-      --surface-soft:#F7F9FE;
-      --ink:#0B1437;
-      --text:#3A4468;
-      --muted:#6B7398;
-      --line:#E2E7F5;
-      --line-soft:#EDF0FA;
-      --nav:#05103A;
-      --nav-2:#0A1350;
-      --wda-blue:#3D7DEB;
-      --wda-cyan:#3FD8E8;
-      --wda-mid:#2FA9D6;
-      --wda-accent:#6A5AF0;
-      --accent:#F0663F;
-      --accent-soft:#FEEEE8;
-      --blue:#3D7DEB;
-      --blue-2:#3FD8E8;
-      --blue-soft:#EAF2FE;
+      --surface-soft:#F7F8FD;
+      --ink:#0A0A3A;
+      --text:#3B3F63;
+      --muted:#6E7398;
+      --line:#E4E6F3;
+      --line-soft:#EEEFF9;
+      --nav:#00004F;
+      --nav-2:#141463;
+      --wda-blue:#5F75C5;
+      --wda-cyan:#48E6EA;
+      --wda-mid:#4A7BB8;
+      --wda-accent:#8360C2;
+      --accent:#F96954;
+      --accent-soft:#FEEBE8;
+      --blue:#4A5AA8;          /* blu leggibile su bianco (testo/link) */
+      --blue-2:#48E6EA;
+      --blue-soft:#ECEFFA;
       --green:#1F9D74;
       --green-soft:#E9F8F2;
       --amber:#C0721A;
       --amber-soft:#FFF4E6;
-      --red:#D14A3B;
-      --red-soft:#FDEEEB;
-      --purple:#6A5AF0;
-      --purple-soft:#EEECFE;
-      --teal:#2FA9D6;
-      --teal-soft:#E8F6FC;
-      --shadow:0 18px 44px rgba(10,19,80,.10);
-      --shadow-soft:0 8px 22px rgba(10,19,80,.06);
+      --red:#D9503E;
+      --red-soft:#FDEBE8;
+      --purple:#7A55B8;        /* viola leggibile su bianco */
+      --purple-soft:#F1EBFB;
+      --teal:#0F98B5;          /* ciano leggibile su bianco */
+      --teal-soft:#E6FBFD;
+      --shadow:0 18px 44px rgba(0,0,79,.10);
+      --shadow-soft:0 8px 22px rgba(0,0,79,.06);
       --radius:16px;
-      --font:"Titillium Web", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font:Calibri, "Carlito", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
     }
 
     *{box-sizing:border-box}
