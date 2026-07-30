@@ -27,27 +27,31 @@ function psnOf(s) {
 }
 
 async function ensureStages() {
-  const { data: existing, error } = await supabase.from("stages").select("id, name");
+  const { data: existing, error } = await supabase
+    .from("stages")
+    .select("id, name, position")
+    .order("position", { ascending: true });
   if (error) throw error;
 
+  // Le colonne sono modificabili dall'utente: NON riconciliare per nome (altrimenti
+  // rinominare una colonna la farebbe "ricomparire" al reload). Si semina la board
+  // SOLO se non esiste ancora nessuna colonna.
   const byName = {};
-  (existing || []).forEach((row) => { byName[row.name] = row.id; });
-
-  const missing = SEED_STAGES.filter((name) => !(name in byName));
-  if (missing.length > 0) {
-    const base = existing ? existing.length : 0;
-    const rows = missing.map((name, i) => ({
-      name,
-      position: base + SEED_STAGES.indexOf(name),
-    }));
-    const { data: inserted, error: insErr } = await supabase
-      .from("stages")
-      .insert(rows)
-      .select("id, name");
-    if (insErr) throw insErr;
-    (inserted || []).forEach((row) => { byName[row.name] = row.id; });
+  if (existing && existing.length > 0) {
+    existing.forEach((row) => { byName[row.name] = row.id; });
+    byName.__first = existing[0].id; // fallback per l'assegnazione delle nuove card
+    return byName;
   }
-  return byName; // name -> id
+
+  const rows = SEED_STAGES.map((name, i) => ({ name, position: i }));
+  const { data: inserted, error: insErr } = await supabase
+    .from("stages")
+    .insert(rows)
+    .select("id, name");
+  if (insErr) throw insErr;
+  (inserted || []).forEach((row) => { byName[row.name] = row.id; });
+  byName.__first = (inserted && inserted[0] && inserted[0].id) || null;
+  return byName;
 }
 
 async function ensureStartups(stageByName) {
@@ -79,7 +83,7 @@ async function ensureStartups(stageByName) {
     }
 
     const stageName = PATH_STAGE[s.path] || DEFAULT_STAGE;
-    const stageId = stageByName[stageName] || stageByName[DEFAULT_STAGE] || null;
+    const stageId = stageByName[stageName] || stageByName[DEFAULT_STAGE] || stageByName.__first || null;
     posCounter[stageName] = (posCounter[stageName] || 0) + 1;
     rows.push({
       slug: s.id,
