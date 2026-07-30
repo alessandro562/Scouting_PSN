@@ -15,21 +15,23 @@ function esc(v) {
   return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// Barre orizzontali. items: [{label, value, color?, sub?}]
-export function barList(items, { unit = "" } = {}) {
+// Barre orizzontali. items: [{label, value, color?}]
+// opts.total → mostra anche la quota percentuale sul totale.
+export function barList(items, { unit = "", total = null } = {}) {
   const max = Math.max(1, ...items.map((i) => i.value));
   if (!items.length) return `<p class="muted chart-empty">Nessun dato.</p>`;
   return `<div class="bar-list">${items
     .map((it, i) => {
-      const pct = Math.round((it.value / max) * 100);
+      const w = Math.max(2, Math.round((it.value / max) * 100));
       const color = it.color || colorFor(i);
+      const pct = total ? `<span class="bar-pct">${Math.round((it.value / total) * 100)}%</span>` : "";
       return `
       <div class="bar-row">
         <div class="bar-label" title="${esc(it.label)}">${esc(it.label)}</div>
         <div class="bar-track">
-          <div class="bar-fill" style="width:${pct}%;background:${color}"></div>
+          <div class="bar-fill" style="width:${w}%;background:${color}"></div>
         </div>
-        <div class="bar-value">${it.value}${unit}</div>
+        <div class="bar-value">${it.value}${unit}${pct}</div>
       </div>`;
     })
     .join("")}</div>`;
@@ -82,6 +84,7 @@ export function donut(items, { size = 168, thickness = 26 } = {}) {
         <span class="legend-dot" style="background:${colorFor(i)}"></span>
         <span class="legend-label">${esc(it.label)}</span>
         <span class="legend-val">${it.value}</span>
+        <span class="legend-pct">${Math.round((it.value / total) * 100)}%</span>
       </div>`
     )
     .join("");

@@ -49,6 +49,40 @@ export function sectorOf(s) { return s.sector || "—"; }
 export function valuationOf(s) { return (s.data && s.data.valuation) || "—"; }
 export function sedeOf(s) { return (s.data && s.data.sede) || "—"; }
 export function trlOf(s) { const t = parseInt(s.data && s.data.trl, 10); return Number.isNaN(t) ? null : t; }
+
+// Città normalizzata: rimuove l'indirizzo tra parentesi, la sigla provincia
+// e l'eventuale testo dopo la virgola. Così "Milano (Via Ripamonti 190)" e
+// "Milano" vengono conteggiate come un'unica città.
+export function cityOf(s) {
+  const raw = sedeOf(s);
+  if (!raw || raw === "—") return "—";
+  const c = String(raw).split("(")[0].split(",")[0].replace(/\s+/g, " ").trim();
+  return c || "—";
+}
+
+// Macro-area geografica (per il clustering territoriale).
+const CITY_MACRO = {
+  "Milano": "Nord", "Torino": "Nord", "Bologna": "Nord", "Lecco": "Nord",
+  "Udine": "Nord", "San Sebastiano da Po": "Nord", "Pisa": "Centro",
+  "Roma": "Centro", "Ascoli Piceno": "Centro", "Salerno": "Sud e Isole",
+  "Bari": "Sud e Isole",
+};
+export function macroAreaOf(s) {
+  const c = cityOf(s);
+  if (c === "—") return "—";
+  return CITY_MACRO[c] || "Altro";
+}
+
+// Stadio di maturità normalizzato (dedotto da valuation + TRL) per clusterizzare
+// stringhe libere eterogenee in poche categorie confrontabili.
+export function maturityBucketOf(s) {
+  const v = (valuationOf(s) || "").toLowerCase();
+  if (v !== "—" && /ready to scale|scale-?up|growth|roll-?out|industrializzazione/.test(v)) return "Ready to scale";
+  if (/seed|early traction|pre-?seed|traction/.test(v)) return "Seed / Early traction";
+  const t = trlOf(s);
+  if (t != null) { if (t >= 8) return "Ready to scale"; if (t >= 6) return "Seed / Early traction"; return "Early stage"; }
+  return "n.d.";
+}
 export function stageName(id) { const st = state.stages.find((x) => x.id === id); return st ? st.name : "—"; }
 
 export function distinctSectors() { return [...new Set(state.startups.map(sectorOf).filter((v) => v !== "—"))].sort(); }
