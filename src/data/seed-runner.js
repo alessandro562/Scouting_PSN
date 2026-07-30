@@ -11,6 +11,7 @@ import {
   SLUG_SECTOR,
   PATH_STAGE,
   DEFAULT_STAGE,
+  SEED_CONTENT_VERSION,
 } from "./seed.js";
 
 function psnOf(s) {
@@ -50,27 +51,44 @@ async function ensureStages() {
 }
 
 async function ensureStartups(stageByName) {
-  const { data: existing, error } = await supabase.from("startups").select("slug");
+  const { data: existing, error } = await supabase.from("startups").select("slug, data");
   if (error) throw error;
-  const present = new Set((existing || []).map((r) => r.slug));
+  const byslug = new Map((existing || []).map((r) => [r.slug, r]));
 
   // Contatori di posizione per colonna (spaziatura 1000).
   const posCounter = {};
 
-  const rows = [];
+  const rows = [];      // nuove card da inserire
+  const updates = [];   // card esistenti con contenuti da ri-sincronizzare
   for (const s of startups) {
-    if (present.has(s.id)) continue;
+    const seedData = { ...s, __seedVersion: SEED_CONTENT_VERSION };
+    const psn = psnOf(s);
+    const sector = SLUG_SECTOR[s.id] || null;
+
+    const found = byslug.get(s.id);
+    if (found) {
+      // Ri-sincronizza SOLO i contenuti se il record è di una versione precedente.
+      const ver = (found.data && found.data.__seedVersion) || 0;
+      if (ver < SEED_CONTENT_VERSION) {
+        // Preserva le chiavi runtime (es. stageSince per l'aging), senza toccare
+        // stage_id/position (lo stato della board deciso dall'utente).
+        if (found.data && found.data.stageSince) seedData.stageSince = found.data.stageSince;
+        updates.push({ slug: s.id, name: s.name, sector, data: seedData, psn });
+      }
+      continue;
+    }
+
     const stageName = PATH_STAGE[s.path] || DEFAULT_STAGE;
     const stageId = stageByName[stageName] || stageByName[DEFAULT_STAGE] || null;
     posCounter[stageName] = (posCounter[stageName] || 0) + 1;
     rows.push({
       slug: s.id,
       name: s.name,
-      sector: SLUG_SECTOR[s.id] || null,
+      sector,
       stage_id: stageId,
       position: posCounter[stageName] * 1000,
-      data: s,            // oggetto ricco completo (round-trip col renderer del dettaglio)
-      psn: psnOf(s),
+      data: seedData,
+      psn,
     });
   }
 
@@ -81,7 +99,20 @@ async function ensureStartups(stageByName) {
       .upsert(rows, { onConflict: "slug", ignoreDuplicates: true });
     if (insErr) throw insErr;
   }
-  return rows.length;
+
+  if (updates.length > 0) {
+    const results = await Promise.all(
+      updates.map((u) =>
+        supabase.from("startups")
+          .update({ name: u.name, sector: u.sector, data: u.data, psn: u.psn })
+          .eq("slug", u.slug)
+      )
+    );
+    const failed = results.find((r) => r.error);
+    if (failed) console.warn("Ri-sincronizzazione contenuti parziale:", failed.error.message);
+  }
+
+  return rows.length + updates.length;
 }
 
 async function ensureGlossary() {
