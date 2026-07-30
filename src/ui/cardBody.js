@@ -1,192 +1,178 @@
 // ===========================================================================
-// cardBody.js — template del dettaglio ricco di una startup.
-// Markup ripreso VERBATIM dall'index.html originale (renderCards), reso robusto
-// a campi mancanti per le startup nuove/parziali inserite dal form.
-// `s` = { ...row.data, psn: row.psn }
+// cardBody.js — dettaglio della scheda startup.
+// Architettura a sezioni clusterizzate con progressive disclosure:
+//  · Lead (una frase di sintesi)
+//  · In sintesi (anagrafica + traction)      [aperta]
+//  · La soluzione (descrizione/problema/PA)   [aperta]
+//  · Casi d'uso ed elementi distintivi        [aperta]
+//  · Classificazione PSN                       [aperta]
+//  · Come funziona (input→output, tecnologie)  [collassabile]
+//  · Percorso in PSN (PoC, indicatori, next)   [collassabile]
+// I campi vuoti vengono OMESSI (niente box "—"). `s` = { ...row.data, psn: row.psn }.
 // ===========================================================================
-
-const DASH = '<span class="muted">—</span>';
 
 function esc(v) {
   if (v == null) return "";
-  return String(v)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
+function has(v) { return v != null && String(v).trim() !== ""; }
+function t(v) { return esc(String(v).trim()); }
 
-// Valore testuale con fallback "—" (il contenuto è testo, quindi lo escapiamo).
-function val(v) {
-  const t = (v ?? "").toString().trim();
-  return t ? esc(t) : DASH;
-}
-
-function psn(s) {
-  return (
-    s.psn || {
-      primary: s.area,
-      secondary: "Da classificare",
-      innovation: "Da verificare",
-      usecase: s.poc,
-      note: "Classificazione da confermare.",
-    }
-  );
-}
-
-// Badge "da confermare" per i campi dedotti (chiavi elencate in s.toConfirm).
+// Badge "da confermare" per i campi dedotti (chiavi in s.toConfirm).
 function confirmBadge(s, key) {
+  if (!s || !key) return "";
   const list = Array.isArray(s.toConfirm) ? s.toConfirm : [];
   return list.includes(key)
     ? ` <span class="confirm-badge" title="Dato dedotto, da verificare">da confermare</span>`
     : "";
 }
 
-// Blocco opzionale "Scheda pipeline": mostrato solo se sono presenti i campi
-// tipici delle startup scoutate (sede, TRL, traction, key people, ecc.).
-function pipelineBlock(s) {
-  const rows = [
-    ["Sede", s.sede, "sede"],
-    ["Fondazione", s.founded, "founded"],
-    ["TRL", s.trl, "trl"],
-    ["Maturità / Valuation", s.valuation, "valuation"],
-    ["Traction", s.traction, "traction"],
-    ["Key people", s.keyPeople, "keyPeople"],
-    ["Sito", s.website, "website"],
-  ].filter(([, v]) => v && String(v).trim());
-  if (!rows.length) return "";
+function psn(s) {
+  return s.psn || { primary: s.area, secondary: "", innovation: "", usecase: s.poc, note: "" };
+}
+
+// Riga anagrafica (label/valore) — vuota → stringa vuota (omessa).
+function fact(label, value, s, key) {
+  if (!has(value)) return "";
+  return `<div class="fact"><span class="fact-k">${esc(label)}</span><span class="fact-v">${t(value)}${confirmBadge(s, key)}</span></div>`;
+}
+function factLink(label, url, s, key) {
+  if (!has(url)) return "";
+  const v = `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${t(url)}</a>`;
+  return `<div class="fact"><span class="fact-k">${esc(label)}</span><span class="fact-v">${v}${confirmBadge(s, key)}</span></div>`;
+}
+
+// Sotto-blocco prosa: titolo + paragrafo (omesso se vuoto).
+function prose(title, body, s, key) {
+  if (!has(body)) return "";
+  return `<div class="prose-block"><h4>${esc(title)}</h4><p>${t(body)}${confirmBadge(s, key)}</p></div>`;
+}
+
+// Sezione collassabile con chevron.
+function fold(title, inner, { open = false } = {}) {
+  if (!inner) return "";
   return `
-      <div class="callout psn-callout"><strong>Scheda pipeline</strong></div>
-      <div class="info-grid">
-        ${rows
-          .map(([k, v, key]) => {
-            const value = key === "website"
-              ? `<a href="${esc(v)}" target="_blank" rel="noopener noreferrer">${esc(v)}</a>`
-              : val(v);
-            return `<div class="ibox"><div class="k">${esc(k)}</div><div class="v">${value}${confirmBadge(s, key)}</div></div>`;
-          })
-          .join("")}
-      </div>
-  `;
+    <details class="dsection dfold" ${open ? "open" : ""}>
+      <summary class="dsection-title">${esc(title)}<span class="dchevron" aria-hidden="true"></span></summary>
+      <div class="dbody">${inner}</div>
+    </details>`;
+}
+// Sezione sempre aperta (non collassabile).
+function section(title, inner) {
+  if (!inner) return "";
+  return `<section class="dsection"><div class="dsection-title static">${esc(title)}</div><div class="dbody">${inner}</div></section>`;
 }
 
 export function renderStartupDetail(s) {
   const p = psn(s);
-  const id = s.id || s.slug || "startup";
-  const usecases = Array.isArray(s.usecases) ? s.usecases : [];
-  const technologies = Array.isArray(s.technologies) ? s.technologies : [];
+  const usecases = (Array.isArray(s.usecases) ? s.usecases : []).filter(has);
+  const technologies = (Array.isArray(s.technologies) ? s.technologies : []).filter(
+    (x) => (Array.isArray(x) ? has(x[0]) || has(x[1]) : has(x))
+  );
+
+  // ---- Lead ---------------------------------------------------------------
+  const lead = has(s.what) ? `<p class="detail-lead">${t(s.what)}</p>` : "";
+
+  // ---- In sintesi (anagrafica + traction) --------------------------------
+  const facts = [
+    fact("Settore", s.sector),
+    fact("Sede", s.sede, s, "sede"),
+    fact("Fondazione", s.founded, s, "founded"),
+    fact("TRL", s.trl, s, "trl"),
+    fact("Maturità / Valuation", s.valuation, s, "valuation"),
+    factLink("Sito", s.website, s, "website"),
+    fact("Target di riferimento", s.audience, s, "audience"),
+    fact("Team", s.keyPeople, s, "keyPeople"),
+  ].join("");
+  const tractionBlock = has(s.traction)
+    ? `<div class="callout-soft"><span class="cs-k">Traction &amp; riconoscimenti</span><p>${t(s.traction)}${confirmBadge(s, "traction")}</p></div>`
+    : "";
+  const sintesi = section("In sintesi", (facts ? `<div class="facts">${facts}</div>` : "") + tractionBlock);
+
+  // ---- La soluzione -------------------------------------------------------
+  const solInner =
+    prose("Cosa fa", s.description || (has(s.what) ? "" : s.what), s, "description") +
+    prose("Il problema che risolve", s.problem, s, "problem") +
+    prose("Perché è rilevante per la PA", s.relevance, s, "relevance");
+  const soluzione = section("La soluzione", solInner);
+
+  // ---- Casi d'uso ed elementi distintivi ---------------------------------
+  const ucInner =
+    (usecases.length ? `<ul class="uc-list">${usecases.map((x) => `<li>${t(x)}</li>`).join("")}</ul>` : "") +
+    (has(s.differentiator)
+      ? `<div class="prose-block"><h4>Elementi distintivi</h4><p>${t(s.differentiator)}${confirmBadge(s, "differentiator")}</p></div>`
+      : "");
+  const casiUso = section("Casi d'uso ed elementi distintivi", ucInner);
+
+  // ---- Classificazione PSN -----------------------------------------------
+  const psnFacts = [
+    fact("Verticale PSN primario", p.primary),
+    fact("Aree PSN correlate", p.secondary),
+    fact("Aree di innovazione", p.innovation),
+    fact("Caso d'uso PSN", p.usecase),
+    fact("Ambito applicativo", s.area, s, "area"),
+  ].join("");
+  const psnNote = has(p.note) ? `<div class="note-block">${t(p.note)}</div>` : "";
+  const classificazione = (psnFacts || psnNote)
+    ? section("Classificazione PSN", (psnFacts ? `<div class="facts">${psnFacts}</div>` : "") + psnNote)
+    : "";
+
+  // ---- Come funziona (collassabile) --------------------------------------
+  const flowSteps = [
+    ["Input", s.input],
+    ["Elaborazione", s.processing],
+    ["Output", s.output],
+  ].filter(([, v]) => has(v));
+  const flowHtml = flowSteps.length
+    ? `<div class="flow">${flowSteps
+        .map(([k, v]) => `<div class="flow-step"><span class="flow-k">${esc(k)}</span><span class="flow-v">${t(v)}</span></div>`)
+        .join('<span class="flow-arrow" aria-hidden="true">→</span>')}</div>`
+    : "";
+  const techHtml = technologies.length
+    ? `<ul class="tech-list">${technologies
+        .map((x) => {
+          const label = Array.isArray(x) ? x[0] : x;
+          const desc = Array.isArray(x) ? x[1] : "";
+          return `<li><span class="tech-k">${t(label)}</span>${has(desc) ? `<span class="tech-v">${t(desc)}</span>` : ""}</li>`;
+        })
+        .join("")}</ul>`
+    : "";
+  const comeFunziona = fold(
+    "Come funziona",
+    (flowHtml ? `<div class="dsub">Dai dati al risultato</div>${flowHtml}` : "") +
+      (techHtml ? `<div class="dsub">Tecnologie utilizzate</div>${techHtml}` : ""),
+    { open: false }
+  );
+
+  // ---- Percorso in PSN (collassabile) ------------------------------------
+  const pathFacts = [
+    fact("Verifica preliminare consigliata", s.deepen, s, "deepen"),
+    fact("Sperimentazione / PoC", s.poc, s, "poc"),
+    fact("Durata indicativa", s.duration),
+    fact("Indicatori di valutazione", s.kpi),
+    fact("Prerequisito principale", s.prereq),
+  ].join("");
+  const steps = [s.next1, s.next2, s.nextOut].filter(has);
+  const stepsHtml = steps.length
+    ? `<div class="dsub">Prossimi passi</div><ol class="steps-list">${steps
+        .map((x) => `<li>${t(x)}</li>`)
+        .join("")}</ol>`
+    : "";
+  const percorso = fold(
+    "Percorso in PSN",
+    (pathFacts ? `<div class="facts">${pathFacts}</div>` : "") + stepsHtml,
+    { open: false }
+  );
 
   return `
-    <div class="startup-body">
-      <div class="info-grid">
-        <div class="ibox"><div class="k">Verticale PSN primario</div><div class="v">${val(p.primary)}</div></div>
-        <div class="ibox"><div class="k">Aree PSN correlate</div><div class="v">${val(p.secondary)}</div></div>
-        <div class="ibox"><div class="k">Aree di innovazione PSN</div><div class="v">${val(p.innovation)}</div></div>
-        <div class="ibox"><div class="k">Ambito applicativo</div><div class="v">${val(s.area)}${confirmBadge(s, "area")}</div></div>
-        <div class="ibox"><div class="k">Target potenziale</div><div class="v">${val(s.audience)}${confirmBadge(s, "audience")}</div></div>
-        <div class="ibox"><div class="k">Verifica preliminare</div><div class="v">${val(s.deepen)}${confirmBadge(s, "deepen")}</div></div>
-      </div>
-
-      ${pipelineBlock(s)}
-
-      <div class="grid cols-2" id="${esc(id)}-descrizione">
-        <div class="card inner-card">
-          <h4>Descrizione della soluzione</h4>
-          <p>${val(s.description)}</p>
-        </div>
-        <div class="card inner-card">
-          <h4>Problema affrontato</h4>
-          <p>${val(s.problem)}</p>
-        </div>
-      </div>
-
-      <div class="callout">
-        <strong>Ambito di rilevanza per la PA:</strong> ${val(s.relevance)}
-      </div>
-
-      <div class="callout psn-callout">
-        <strong>Inquadramento PSN:</strong> ${val(p.primary)} · ${val(p.usecase)}
-      </div>
-
-      <div class="ipo">
-        <div class="ibox"><div class="k">Input</div><div class="v">${val(s.input)}</div></div>
-        <div class="ibox"><div class="k">Elaborazione</div><div class="v">${val(s.processing)}</div></div>
-        <div class="ibox"><div class="k">Output</div><div class="v">${val(s.output)}</div></div>
-      </div>
-
-      <details class="sub-accordion" open id="${esc(id)}-usecase">
-        <summary>
-          <span class="sub-summary-title">Casi d’uso esemplificativi</span>
-          <span class="sub-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="answer">
-          ${
-            usecases.length
-              ? `<ul class="clean-list">${usecases.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`
-              : DASH
-          }
-        </div>
-      </details>
-
-      <details class="sub-accordion" id="${esc(id)}-tech">
-        <summary>
-          <span class="sub-summary-title">Tecnologie utilizzate</span>
-          <span class="sub-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="answer">
-          ${
-            technologies.length
-              ? `<div class="grid cols-2">${technologies
-                  .map(
-                    (t) => `
-                    <div class="ibox">
-                      <div class="k">${esc(Array.isArray(t) ? t[0] : t)}</div>
-                      <div class="v">${esc(Array.isArray(t) ? t[1] : "")}</div>
-                    </div>`
-                  )
-                  .join("")}</div>`
-              : DASH
-          }
-        </div>
-      </details>
-
-      <details class="sub-accordion">
-        <summary>
-          <span class="sub-summary-title">Elementi distintivi</span>
-          <span class="sub-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="answer">
-          <p>${val(s.differentiator)}</p>
-        </div>
-      </details>
-
-      <details class="sub-accordion" open id="${esc(id)}-poc">
-        <summary>
-          <span class="sub-summary-title">Sperimentazione / PoC e indicatori di valutazione</span>
-          <span class="sub-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="answer">
-          <div class="ipo">
-            <div class="ibox"><div class="k">Sperimentazione / PoC</div><div class="v">${val(s.poc)}</div></div>
-            <div class="ibox"><div class="k">Durata indicativa</div><div class="v">${val(s.duration)}</div></div>
-            <div class="ibox"><div class="k">Indicatori</div><div class="v">${val(s.kpi)}</div></div>
-          </div>
-          <p class="answer-note"><strong>Prerequisito principale:</strong> ${val(s.prereq)}</p>
-        </div>
-      </details>
-
-      <details class="sub-accordion" open id="${esc(id)}-next">
-        <summary>
-          <span class="sub-summary-title">Attività successive specifiche</span>
-          <span class="sub-chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="answer">
-          <ol class="steps clean-steps">
-            <li class="step-row"><span class="step-index">1</span><span class="step-copy">${val(s.next1)}</span></li>
-            <li class="step-row"><span class="step-index">2</span><span class="step-copy">${val(s.next2)}</span></li>
-            <li class="step-row"><span class="step-index">3</span><span class="step-copy">${val(s.nextOut)}</span></li>
-          </ol>
-        </div>
-      </details>
+    <div class="sdetail">
+      ${lead}
+      ${sintesi}
+      ${soluzione}
+      ${casiUso}
+      ${classificazione}
+      ${comeFunziona}
+      ${percorso}
     </div>
   `;
 }
