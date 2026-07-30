@@ -1,0 +1,109 @@
+/* ===========================================================================
+   detail.css — dettaglio scheda startup: sezioni clusterizzate, gerarchia
+   tipografica netta, progressive disclosure. Sostituisce il vecchio dump di box.
+   =========================================================================== */
+
+.sdetail { display: flex; flex-direction: column; }
+
+/* ---- Lead di sintesi ---------------------------------------------------- */
+.detail-lead {
+  font-size: 16px; line-height: 1.55; color: var(--ink); font-weight: 500;
+  margin: 0 0 6px;
+}
+
+/* ---- Sezioni ------------------------------------------------------------ */
+.dsection { border-top: 1px solid var(--line-soft); padding: 16px 0 6px; }
+.dsection-title {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--psn-navy); margin: 0 0 13px;
+  display: flex; align-items: center; gap: 10px;
+}
+.dsection-title.static { cursor: default; }
+.dbody { color: var(--text); }
+.dsub { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 4px 0 9px; }
+
+/* Collassabile */
+details.dfold { border-top: 1px solid var(--line-soft); padding: 0; }
+details.dfold > summary { list-style: none; cursor: pointer; padding: 15px 0 14px; margin: 0; }
+details.dfold > summary::-webkit-details-marker { display: none; }
+details.dfold > summary.dsection-title { margin: 0; }
+details.dfold > summary:hover { color: var(--psn-blue); }
+.dchevron {
+  width: 9px; height: 9px; margin-left: auto; flex: 0 0 auto;
+  border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg); transition: transform .2s ease;
+}
+details.dfold[open] > summary .dchevron { transform: rotate(-135deg); }
+details.dfold > .dbody { padding: 0 0 16px; }
+
+/* ---- Facts (definition list) ------------------------------------------- */
+.facts { display: flex; flex-direction: column; }
+.fact {
+  display: grid; grid-template-columns: 190px 1fr; gap: 16px; align-items: baseline;
+  padding: 9px 0; border-bottom: 1px solid var(--line-soft);
+}
+.fact:last-child { border-bottom: 0; }
+.fact-k { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.fact-v { font-size: 14px; color: var(--ink); line-height: 1.5; }
+.fact-v a { color: var(--wda-blue); text-decoration: none; word-break: break-all; }
+.fact-v a:hover { text-decoration: underline; }
+
+/* ---- Callout morbido (traction) ---------------------------------------- */
+.callout-soft {
+  margin-top: 13px; background: var(--surface-soft); border: 1px solid var(--line-soft);
+  border-radius: 12px; padding: 12px 14px;
+}
+.callout-soft .cs-k { display: block; font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 5px; }
+.callout-soft p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--text); }
+
+/* ---- Prosa -------------------------------------------------------------- */
+.prose-block { margin-bottom: 14px; }
+.prose-block:last-child { margin-bottom: 0; }
+.prose-block h4 { margin: 0 0 5px; font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.prose-block p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--text); }
+
+/* ---- Casi d'uso --------------------------------------------------------- */
+.uc-list { margin: 0 0 14px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+.uc-list li { position: relative; padding-left: 20px; font-size: 14px; line-height: 1.5; color: var(--text); }
+.uc-list li::before { content: ""; position: absolute; left: 3px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--psn-cyan); }
+
+/* ---- Nota di classificazione PSN --------------------------------------- */
+.note-block {
+  margin-top: 13px; font-size: 13px; line-height: 1.55; color: var(--text);
+  background: color-mix(in srgb, var(--psn-blue) 6%, var(--surface));
+  border-left: 3px solid color-mix(in srgb, var(--psn-blue) 45%, transparent);
+  border-radius: 8px; padding: 10px 14px;
+}
+
+/* ---- Flow input → output ----------------------------------------------- */
+.flow { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.flow-step { flex: 1 1 170px; background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 12px; padding: 11px 12px; }
+.flow-k { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--psn-blue); margin-bottom: 4px; }
+.flow-v { font-size: 13px; line-height: 1.45; color: var(--text); }
+.flow-arrow { align-self: center; color: var(--muted); font-size: 17px; flex: 0 0 auto; }
+
+/* ---- Tecnologie --------------------------------------------------------- */
+.tech-list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.tech-list li { border: 1px solid var(--line-soft); background: var(--surface-soft); border-radius: 10px; padding: 9px 11px; }
+.tech-k { display: block; font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.tech-v { font-size: 12.5px; line-height: 1.45; color: var(--text); }
+
+/* ---- Prossimi passi ----------------------------------------------------- */
+.steps-list { counter-reset: st; margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.steps-list li {
+  position: relative; padding: 10px 12px 10px 42px; border: 1px solid var(--line-soft);
+  background: var(--surface); border-radius: 12px; font-size: 13.5px; line-height: 1.5; color: var(--text);
+}
+.steps-list li::before {
+  counter-increment: st; content: counter(st); position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 22px; height: 22px; border-radius: 50%; background: var(--blue-soft); color: var(--wda-blue);
+  font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 620px) {
+  .fact { grid-template-columns: 1fr; gap: 3px; }
+  .tech-list { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+}
