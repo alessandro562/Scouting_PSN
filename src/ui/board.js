@@ -10,11 +10,12 @@ import {
   computeMidpoint,
   moveCard,
   reorderStages,
+  emitChange,
 } from "../store.js";
 import { openStartupModal } from "./modal.js";
 import { openStageMenu } from "./stages.js";
 import { openStartupForm } from "./startupForm.js";
-import { toastError } from "./toast.js";
+import { toast, toastError } from "./toast.js";
 import { applyFilters } from "./filters.js";
 
 let noteCountMap = {};
@@ -50,6 +51,30 @@ function sectorColor(sector) {
   return SECTOR_COLOR[sector] || "#5F75C5";
 }
 
+const STALE_DAYS = 21;
+
+// Giorni trascorsi nella fase corrente (proxy: stageSince, poi updated_at).
+function daysInStage(card) {
+  const iso = card.data?.stageSince || card.updated_at || card.created_at;
+  if (!iso) return null;
+  const days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+  return Number.isFinite(days) && days >= 0 ? days : null;
+}
+
+function ageLabel(days) {
+  if (days == null) return "";
+  if (days === 0) return "oggi";
+  if (days === 1) return "1g in fase";
+  return `${days}g in fase`;
+}
+
+// Fase successiva nell'ordine della board (per l'azione rapida "avanza").
+function nextStageOf(card) {
+  const idx = state.stages.findIndex((s) => s.id === card.stage_id);
+  if (idx === -1) return state.stages[0] || null;
+  return state.stages[idx + 1] || null;
+}
+
 function cardsForColumn(col, index) {
   let cards = cardsForStage(col.id);
   if (index === 0) cards = [...orphanCards(), ...cards];
@@ -64,8 +89,15 @@ function tileHtml(card) {
   const sector = card.sector || "Settore n/d";
   const color = sectorColor(card.sector);
   const trl = card.data?.trl;
+  const days = daysInStage(card);
+  const stale = days != null && days > STALE_DAYS;
+  const next = nextStageOf(card);
   return `
-    <article class="kcard searchable" data-id="${esc(card.id)}" style="--sector:${color}" tabindex="0" role="button" aria-label="Apri ${esc(card.name)}">
+    <article class="kcard searchable ${stale ? "kcard-stale" : ""}" data-id="${esc(card.id)}" style="--sector:${color}" tabindex="0" role="button" aria-label="Apri ${esc(card.name)}">
+      <div class="kcard-quick">
+        ${next ? `<button class="kq-btn" data-advance="${esc(card.id)}" title="Avanza a “${esc(next.name)}”" aria-label="Avanza fase">→</button>` : ""}
+        <button class="kq-btn" data-note="${esc(card.id)}" title="Aggiungi nota" aria-label="Aggiungi nota">💬</button>
+      </div>
       <div class="kcard-inner">
         <div class="kcard-top">
           <span class="kcard-sector"><span class="kcard-dot"></span>${esc(sector)}</span>
@@ -77,6 +109,7 @@ function tileHtml(card) {
           ${primary ? `<span class="kchip">${esc(primary)}</span>` : ""}
           ${trl ? `<span class="kchip kchip-ghost">TRL ${esc(trl)}</span>` : ""}
           ${Array.isArray(card.data?.toConfirm) && card.data.toConfirm.length ? `<span class="kchip kchip-warn" title="Contiene dati da confermare">⚠ da confermare</span>` : ""}
+          ${days != null ? `<span class="kchip kchip-age ${stale ? "kchip-age-stale" : ""}" title="Tempo nella fase corrente">⏱ ${esc(ageLabel(days))}</span>` : ""}
         </div>
       </div>
     </article>
@@ -135,10 +168,13 @@ function wireSortables(container) {
       group: "columns",
       handle: ".kcol-head",
       draggable: ".kcol",
-      animation: 150,
-      onStart: () => { dragging = true; },
+      animation: 160,
+      chosenClass: "kcol-chosen",
+      dragClass: "kcol-drag",
+      onStart: () => { dragging = true; document.body.classList.add("dragging"); },
       onEnd: async (evt) => {
         setTimeout(() => { dragging = false; }, 0);
+        document.body.classList.remove("dragging");
         const ids = Array.from(kboard.querySelectorAll(".kcol")).map((el) => el.dataset.stageId);
         try {
           await reorderStages(ids);
@@ -150,16 +186,35 @@ function wireSortables(container) {
   );
 
   // Spostamento card (tra colonne e all'interno).
+  const clearDrop = () => container.querySelectorAll(".kcol-drop").forEach((n) => n.classList.remove("kcol-drop"));
   container.querySelectorAll(".kcol-body").forEach((body) => {
     sortables.push(
       Sortable.create(body, {
         group: "cards",
         draggable: ".kcard",
-        animation: 150,
+        animation: 160,
+        easing: "cubic-bezier(.2,.7,.3,1)",
         ghostClass: "kcard-ghost",
-        onStart: () => { dragging = true; },
+        chosenClass: "kcard-chosen",
+        dragClass: "kcard-drag",
+        forceFallback: true,
+        fallbackOnBody: true,
+        fallbackTolerance: 4,
+        swapThreshold: 0.65,
+        scroll: true,
+        scrollSensitivity: 90,
+        scrollSpeed: 12,
+        bubbleScroll: true,
+        onStart: () => { dragging = true; document.body.classList.add("dragging"); },
+        onMove: (evt) => {
+          clearDrop();
+          const target = evt.to;
+          if (target && target.classList.contains("kcol-body")) target.classList.add("kcol-drop");
+        },
         onEnd: async (evt) => {
           setTimeout(() => { dragging = false; }, 0);
+          document.body.classList.remove("dragging");
+          clearDrop();
           await persistCardMove(evt);
         },
       })
@@ -201,8 +256,30 @@ function wireDelegation(container) {
   if (container._wired) return;
   container._wired = true;
 
-  container.addEventListener("click", (e) => {
+  container.addEventListener("click", async (e) => {
     if (dragging) return;
+
+    // Azioni rapide sulla card (non aprono la modale).
+    const advance = e.target.closest("[data-advance]");
+    if (advance) {
+      e.stopPropagation();
+      const card = startupById(advance.getAttribute("data-advance"));
+      if (!card) return;
+      const next = nextStageOf(card);
+      if (!next) { toastError("La card è già all'ultima fase", new Error("no-next-stage")); return; }
+      const inStage = state.startups.filter((x) => x.stage_id === next.id);
+      const maxPos = inStage.reduce((m, x) => Math.max(m, x.position), 0);
+      try { await moveCard(card.id, next.id, maxPos + 1000); emitChange(); toast(`Spostata in “${next.name}”`, "info"); }
+      catch (err) { toastError("Errore nell'avanzamento di fase", err); }
+      return;
+    }
+    const noteBtn = e.target.closest("[data-note]");
+    if (noteBtn) {
+      e.stopPropagation();
+      const card = startupById(noteBtn.getAttribute("data-note"));
+      if (card) openStartupModal(card, { focusNote: true });
+      return;
+    }
 
     const addColumn = e.target.closest("[data-add-column]");
     if (addColumn) { openStageMenu(null, "create"); return; }

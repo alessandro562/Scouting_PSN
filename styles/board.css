@@ -66,7 +66,7 @@
   border: 1px solid var(--line-soft);
   border-radius: 22px;
   display: flex; flex-direction: column;
-  max-height: calc(100vh - 92px);
+  max-height: calc(100vh - 232px);
   box-shadow: 0 1px 2px rgba(0,0,79,.04), 0 12px 30px rgba(0,0,79,.06);
   transition: box-shadow .2s ease;
 }
@@ -108,18 +108,49 @@
 /* ---- Card tile ---------------------------------------------------------- */
 .kcard {
   position: relative; flex: 0 0 auto; background: var(--surface); border: 1px solid var(--line-soft);
-  border-radius: 16px; cursor: pointer; overflow: hidden;
+  border-radius: 16px; cursor: grab; overflow: hidden;
   box-shadow: 0 1px 2px rgba(0,0,79,.05);
   transition: transform .16s ease, box-shadow .2s ease, border-color .2s ease;
 }
+.kcard:active { cursor: grabbing; }
 .kcard::before {
   content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px;
   border-radius: 0 4px 4px 0; background: var(--sector);
 }
 .kcard:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,79,.13); border-color: color-mix(in srgb, var(--sector) 35%, var(--line-soft)); }
 .kcard:focus-visible { outline: 2px solid var(--wda-accent); outline-offset: 2px; }
-.kcard-ghost { opacity: .35; }
+/* Placeholder di drop: silhouette tratteggiata, non una card sbiadita. */
+.kcard-ghost {
+  position: relative;
+  background: color-mix(in srgb, var(--sector) 8%, var(--surface-soft));
+  border: 2px dashed color-mix(in srgb, var(--sector) 55%, var(--line));
+  box-shadow: none;
+}
 .kcard-ghost::before { display: none; }
+.kcard-ghost > .kcard-inner, .kcard-ghost > .kcard-quick { visibility: hidden; }
+
+/* Clone trascinato: sollevato, leggera inclinazione, ombra marcata. */
+.kcard-drag {
+  cursor: grabbing;
+  transform: scale(1.03) rotate(1.4deg);
+  box-shadow: 0 22px 44px rgba(0,0,79,.28) !important;
+  border-color: color-mix(in srgb, var(--sector) 45%, var(--line-soft)) !important;
+  opacity: 1 !important;
+}
+.kcard-chosen { cursor: grabbing; }
+
+/* Colonna destinazione evidenziata durante il drag. */
+.kcol-body.kcol-drop {
+  background: color-mix(in srgb, var(--stage) 8%, transparent);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--stage) 40%, transparent);
+  border-radius: 14px;
+}
+
+/* Durante il drag: niente sollevamento hover che disturba il gesto. */
+body.dragging .kcard:hover { transform: none; box-shadow: 0 1px 2px rgba(0,0,79,.05); }
+body.dragging { cursor: grabbing; }
+.kcol-drag { box-shadow: 0 26px 56px rgba(0,0,79,.26) !important; }
+.kcol-chosen { opacity: .9; }
 .kcard-inner { padding: 13px 15px 14px 17px; }
 .kcard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
 .kcard-sector { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: color-mix(in srgb, var(--sector) 68%, #2a2e55); }
@@ -176,3 +207,39 @@ aside { background: var(--psn-gradient-dark) !important; }
 
 /* Chip "da confermare" sulla tile della board */
 .kchip.kchip-warn { background: var(--amber-soft); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 26%, #fff); }
+
+/* Chip aging (tempo in fase) */
+.kchip.kchip-age { background: var(--surface-soft); color: var(--muted); border: 1px solid var(--line-soft); }
+.kchip.kchip-age-stale { background: var(--amber-soft); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 26%, #fff); }
+.kcard-stale { border-color: color-mix(in srgb, var(--amber) 42%, var(--line-soft)); }
+.kcard-stale::after {
+  content: ""; position: absolute; inset: 0; border-radius: 16px; pointer-events: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--amber) 30%, transparent);
+}
+
+/* Azioni rapide su hover (avanza fase, nota) */
+.kcard-quick {
+  position: absolute; top: 8px; right: 8px; z-index: 2; display: flex; gap: 5px;
+  opacity: 0; transform: translateY(-3px); transition: opacity .14s ease, transform .14s ease;
+}
+.kcard:hover .kcard-quick, .kcard:focus-within .kcard-quick { opacity: 1; transform: none; }
+.kq-btn {
+  width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  border-radius: 8px; cursor: pointer; font-size: 12px; line-height: 1; font-family: var(--font);
+  box-shadow: 0 2px 6px rgba(0,0,79,.12); transition: background .14s ease, border-color .14s ease, transform .12s ease;
+}
+.kq-btn:hover { background: color-mix(in srgb, var(--sector) 14%, var(--surface)); border-color: color-mix(in srgb, var(--sector) 45%, var(--line)); transform: translateY(-1px); }
+body.dragging .kcard-quick { display: none; }
+
+/* Scrollbar sottili in tinta PSN */
+.kboard, .kcol-body, main { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--psn-blue) 40%, var(--line)) transparent; }
+.kboard::-webkit-scrollbar, .kcol-body::-webkit-scrollbar, main::-webkit-scrollbar { width: 10px; height: 10px; }
+.kboard::-webkit-scrollbar-thumb, .kcol-body::-webkit-scrollbar-thumb, main::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--psn-blue) 32%, var(--line)); border-radius: 999px;
+  border: 2px solid transparent; background-clip: padding-box;
+}
+.kboard::-webkit-scrollbar-thumb:hover, .kcol-body::-webkit-scrollbar-thumb:hover, main::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--psn-blue) 52%, var(--line)); background-clip: padding-box;
+}
+.kboard::-webkit-scrollbar-track, .kcol-body::-webkit-scrollbar-track, main::-webkit-scrollbar-track { background: transparent; }
