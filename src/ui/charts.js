@@ -38,7 +38,7 @@ export function barList(items, { unit = "" } = {}) {
 // Funnel verticale: barre centrate a larghezza decrescente. items: [{label, value}]
 export function funnel(items) {
   const max = Math.max(1, ...items.map((i) => i.value));
-  const total = items.length ? items[0].value : 0;
+  const total = items.reduce((s, i) => s + i.value, 0);
   if (!items.length) return `<p class="muted chart-empty">Nessun dato.</p>`;
   return `<div class="funnel">${items
     .map((it, i) => {
