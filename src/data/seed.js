@@ -640,6 +640,53 @@ export const startups = [
         traction:"26 aziende qualificate, 16 contatti qualificati, 100 K€+ ricavi da 4 clienti (ricorrente ~7 K€/mese), 1 live pilot, 3 PoP; 4 NDA, 2 MOU, 2 programmi di accelerazione, 4 EOI. Premio Innovazione America (Camera dei Deputati, apr 2025). Advisory board (ToMove): TIM, IVECO, INWIT, NTT Data. Round pre-seed 300 K€ (1,5 M€ post-money), in cerca di 175 K€.",
         keyPeople:"Dario Sabella (CEO, chairman ETSI MEC, 50+ brevetti), Federica Bozzi (Founding Partner – Operations, EU STF701 Cyber Resilience Act), Maurizio Bulgarini (Founding Partner – Compliance & Data, DPO)",
         toConfirm:["trl"]
+      },
+      {
+        id:"beelzebub",
+        name:"Beelzebub",
+        area:"Cybersecurity / AI-native security · deception & autonomous SOC",
+        what:"Piattaforma di cybersecurity AI-native che fonde red team e blue team in un unico purple-team loop autonomo a machine-speed: emulazione continua dell'avversario, deception a runtime e threat intelligence autonoma.",
+        description:"Beelzebub è una piattaforma di cybersecurity AI-native che unifica red team e blue team in un unico loop di purple team autonomo, operante alla velocità della minaccia. L'emulazione continua dell'avversario individua i percorsi sfruttabili prima degli attaccanti; la deception a runtime rileva le intrusioni con zero falsi positivi e le contiene in millisecondi; la threat intelligence autonoma trasforma ogni attacco intercettato in difesa azionabile in pochi minuti. Nata da oltre tre anni di sviluppo open-source, è usata da una community globale (2.000+ GitHub star, 450+ install/settimana in 45+ Paesi) e da engineer di aziende come Microsoft, Google, Cisco e Red Hat.",
+        problem:"Gli attaccanti si muovono a velocità di macchina: usano l'AI di frontiera per scoprire e weaponizzare vulnerabilità in automatico, generano malware da prompt in linguaggio naturale e conducono attacchi agentici più rapidi di qualsiasi team umano. Il risultato è uno scontro impari — AI in attacco contro difensori umani. Serve difendersi a machine-speed, con allineamento nativo a NIS2, DORA ed EU AI Act.",
+        relevance:"Molto rilevante per organizzazioni corporate, critiche e governative che devono difendersi a machine-speed contro attacchi AI-driven (lateral movement, minacce agli agenti AI/LLM, supply chain), con conformità NIS2/DORA/EU AI Act; forte rilevanza per la protezione di infrastrutture critiche e PA.",
+        audience:"B2B e B2G: organizzazioni corporate, infrastrutture critiche e PA/governo (AI services, financial services, sanità, manifattura/Industria 4.0, IT provider, trasporti & logistica) che devono difendersi a machine-speed.",
+        maturity:"Startup (fondata 2025, Milano, 2-10 dipendenti) con base tecnologica open-source matura (3+ anni), deployment presso organizzazioni corporate/critiche/governative; membro NVIDIA Inception e Anthropic Cyber Verification Program.",
+        usecases:[
+          "Adversary emulation continua: individua i percorsi sfruttabili (lateral movement, zero-day, supply chain) prima degli attaccanti",
+          "Runtime deception full-stack: decoy AI su IoT, cluster Kubernetes, cloud, API e honeypot per agenti AI, con zero falsi positivi",
+          "Autonomous SOC response: analisi malware in sandbox e contenimento automatico in millisecondi, MTTR da ore a secondi",
+          "Sicurezza degli agenti AI/LLM: MCP honeypot per rilevare prompt injection e attacchi agentici",
+          "Threat intelligence autonoma: ogni attacco intercettato diventa difesa azionabile e report forense executive-ready in minuti"
+        ],
+        technologies:[
+          ["Purple-team loop autonomo","Red team e blue team fusi in un unico ciclo chiuso a machine-speed"],
+          ["Runtime deception","Decoy comportamentali AI multi-protocollo (SSH/HTTP/TCP/MCP) su IoT, Kubernetes, cloud e API; zero falsi positivi, nessun tuning umano"],
+          ["MCP honeypot & LLM sandbox","Rilevamento di prompt injection e attacchi agli agenti AI; interazione sicura con l'attaccante e detonazione malware in sandbox"],
+          ["Autonomous SOC","Agenti AI per analisi malware, contenimento automatico e report forensi"],
+          ["Threat intelligence autonoma","Estrazione automatica di intelligence dagli attacchi intercettati, integrabile con SIEM/XDR/SOAR (Splunk, Sentinel, Cortex, QRadar…)"]
+        ],
+        differentiator:"Progettata AI-native contro le minacce emergenti (attacchi LLM, agenti AI): un unico loop chiuso red+blue a machine-speed, zero falsi positivi tramite deception comportamentale realistica, SOC autonomo che elimina il triage manuale (costi SOC −60%), origine open-source (2.000+ star) e allineamento nativo a NIS2/DORA/EU AI Act. Dic 2025: catturata live l'operazione del threat group TeamPCP, poi accreditata dalla Cloud Security Alliance.",
+        input:"Traffico e attività verso i decoy/sensori di deception distribuiti nell'infrastruttura (IoT, Kubernetes, cloud, API, agenti AI).",
+        processing:"Emulazione continua dell'avversario, engagement dell'attaccante in ambiente isolato, detonazione malware in sandbox ed estrazione autonoma di threat intelligence.",
+        output:"Rilevamento con zero falsi positivi, contenimento automatico in millisecondi, threat intelligence azionabile e report forensi executive-ready; conformità NIS2/DORA/EU AI Act.",
+        poc:"Base open-source con 2.000+ GitHub star e 450+ install/settimana in 45+ Paesi; deployment presso organizzazioni corporate, critiche e governative; engineer di Microsoft, Google, Cisco, Red Hat tra gli utenti. Dic 2025: cattura live dell'operazione del gruppo TeamPCP, lavoro accreditato dalla Cloud Security Alliance. Membro NVIDIA Inception e Anthropic Cyber Verification Program.",
+        duration:"",
+        prereq:"Perimetro d'infrastruttura da coprire (IoT/Kubernetes/cloud/API/agenti AI) e integrazione con lo stack SOC esistente (SIEM/XDR/SOAR).",
+        kpi:"MTTR (da ore a secondi), riduzione costi operativi SOC (fino al −60%), zero falsi positivi, tempo di contenimento (millisecondi), conformità (NIS2/DORA/EU AI Act/SOC 2/GDPR/CER).",
+        deepen:"Maturità della piattaforma managed (Beelzebub Cloud), referenze corporate/gov, integrazioni SOC e metriche di riduzione del rischio.",
+        why:"Il valore dipende dalla maturità della piattaforma managed rispetto al framework open-source, dalle referenze in contesti regolati/critici e dall'integrazione con lo stack di sicurezza del cliente.",
+        material:"Architettura tecnica (deception, sandbox, MCP honeypot), casi reali (cattura TeamPCP), integrazioni SIEM/XDR/SOAR, roadmap e pricing.",
+        next1:"Individuare un'organizzazione critica/PA o un'impresa regolata con un caso d'uso di deception AI / SOC autonomo.",
+        next2:"Definire perimetro d'infrastruttura, requisiti di conformità e integrazione con lo stack SOC esistente.",
+        nextOut:"Piano PoC con sensori di deception, metriche (MTTR, falsi positivi, contenimento) e criteri di adozione.",
+        sede:"Milano (Via Giuseppe Ripamonti 190)",
+        founded:"2025",
+        website:"https://beelzebub.ai/",
+        trl:"8",
+        valuation:"Early-stage · pre-seed/seed (fondata 2025, 2-10 dipendenti; NVIDIA Inception)",
+        traction:"2.000+ GitHub star, 450+ install/settimana in 45+ Paesi; engineer di Microsoft, Google, Cisco e Red Hat tra gli utenti; deployment presso organizzazioni corporate, critiche e governative. Membro NVIDIA Inception e Anthropic Cyber Verification Program. Dic 2025: cattura live dell'operazione del threat group TeamPCP, accreditata dalla Cloud Security Alliance. Prodotti: Beelzebub Cloud (managed), Arcangelo, Caronte.",
+        keyPeople:"Mario Candela (Founder, creatore del progetto open-source beelzebub)",
+        toConfirm:["trl","valuation","keyPeople"]
       }
     ];
 
@@ -800,6 +847,13 @@ export const psnTaxonomy = {
         innovation: "Confidential Computing · TEE/Enclave · Edge-Cloud · AI/LLM · Quantum",
         usecase: "Elaborazione di dati sensibili in enclave sicure lungo il continuum edge-cloud",
         note: "Rientra nella Sicurezza & Cybersecurity per il confidential computing (TEE, attestazione) e l’AI privata e sovrana; forte rilevanza per PA, sanità, fintech e infrastrutture critiche che devono trattare dati riservati con garanzie di sovranità."
+      },
+      beelzebub: {
+        primary: "Sicurezza & Cybersecurity",
+        secondary: "Deception · Autonomous SOC · AI/LLM security · Threat Intelligence",
+        innovation: "AI-native security · Purple-team autonomo · Deception a runtime · MCP honeypot · Agentic security",
+        usecase: "Difesa a machine-speed contro attacchi AI-driven con deception e SOC autonomo",
+        note: "Rientra nella Sicurezza & Cybersecurity per la difesa AI-native a machine-speed (deception a runtime, SOC autonomo, sicurezza degli agenti AI/LLM) con allineamento nativo a NIS2/DORA/EU AI Act; forte rilevanza per PA, infrastrutture critiche e organizzazioni governative."
       }
     };
 
@@ -834,6 +888,7 @@ export const SLUG_SECTOR = {
   yourease: "IoT/Edge",
   loki: "IoT/Edge",
   nextgcloud: "Cybersecurity",
+  beelzebub: "Cybersecurity",
 };
 
 // Elenco di settori suggeriti per il form (l'utente può comunque digitarne altri).
