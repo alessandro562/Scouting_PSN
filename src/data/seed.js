@@ -1,8 +1,13 @@
 // ===========================================================================
-// Dati di seed estratti VERBATIM dall'index.html originale.
-// Non modificare a mano i record qui sotto: sono la fonte iniziale caricata
-// una sola volta in Supabase (poi i dati vivono nel database).
+// Dati di seed delle startup del CRM di scouting.
+// I contenuti descrittivi (data/psn) sono la fonte di verità: vengono
+// ri-sincronizzati sui record esistenti quando SEED_CONTENT_VERSION cresce
+// (preservando fase e posizione sulla board). Vedi seed-runner.js.
 // ===========================================================================
+
+// Bump di questa costante → i testi aggiornati vengono riapplicati alle card
+// già presenti in Supabase al prossimo login (senza toccare fase/posizione).
+export const SEED_CONTENT_VERSION = 2;
 
 export const startups = [
       {
@@ -214,7 +219,8 @@ export const startups = [
         area:"Cybersecurity",
         what:"Protezione cyber per impianti industriali tramite hardware dedicato.",
         description:"Cyber Evolution sviluppa soluzioni avanzate di cybersecurity industriale che combinano componenti hardware dedicati e algoritmi di intelligenza artificiale per proteggere infrastrutture critiche, reti OT/IT e impianti produttivi da minacce informatiche evolute.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a operatori industriali, gestori di infrastrutture critiche e utility, oltre a PMI manifatturiere e Pubblica Amministrazione che gestiscono reti OT/IT e impianti produttivi da proteggere.",
+        problem:"Negli impianti industriali e nelle infrastrutture critiche i sistemi OT e IT, spesso datati, sono sempre più interconnessi: questo amplia la superficie d'attacco e un singolo incidente informatico può bloccare la produzione o compromettere la sicurezza fisica degli impianti.",
         maturity:"TRL 9 · Intelligenza artificiale · Hardware dedicato",
         differentiator:"Cyber Evolution offre LECS, una piattaforma plug & play per la protezione continua di reti industriali e sistemi critici, combinando hardware dedicato e monitoraggio intelligente; facilmente integrabile nei sistemi esistenti.",
         usecases:[
@@ -243,7 +249,8 @@ export const startups = [
         area:"Cybersecurity & Legal-Tech",
         what:"Certificazione legale e immodificabile di documenti e contenuti digitali.",
         description:"TrueScreen è una piattaforma di cybersecurity e legal-tech specializzata nell’acquisizione, certificazione e gestione di dati digitali con valore legale e probatorio. La soluzione consente di garantire autenticità, integrità e immodificabilità di contenuti digitali.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a studi legali, imprese, assicurazioni e Pubblica Amministrazione che devono acquisire e conservare contenuti digitali con pieno valore legale e probatorio.",
+        problem:"Foto, video e documenti digitali sono facilmente alterabili e, senza una raccolta certificata, rischiano di non reggere come prova in sede legale o amministrativa, esponendo a contestazioni sulla loro autenticità e integrità.",
         maturity:"TRL 9 · Piattaforma data authenticity",
         differentiator:"Piattaforma per l’acquisizione forense e la certificazione di contenuti digitali (immagini, video, documenti, file), a supporto della gestione di evidenze digitali e della riduzione del rischio di contestazioni.",
         usecases:[
@@ -271,7 +278,8 @@ export const startups = [
         area:"Cybersecurity",
         what:"Identificazione automatica di vulnerabilità e rischi cyber esterni.",
         description:"CyLock è una piattaforma di cybersecurity AI-based, progettata per supportare le organizzazioni nella gestione proattiva del rischio cyber. Automatizza l’identificazione di vulnerabilità e superfici di attacco, fornendo indicazioni operative per la sicurezza IT.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese, MSSP e Pubblica Amministrazione che devono conoscere e ridurre in modo continuo la propria esposizione al rischio cyber.",
+        problem:"La superficie d'attacco delle organizzazioni cambia di continuo e resta spesso poco visibile: vulnerabilità ed esposizioni non individuate per tempo lasciano porte aperte agli attaccanti.",
         maturity:"TRL 9 · Intelligenza artificiale e machine learning",
         differentiator:"Piattaforma AI-driven che automatizza analisi delle vulnerabilità e valutazione del rischio informatico, offrendo una visione continua e aggiornata dell’esposizione al rischio.",
         usecases:[
@@ -299,7 +307,8 @@ export const startups = [
         area:"Cybersecurity",
         what:"Monitoraggio continuo dei rischi cyber provenienti dall’esterno.",
         description:"ResilientX è una piattaforma di cybersecurity specializzata nella gestione del rischio cyber esterno. La soluzione combina moduli per il monitoraggio continuo degli asset esposti, l’identificazione di vulnerabilità e la gestione automatizzata dei rischi.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a organizzazioni enterprise e regolamentate e alla Pubblica Amministrazione che devono presidiare gli asset digitali esposti e la propria supply chain.",
+        problem:"Gli asset esposti su internet e i fornitori della supply chain sono punti d'ingresso critici e difficili da monitorare: senza una visione esterna e continua, molte vulnerabilità restano scoperte.",
         maturity:"TRL 9 · EASM & threat intelligence",
         differentiator:"Piattaforma SaaS per la gestione proattiva del rischio cyber su asset digitali esposti, punti di attacco esterni e supply chain; progettata per ambienti enterprise e regolamentati.",
         usecases:[
@@ -327,7 +336,8 @@ export const startups = [
         area:"Cybersecurity",
         what:"Piattaforma centralizzata per monitoraggio log e conformità normativa.",
         description:"Intrusa è una piattaforma di cybersecurity e compliance che supporta le organizzazioni nella gestione centralizzata della sicurezza IT. La soluzione è progettata per semplificare attività complesse di controllo e governance.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese e Pubblica Amministrazione che devono centralizzare il monitoraggio della sicurezza IT e dimostrare la conformità alle normative.",
+        problem:"La sicurezza IT è frammentata su molti strumenti e i log restano dispersi: diventa difficile rilevare per tempo anomalie e incidenti e dimostrare la conformità a normative come GDPR, ISO 27001 e NIS2.",
         maturity:"TRL 9 · Piattaforma cloud",
         differentiator:"Piattaforma cloud-based per la gestione strutturata della sicurezza informatica e della compliance, che riduce la complessità operativa e migliora prevenzione e risposta agli incidenti.",
         usecases:[
@@ -355,7 +365,8 @@ export const startups = [
         area:"Cybersecurity & Reg-Tech",
         what:"Automazione della compliance cyber nella gestione fornitori.",
         description:"AI Garage è una piattaforma di cybersecurity e compliance che automatizza la gestione del rischio cyber nella supply chain, supportando le aziende nel monitoraggio continuo dei fornitori e nell’adeguamento alle principali normative europee.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese e Pubblica Amministrazione che devono valutare e monitorare il rischio cyber dei propri fornitori e mantenersi conformi alle normative europee.",
+        problem:"Valutare il rischio cyber dei fornitori e mantenere l'audit readiness è un'attività manuale, lenta e continua: la crescente pressione normativa europea (NIS2, DORA) la rende insostenibile senza automazione.",
         maturity:"TRL 8 · Intelligenza artificiale · LLM",
         differentiator:"Piattaforma end-to-end per valutazione del rischio cyber dei fornitori, workflow di compliance e audit readiness, monitoraggio continuo di minacce e reportistica avanzata; riduce il carico operativo e aumenta la capacità di risposta.",
         usecases:[
@@ -385,7 +396,8 @@ export const startups = [
         area:"Cybersecurity",
         what:"Piattaforma di formazione per ridurre il rischio umano nella cybersecurity.",
         description:"CyberAware è una piattaforma di Cybersecurity Awareness e formazione progettata per rafforzare la consapevolezza dei rischi digitali all’interno delle organizzazioni.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese e Pubblica Amministrazione che vogliono ridurre il rischio umano formando il personale a riconoscere le minacce informatiche.",
+        problem:"La maggior parte degli incidenti informatici nasce da errori umani, come cadere in un attacco di phishing: senza una formazione continua e misurabile, le persone restano l'anello debole della sicurezza.",
         maturity:"TRL 7 · Piattaforma LMS",
         differentiator:"Sistema di formazione continua sulla cybersecurity con contenuti interattivi e certificati, ideato per mitigare il rischio umano e trasformare il personale da vulnerabilità a primo presidio di difesa.",
         usecases:[
@@ -412,7 +424,8 @@ export const startups = [
         area:"Intelligenza artificiale / Generative AI",
         what:"Automazione di contenuti e processi aziendali con AI generativa.",
         description:"PugliAI è una piattaforma di intelligenza artificiale specializzata nell’automazione dei processi di analisi e generazione di contenuti, integrando tecnologie generative e modelli di linguaggio naturale.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese e Pubblica Amministrazione che vogliono automatizzare la produzione di contenuti e l'analisi dei dati con l'AI generativa.",
+        problem:"Produrre contenuti e analizzare grandi quantità di dati testuali sono attività ripetitive e dispendiose: gestite manualmente, sottraggono tempo alle persone e rallentano i processi.",
         maturity:"TRL 9 · Generative AI",
         differentiator:"Piattaforma end-to-end che combina Generative AI (GPT-4 e custom NLP) con workflow automatizzati; semplifica la produzione di contenuti, l’analisi di dati e l’estrazione di insight significativi.",
         usecases:[
@@ -440,7 +453,8 @@ export const startups = [
         area:"Customer service automation",
         what:"Agenti AI personalizzabili per automatizzare assistenza e processi interni.",
         description:"TileDesk è una piattaforma di intelligenza artificiale per l’automazione del customer service che consente alle organizzazioni di creare e gestire agenti conversazionali intelligenti per il supporto a clienti e utenti interni.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese e Pubblica Amministrazione che vogliono automatizzare l'assistenza a clienti e cittadini e supportare i team interni con agenti conversazionali.",
+        problem:"I team di assistenza sono sommersi da richieste ripetitive su più canali: senza automazione i tempi di risposta si allungano ed è difficile garantire un servizio omogeneo e scalabile.",
         maturity:"TRL 9 · Conversational AI",
         differentiator:"Piattaforma AI end-to-end per la creazione di agenti conversazionali automatizzati, utilizzabili sia nel customer service sia come copilot interni; riduce il carico sui team di supporto e migliora qualità e scalabilità dei servizi.",
         usecases:[
@@ -468,7 +482,8 @@ export const startups = [
         area:"GreenTech & Smart Cities",
         what:"Trasforma i rifiuti in dati tramite riconoscimento automatico con AI.",
         description:"Ganiga sviluppa soluzioni di smart waste management basate su intelligenza artificiale e computer vision, con l’obiettivo di trasformare la gestione dei rifiuti da processo manuale e inefficiente a sistema intelligente e data-driven.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a gestori pubblici e privati dei rifiuti, municipalizzate, aziende e Pubblica Amministrazione che vogliono rendere la raccolta più efficiente e data-driven.",
+        problem:"La gestione dei rifiuti è ancora in gran parte manuale e priva di dati affidabili: ne derivano errori di differenziazione, contaminazione dei materiali, tassi di riciclo più bassi e costi logistici elevati.",
         maturity:"TRL 9 · Intelligenza artificiale & computer vision",
         differentiator:"Nuova generazione di infrastrutture intelligenti per la raccolta e gestione dei rifiuti, che supera l’approccio tradizionale privo di dati; riduce contaminazione, aumenta il riciclo e ottimizza costi logistici e ambientali.",
         usecases:[
@@ -496,7 +511,8 @@ export const startups = [
         area:"Intelligenza artificiale / Generative AI",
         what:"Analisi e interpretazione dei feedback clienti tramite Generative AI.",
         description:"i2d è una piattaforma di intelligenza artificiale e generative AI che consente alle aziende di raccogliere, interpretare e trasformare il feedback dei clienti in insight operativi e strategie data-driven. La soluzione integra componenti software e hardware.",
-        audience:"PMI, corporate, pubblica amministrazione",
+        audience:"Si rivolge a imprese e Pubblica Amministrazione che vogliono raccogliere e interpretare il feedback di clienti e cittadini per migliorare servizi ed esperienza.",
+        problem:"Il feedback di clienti e cittadini arriva da molti punti di contatto, fisici e digitali, in forma non strutturata: senza strumenti adeguati resta disperso e difficile da trasformare in decisioni.",
         maturity:"TRL 7 · Generative AI",
         differentiator:"Combina InsightGPT e YouFeed in una piattaforma end-to-end di raccolta e analisi dei feedback da molteplici touchpoint (fisici e digitali); trasforma dati qualitativi non strutturati in insight immediatamente utilizzabili.",
         usecases:[
@@ -525,7 +541,8 @@ export const startups = [
         area:"Silver economy / Senior living",
         what:"Piattaforma digitale IoT per migliorare autonomia e gestione nel senior living.",
         description:"Yourease è una piattaforma tecnologica dedicata al Senior Living e alla cura assistita, progettata per migliorare il benessere, l’indipendenza e la qualità della vita delle persone anziane.",
-        audience:"Assisted Living, Independent Living, gestori di comunità residenziali senior",
+        audience:"Si rivolge a strutture di Assisted Living e Independent Living, RSA e gestori di comunità residenziali per anziani, oltre ai servizi di welfare territoriale.",
+        problem:"Le strutture per anziani gestiscono ancora molte attività in modo manuale e frammentato: mancano strumenti integrati per monitorare gli ambienti, favorire l'autonomia dei residenti e coordinare staff e familiari.",
         maturity:"TRL 8 · IoT",
         differentiator:"Piattaforma integrata che combina piattaforma software, dispositivi IoT, app e integrazioni per creare un ecosistema digitale dedicato al senior living; abilita una gestione moderna delle strutture assistite favorendo autonomia, efficienza e comunicazione.",
         usecases:[
