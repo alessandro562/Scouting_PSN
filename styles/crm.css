@@ -6,11 +6,13 @@
 /* ---- Topbar compatta ---------------------------------------------------- */
 .crm-topbar {
   position: sticky; top: 0; z-index: 30;
-  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
   backdrop-filter: saturate(1.3) blur(10px);
   border-bottom: 1px solid var(--line-soft);
-  padding: 15px 0 11px;
-  margin-bottom: 14px;
+  /* full-bleed: annulla il padding laterale di main e lo riapplica dentro,
+     così lo sfondo copre le gutter e i contenuti hanno respiro ai lati. */
+  margin: 0 -42px 14px;
+  padding: 16px 42px 12px;
 }
 .topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .topbar-lead { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
@@ -119,7 +121,7 @@ body.density-compact .kchip { padding: 2px 8px; }
 
 /* ---- Responsive --------------------------------------------------------- */
 @media (max-width: 860px) {
-  .crm-topbar { position: static; }
+  .crm-topbar { position: static; margin: 0 -16px 14px; padding: 14px 16px 12px; }
   .topbar-actions { gap: 6px; }
   .topbar-cmd { display: none; }
 }
