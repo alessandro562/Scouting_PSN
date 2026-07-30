@@ -687,6 +687,53 @@ export const startups = [
         traction:"2.000+ GitHub star, 450+ install/settimana in 45+ Paesi; engineer di Microsoft, Google, Cisco e Red Hat tra gli utenti; deployment presso organizzazioni corporate, critiche e governative. Membro NVIDIA Inception e Anthropic Cyber Verification Program. Dic 2025: cattura live dell'operazione del threat group TeamPCP, accreditata dalla Cloud Security Alliance. Prodotti: Beelzebub Cloud (managed), Arcangelo, Caronte.",
         keyPeople:"Mario Candela (Founder, creatore del progetto open-source beelzebub)",
         toConfirm:["trl","valuation","keyPeople"]
+      },
+      {
+        id:"focoos",
+        name:"Focoos AI",
+        area:"AI / Computer Vision · piattaforma per reti neurali efficienti",
+        what:"Piattaforma che semplifica e accelera l'adozione della visione artificiale con reti neurali pronte all'uso e facilmente adattabili, per portare funzionalità di visione avanzata su qualsiasi dispositivo — anche a basso consumo — riducendo tempi e costi di sviluppo.",
+        description:"Focoos AI è una deep-tech, spin-off del Politecnico di Torino (DAUIN), che rende la visione artificiale accessibile a qualsiasi settore e dispositivo. La piattaforma copre l'intero ciclo di vita della vision AI — dalla preparazione del dataset al training, ottimizzazione, deployment e monitoraggio — offrendo reti neurali pronte all'uso e facilmente adattabili. I modelli creati con la tecnologia proprietaria sono fino a 4× più efficienti e 10× più veloci rispetto agli standard di mercato, abilitando l'esecuzione anche su dispositivi a basso consumo energetico. Sull'applicazione verticale Sentinel, la piattaforma diventa un 'operatore virtuale intelligente' per le videocamere: analizza gli stream comprendendo le situazioni (non solo il movimento) e restituisce eventi classificati, ricercabili in linguaggio naturale.",
+        problem:"Adottare la visione artificiale è oggi costoso e complesso: richiede competenze specialistiche, lunghi tempi di sviluppo e training su misura, e hardware potente/energivoro. Questo limita l'accesso alle tecnologie di visione avanzata per molte applicazioni e settori industriali, soprattutto su dispositivi edge a basso consumo.",
+        relevance:"Molto rilevante come abilitatore AI trasversale per la PA e l'industria: porta la visione artificiale su edge e dispositivi a basso consumo (efficienza energetica, privacy-by-design con dati on-edge) con applicazioni dirette a sicurezza, smart cities, monitoraggio traffico e safety sul lavoro.",
+        audience:"B2B e B2G: sviluppatori, integratori e aziende che vogliono incorporare la visione artificiale nei propri prodotti; settori industria/manifattura, retail, banche, musei, infrastrutture critiche, smart cities e mobilità.",
+        maturity:"Startup deep-tech (fondata nov. 2022, Torino, spin-off Politecnico di Torino, 2-10 dipendenti) con piattaforma live (app.focoos.ai) e applicazione verticale Sentinel su hardware certificato; seed €2,65M (2025) e I3P Start-up of the Year 2025.",
+        usecases:[
+          "Reti neurali di computer vision pronte all'uso e adattabili, senza training specifico per cliente ('zero customer-specific training')",
+          "Modelli efficienti (fino a 4× più efficienti, 10× più veloci) eseguibili su edge e dispositivi a basso consumo (es. NVIDIA Orin NX)",
+          "Ciclo di vita vision AI completo: dataset, training, ottimizzazione, deployment e monitoraggio dalla piattaforma",
+          "Sentinel — analisi video intelligente: safety sul lavoro (DPI, rischi macchinari), intrusione intent-based, vandalismo, aggressioni, traffico, prevenzione furti",
+          "Eventi classificati (tipo, severità, contesto, priorità) e ricerca in linguaggio naturale via LLM, integrabili con VMS/NVR tramite REST API/JSON"
+        ],
+        technologies:[
+          ["Reti neurali efficienti proprietarie","Modelli fino a 4× più efficienti e 10× più veloci rispetto agli standard di mercato"],
+          ["Edge & low-power","Inferenza on-edge (H.264/H.265), i dati restano sull'infrastruttura del cliente; da 1-2 stream su Orin NX fino a 48 stream su server"],
+          ["Vision AI lifecycle platform","Dataset, training, ottimizzazione, deployment e monitoraggio in un'unica piattaforma (app.focoos.ai)"],
+          ["Sentinel — AI agents video","Catalogo di agenti (safety, intrusione, vandalismo, traffico…) con classificazione eventi e priorità"],
+          ["Ricerca in linguaggio naturale (LLM)","Interrogazione del database eventi in linguaggio naturale; integrazione REST API/JSON con VMS/NVR"]
+        ],
+        differentiator:"Efficienza dei modelli (fino a 4× più efficienti, 10× più veloci) che porta la visione artificiale su edge e dispositivi a basso consumo, riducendo tempi e costi di sviluppo; reti pronte all'uso senza training specifico per cliente, privacy-by-design (dati on-edge) e comprensione comportamentale (non solo regole). Tecnologia proprietaria da ricerca del Politecnico di Torino.",
+        input:"Immagini/stream video (RTSP, clip d'allarme, segnali di terze parti) e dataset del cliente.",
+        processing:"Reti neurali efficienti ottimizzate per l'hardware target (edge/low-power → server), con inferenza real-time; per Sentinel, classificazione degli eventi e ranking di priorità.",
+        output:"Funzionalità di visione integrabili nei prodotti del cliente ed eventi classificati/ricercabili (tipo, severità, contesto, priorità) via REST API/JSON.",
+        poc:"Piattaforma live (app.focoos.ai) e applicazione Sentinel con tier hardware certificati (edge Orin NX, workstation/server RTX); modelli fino a 4× più efficienti e 10× più veloci. Seed €2,65M (2025) guidato da Galaxia, PiemonteNext, VC Partners SGR, Vertis SGR, Vento, Exor Ventures. I3P Start-up of the Year 2025.",
+        duration:"",
+        prereq:"Caso d'uso di visione (dominio/dataset) e hardware target (edge/workstation/server) o infrastruttura videocamere esistente.",
+        kpi:"Efficienza/velocità dei modelli (×), consumo energetico, tempi e costi di sviluppo, tempo di risposta (sub-3s su hardware certificato), riduzione del carico di verifica.",
+        deepen:"Ampiezza del catalogo modelli/agenti, referenze industriali e metriche di efficienza su hardware reale.",
+        why:"Il valore dipende dall'efficienza dei modelli sull'hardware target, dalla facilità di adattamento senza training su misura e dalle referenze nei settori applicativi (industria, smart cities, sicurezza).",
+        material:"Benchmark di efficienza/velocità, catalogo modelli/agenti Sentinel, requisiti hardware certificati, referenze e pricing.",
+        next1:"Individuare un ente/impresa con un caso d'uso di visione artificiale (safety, smart cities, monitoraggio) adatto all'edge.",
+        next2:"Definire dominio/dataset, hardware target e integrazione con l'infrastruttura videocamere/VMS esistente.",
+        nextOut:"Piano PoC con modello/agente selezionato, metriche di efficienza e tempo di risposta e criteri di adozione.",
+        sede:"Torino",
+        founded:"2022",
+        website:"https://www.focoos.ai",
+        trl:"8",
+        valuation:"Seed €2,65M (2025), guidato da Galaxia, PiemonteNext, VC Partners SGR, Vertis SGR, Vento, Exor Ventures",
+        traction:"Spin-off del Politecnico di Torino (DAUIN); modelli fino a 4× più efficienti e 10× più veloci rispetto agli standard di mercato; piattaforma live (app.focoos.ai) e applicazione verticale Sentinel. Seed €2,65M (2025). I3P Start-up of the Year 2025. Parte dell'ecosistema OGR Tech / I3P.",
+        keyPeople:"Antonio Tavera (Co-Founder), Fabio Cermelli (Co-Founder), Barbara Caputo (Co-Founder, Professoressa al Politecnico di Torino)",
+        toConfirm:["trl"]
       }
     ];
 
@@ -854,6 +901,13 @@ export const psnTaxonomy = {
         innovation: "AI-native security · Purple-team autonomo · Deception a runtime · MCP honeypot · Agentic security",
         usecase: "Difesa a machine-speed contro attacchi AI-driven con deception e SOC autonomo",
         note: "Rientra nella Sicurezza & Cybersecurity per la difesa AI-native a machine-speed (deception a runtime, SOC autonomo, sicurezza degli agenti AI/LLM) con allineamento nativo a NIS2/DORA/EU AI Act; forte rilevanza per PA, infrastrutture critiche e organizzazioni governative."
+      },
+      focoos: {
+        primary: "Data Intelligence",
+        secondary: "Computer Vision · Edge/Low-power AI · Video Analytics",
+        innovation: "Reti neurali efficienti · Computer Vision · Edge AI · Video Analytics · LLM search",
+        usecase: "Visione artificiale efficiente su edge e analisi video intelligente per industria, sicurezza e smart cities",
+        note: "Abilitatore AI trasversale: porta la computer vision su edge e dispositivi a basso consumo con modelli efficienti (privacy-by-design, dati on-edge). Forte rilevanza per Smart Cities, Sicurezza e monitoraggio (con l'applicazione verticale Sentinel) oltre che come piattaforma di sviluppo vision AI per la PA e l'industria."
       }
     };
 
@@ -889,6 +943,7 @@ export const SLUG_SECTOR = {
   loki: "IoT/Edge",
   nextgcloud: "Cybersecurity",
   beelzebub: "Cybersecurity",
+  focoos: "AI",
 };
 
 // Elenco di settori suggeriti per il form (l'utente può comunque digitarne altri).
