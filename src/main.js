@@ -4,19 +4,28 @@
 // ===========================================================================
 import { isConfigured } from "./supabase.js";
 import { getSession, onAuthChange, signIn, signUp, signOut } from "./auth.js";
-import { state, subscribe, reloadAll, noteCounts } from "./store.js";
+import { state, subscribe, reloadAll, noteCounts, setCurrentUser } from "./store.js";
 import { ensureSeeded } from "./data/seed-runner.js";
 import { renderBoard, setNoteCounts } from "./ui/board.js";
 import { renderReport } from "./ui/report.js";
 import { renderTable, setTableNoteCounts } from "./ui/table.js";
 import { renderAnalytics } from "./ui/analytics.js";
 import { mountFilterBar, syncControls, renderSavedViews } from "./ui/filterBar.js";
-import { onFiltersChange } from "./ui/filters.js";
+import {
+  onFiltersChange, getFilters, setFilters, getFilteredStartups,
+  psnPrimary, sectorOf, stageName, trlOf, valuationOf, sedeOf,
+} from "./ui/filters.js";
 import { openStartupForm } from "./ui/startupForm.js";
 import { openStageMenu } from "./ui/stages.js";
 import { cardsForStage } from "./store.js";
 import { subscribeRealtime, unsubscribeRealtime } from "./realtime.js";
+import { openPalette } from "./ui/palette.js";
+import { openActivityDrawer } from "./ui/activity.js";
 import { toast, toastError } from "./ui/toast.js";
+
+const LS_VIEW = "crm-view";
+const LS_DENSITY = "crm-density";
+const LS_FILTERS = "crm-filters";
 
 const el = (id) => document.getElementById(id);
 let currentView = "board";
@@ -24,10 +33,10 @@ let booted = false;
 let rendering = false;
 
 const VIEWS = {
-  board: { showHero: true, showFilter: true },
-  table: { showHero: false, showFilter: true },
-  analytics: { showHero: true, showFilter: true },
-  report: { showHero: false, showFilter: false },
+  board: { title: "Board pipeline", showFilter: true, showKpis: true },
+  table: { title: "Tabella / Database", showFilter: true, showKpis: true },
+  analytics: { title: "Analytics", showFilter: true, showKpis: true },
+  report: { title: "Report & sintesi", showFilter: false, showKpis: false },
 };
 
 // --------------------------------------------------------------------------
@@ -39,11 +48,12 @@ async function render() {
   try {
     try {
       const counts = await noteCounts();
+      window.__noteCounts = counts;
       setNoteCounts(counts);
       setTableNoteCounts(counts);
     } catch (e) { /* i conteggi note sono best-effort */ }
 
-    renderHeroMetrics();
+    renderTopbar();
     renderBoard(el("board"));
     renderTable(el("table-view"));
     renderAnalytics(el("analytics-view"));
@@ -54,30 +64,95 @@ async function render() {
   }
 }
 
-function renderHeroMetrics() {
-  const host = el("hero-metrics");
-  if (!host) return;
+function escHtml(v) {
+  return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function avgTrl() {
+  const trls = state.startups
+    .map((s) => parseInt(s.data && s.data.trl, 10))
+    .filter((n) => !Number.isNaN(n));
+  if (!trls.length) return null;
+  return trls.reduce((a, b) => a + b, 0) / trls.length;
+}
+
+function kpiChip(label, value, tone = "") {
+  return `<span class="kpi ${tone}"><span class="kpi-val">${escHtml(value)}</span><span class="kpi-lab">${escHtml(label)}</span></span>`;
+}
+
+// Toolbar compatta: titolo vista, conteggio risultati, striscia KPI densa.
+function renderTopbar() {
+  const cfg = VIEWS[currentView] || VIEWS.board;
+
+  const titleEl = el("topbar-title");
+  if (titleEl) titleEl.textContent = cfg.title;
+
   const total = state.startups.length;
-  const cards = [
-    { label: "Startup totali", value: total, text: "Soluzioni in pipeline nel CRM di scouting." },
-  ];
-  state.stages.slice(0, 3).forEach((st) => {
-    cards.push({
-      label: st.name,
-      value: cardsForStage(st.id).length,
-      text: `Startup attualmente in fase “${st.name}”.`,
-    });
+  const shown = getFilteredStartups().length;
+  const countEl = el("topbar-count");
+  if (countEl) countEl.textContent = shown === total ? `${total} startup` : `${shown} / ${total} startup`;
+
+  const kpis = el("topbar-kpis");
+  if (!kpis) return;
+  if (!cfg.showKpis) { kpis.classList.add("hidden"); kpis.innerHTML = ""; return; }
+  kpis.classList.remove("hidden");
+  const avg = avgTrl();
+  const chips = [kpiChip("Totali", total, "kpi-strong")];
+  state.stages.forEach((st) => chips.push(kpiChip(st.name, cardsForStage(st.id).length)));
+  chips.push(kpiChip("TRL medio", avg == null ? "—" : avg.toFixed(1).replace(".", ","), "kpi-accent"));
+  kpis.innerHTML = chips.join("");
+}
+
+// --------------------------------------------------------------------------
+// Densità card (Notion-like) — persistita in localStorage
+// --------------------------------------------------------------------------
+function applyDensity() {
+  const compact = localStorage.getItem(LS_DENSITY) === "compact";
+  document.body.classList.toggle("density-compact", compact);
+  const btn = el("topbar-density");
+  if (btn) btn.setAttribute("aria-pressed", compact ? "true" : "false");
+}
+function toggleDensity() {
+  const compact = localStorage.getItem(LS_DENSITY) === "compact";
+  localStorage.setItem(LS_DENSITY, compact ? "comfortable" : "compact");
+  applyDensity();
+}
+
+// --------------------------------------------------------------------------
+// Export CSV delle startup filtrate
+// --------------------------------------------------------------------------
+function exportCsv() {
+  const rows = getFilteredStartups();
+  const header = ["Nome", "Settore", "Fase", "Verticale PSN", "TRL", "Valuation", "Sede", "Note", "Aggiornato"];
+  const counts = window.__noteCounts || {};
+  const esc = (v) => {
+    const s = String(v == null ? "" : v).replace(/"/g, '""');
+    return /[",\n;]/.test(s) ? `"${s}"` : s;
+  };
+  const lines = [header.join(",")];
+  rows.forEach((s) => {
+    lines.push([
+      esc(s.name),
+      esc(sectorOf(s)),
+      esc(stageName(s.stage_id)),
+      esc(psnPrimary(s)),
+      esc(trlOf(s) ?? ""),
+      esc(valuationOf(s)),
+      esc(sedeOf(s)),
+      esc(counts[s.id] || 0),
+      esc(s.updated_at ? new Date(s.updated_at).toLocaleDateString("it-IT") : ""),
+    ].join(","));
   });
-  host.innerHTML = cards
-    .map(
-      (m) => `
-      <div class="metric">
-        <div class="label">${m.label}</div>
-        <div class="value">${m.value}</div>
-        <div class="text">${m.text}</div>
-      </div>`
-    )
-    .join("");
+  const blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `scouting-psn_${rows.length}-startup.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  toast(`Esportate ${rows.length} startup in CSV`, "info");
 }
 
 // --------------------------------------------------------------------------
@@ -92,6 +167,11 @@ async function boot(session) {
   el("app")?.classList.remove("hidden");
   const emailEl = el("user-email");
   if (emailEl) emailEl.textContent = session?.user?.email || "";
+  setCurrentUser(session?.user);
+
+  applyDensity();
+  restoreFilters();
+  currentView = localStorage.getItem(LS_VIEW) || "board";
 
   try {
     await ensureSeeded();
@@ -102,11 +182,21 @@ async function boot(session) {
 
   mountFilterBar(el("filter-bar"));
   subscribe(() => { render(); });
-  onFiltersChange(() => { render(); });
+  onFiltersChange(() => { persistFilters(); render(); });
   await render();
   syncControls();
   setView(currentView);
   subscribeRealtime();
+}
+
+function persistFilters() {
+  try { localStorage.setItem(LS_FILTERS, JSON.stringify(getFilters())); } catch (e) { /* ignora */ }
+}
+function restoreFilters() {
+  try {
+    const raw = localStorage.getItem(LS_FILTERS);
+    if (raw) setFilters(JSON.parse(raw));
+  } catch (e) { /* ignora */ }
 }
 
 function teardown() {
@@ -129,17 +219,51 @@ function wireChrome() {
   onClick("view-analytics-btn", () => setView("analytics"));
   onClick("view-report-btn", () => setView("report"));
 
-  // Nuova startup / nuova colonna (sidebar + hero)
+  // Nuova startup / nuova colonna (sidebar + topbar)
   onClick("nav-add-startup", () => openStartupForm(null, {}));
-  onClick("hero-add-startup", () => openStartupForm(null, {}));
+  onClick("topbar-add-startup", () => openStartupForm(null, {}));
   onClick("nav-add-column", () => openStageMenu(null, "create"));
-  onClick("hero-add-column", () => openStageMenu(null, "create"));
+  onClick("topbar-add-column", () => openStageMenu(null, "create"));
+
+  // Toolbar: palette, registro attività, densità, export CSV
+  onClick("topbar-cmd", () => openPalette({ setView, openStartupForm, openStageMenu }));
+  onClick("topbar-activity", () => openActivityDrawer());
+  onClick("topbar-density", () => toggleDensity());
+  onClick("topbar-export", () => exportCsv());
+
+  // Scorciatoie globali da tastiera
+  document.addEventListener("keydown", onGlobalKey);
 
   // Logout
   el("logout-btn")?.addEventListener("click", async () => {
     await signOut();
     toast("Sei uscito", "info");
   });
+}
+
+function typingInField(e) {
+  const t = e.target;
+  if (!t) return false;
+  const tag = (t.tagName || "").toLowerCase();
+  return tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable;
+}
+
+function onGlobalKey(e) {
+  // ⌘K / Ctrl+K → command palette (anche mentre si digita)
+  if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+    e.preventDefault();
+    openPalette({ setView, openStartupForm, openStageMenu });
+    return;
+  }
+  if (typingInField(e) || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (document.querySelector(".modal-overlay, .palette-overlay, .form-modal, .mini-dialog")) return;
+
+  if (e.key === "1") { setView("board"); }
+  else if (e.key === "2") { setView("table"); }
+  else if (e.key === "3") { setView("analytics"); }
+  else if (e.key === "4") { setView("report"); }
+  else if (e.key === "n" || e.key === "N") { e.preventDefault(); openStartupForm(null, {}); }
+  else if (e.key === "/") { e.preventDefault(); document.getElementById("fb-search")?.focus(); }
 }
 
 function setView(view) {
@@ -149,8 +273,9 @@ function setView(view) {
     el(`${v}-view`)?.classList.toggle("hidden", v !== view);
     el(`view-${v}-btn`)?.classList.toggle("active", v === view);
   });
-  el("overview")?.classList.toggle("hidden", !cfg.showHero);
   el("filter-bar")?.classList.toggle("hidden", !cfg.showFilter);
+  try { localStorage.setItem(LS_VIEW, view); } catch (e) { /* ignora */ }
+  renderTopbar();
 }
 
 // --------------------------------------------------------------------------

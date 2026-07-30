@@ -13,6 +13,13 @@ export const state = {
 
 const listeners = new Set();
 
+// Utente corrente (cache sincrona per avatar/identità note/palette).
+export const currentUser = { id: null, email: null };
+export function setCurrentUser(user) {
+  currentUser.id = user?.id ?? null;
+  currentUser.email = user?.email ?? null;
+}
+
 // Iscrizione ai cambiamenti dello store. Ritorna una funzione di annullamento.
 export function subscribe(fn) {
   listeners.add(fn);
@@ -106,12 +113,27 @@ export function computeMidpoint(prevPos, nextPos) {
 // --------------------------------------------------------------------------
 export async function moveCard(id, stageId, position) {
   const local = startupById(id);
-  if (local) { local.stage_id = stageId; local.position = position; }
-  const { error } = await supabase
-    .from("startups")
-    .update({ stage_id: stageId, position })
-    .eq("id", id);
+  const prevStage = local?.stage_id ?? null;
+  const stageChanged = prevStage !== stageId;
+
+  const update = { stage_id: stageId, position };
+  if (stageChanged && local) {
+    // Timbra "in fase da" per il calcolo dell'aging della card.
+    const nowIso = new Date().toISOString();
+    update.data = { ...(local.data || {}), stageSince: nowIso };
+  }
+  if (local) {
+    local.stage_id = stageId;
+    local.position = position;
+    if (update.data) local.data = update.data;
+  }
+  const { error } = await supabase.from("startups").update(update).eq("id", id);
   if (error) throw error;
+
+  if (stageChanged) {
+    const nameOf = (sid) => state.stages.find((s) => s.id === sid)?.name || (sid ? "—" : "Senza fase");
+    logActivity("move", id, { name: local?.name, from: nameOf(prevStage), to: nameOf(stageId) });
+  }
 }
 
 export async function upsertStartup(payload) {
@@ -125,6 +147,7 @@ export async function upsertStartup(payload) {
       .select()
       .single();
     if (error) throw error;
+    logActivity("update", id, { name: data?.name });
     return data;
   }
   const { data: userData } = await supabase.auth.getUser();
@@ -136,6 +159,7 @@ export async function upsertStartup(payload) {
     .select()
     .single();
   if (error) throw error;
+  logActivity("create", data?.id, { name: data?.name });
   return data;
 }
 
@@ -214,6 +238,7 @@ export async function addNote(startupId, body) {
     .select()
     .single();
   if (error) throw error;
+  logActivity("note", startupId, { excerpt: String(body).slice(0, 80) });
   return data;
 }
 
@@ -251,4 +276,32 @@ export async function addSavedView(name, config) {
 export async function deleteSavedView(id) {
   const { error } = await supabase.from("saved_views").delete().eq("id", id);
   if (error) throw error;
+}
+
+// --------------------------------------------------------------------------
+// Registro attività (audit trail condiviso) — best-effort, non blocca mai
+// l'operazione principale se la tabella `activity` non è ancora stata creata.
+// --------------------------------------------------------------------------
+export async function logActivity(type, startupId, detail = {}) {
+  try {
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData?.user;
+    await supabase.from("activity").insert({
+      startup_id: startupId ?? null,
+      actor_id: user?.id ?? null,
+      actor_email: user?.email ?? null,
+      type,
+      detail,
+    });
+  } catch (e) {
+    console.warn("logActivity non disponibile:", e?.message || e);
+  }
+}
+
+export async function fetchActivity({ startupId = null, limit = 40 } = {}) {
+  let q = supabase.from("activity").select("*").order("created_at", { ascending: false }).limit(limit);
+  if (startupId) q = q.eq("startup_id", startupId);
+  const { data, error } = await q;
+  if (error) { console.warn("fetchActivity non disponibile:", error.message); return []; }
+  return data || [];
 }

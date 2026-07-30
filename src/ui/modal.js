@@ -11,10 +11,13 @@ import {
   moveCard,
   deleteStartup,
   emitChange,
+  currentUser,
 } from "../store.js";
 import { supabase } from "../supabase.js";
 import { openStartupForm } from "./startupForm.js";
 import { toast, toastError } from "./toast.js";
+import { avatarHtml, displayName } from "./avatar.js";
+import { renderActivityTimeline } from "./activity.js";
 
 let openId = null;
 let currentUserId = null;
@@ -45,10 +48,11 @@ function toDetail(row) {
   return { ...(row.data || {}), psn: row.psn, name: row.name, sector: row.sector, id: row.slug || row.id };
 }
 
-export async function openStartupModal(row) {
+export async function openStartupModal(row, opts = {}) {
   openId = row.id;
   const { data: userData } = await supabase.auth.getUser();
   currentUserId = userData?.user?.id ?? null;
+  const myEmail = userData?.user?.email || currentUser.email || "";
 
   const s = toDetail(row);
   const stageOptions = state.stages
@@ -83,9 +87,20 @@ export async function openStartupModal(row) {
             <h3>Note</h3>
             <div class="notes-list" id="notes-list"><p class="muted">Caricamento…</p></div>
             <form class="note-form" id="note-form">
-              <textarea id="note-input" rows="2" placeholder="Aggiungi una nota…"></textarea>
-              <button type="submit" class="btn primary">Aggiungi nota</button>
+              <div class="note-form-avatar">${avatarHtml(myEmail, 30)}</div>
+              <div class="note-form-main">
+                <textarea id="note-input" rows="2" placeholder="Aggiungi una nota…"></textarea>
+                <div class="note-form-foot">
+                  <span class="note-as">Stai scrivendo come <strong>${esc(displayName(myEmail))}</strong></span>
+                  <button type="submit" class="btn primary">Aggiungi nota</button>
+                </div>
+              </div>
             </form>
+          </section>
+
+          <section class="activity-section">
+            <h3>Attività</h3>
+            <div id="modal-activity"><p class="muted">Caricamento…</p></div>
           </section>
         </div>
       </div>
@@ -94,6 +109,11 @@ export async function openStartupModal(row) {
 
   wireModal(row);
   await refreshNotes();
+  renderActivityTimeline(row.id, root().querySelector("#modal-activity"));
+  if (opts.focusNote) {
+    const ta = root().querySelector("#note-input");
+    if (ta) { ta.focus(); ta.scrollIntoView({ block: "center" }); }
+  }
 }
 
 function wireModal(row) {
@@ -146,6 +166,7 @@ function wireModal(row) {
       await addNote(row.id, body);
       input.value = "";
       await refreshNotes();
+      renderActivityTimeline(row.id, root().querySelector("#modal-activity"));
       emitChange(); // aggiorna il conteggio note sulle tile
     } catch (err) {
       toastError("Errore nell'aggiunta della nota", err);
@@ -174,17 +195,23 @@ export async function refreshNotes() {
       return;
     }
     listEl.innerHTML = notes
-      .map(
-        (n) => `
-        <div class="note-item">
-          <div class="note-meta">
-            <span class="note-author">${esc(n.author_email || "utente")}</span>
-            <span class="note-time">${relTime(n.created_at)}</span>
-            ${n.author_id && n.author_id === currentUserId ? `<button class="note-del" data-note-del="${esc(n.id)}" title="Elimina nota">🗑</button>` : ""}
+      .map((n) => {
+        const mine = n.author_id && n.author_id === currentUserId;
+        const email = n.author_email || "";
+        return `
+        <div class="note-item ${mine ? "note-mine" : ""}">
+          ${avatarHtml(email, 30)}
+          <div class="note-main">
+            <div class="note-meta">
+              <span class="note-author" title="${esc(email)}">${esc(displayName(email))}</span>
+              ${mine ? `<span class="note-you">tu</span>` : ""}
+              <span class="note-time">${relTime(n.created_at)}</span>
+              ${mine ? `<button class="note-del" data-note-del="${esc(n.id)}" title="Elimina nota">🗑</button>` : ""}
+            </div>
+            <div class="note-body">${esc(n.body)}</div>
           </div>
-          <div class="note-body">${esc(n.body)}</div>
-        </div>`
-      )
+        </div>`;
+      })
       .join("");
 
     listEl.querySelectorAll("[data-note-del]").forEach((btn) => {

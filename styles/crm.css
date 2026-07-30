@@ -1,0 +1,125 @@
+/* ===========================================================================
+   crm.css — chrome professionale del CRM: toolbar compatta + KPI densi,
+   command palette (⌘K), drawer registro attività, avatar utente, densità.
+   =========================================================================== */
+
+/* ---- Topbar compatta ---------------------------------------------------- */
+.crm-topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  backdrop-filter: saturate(1.3) blur(10px);
+  border-bottom: 1px solid var(--line-soft);
+  padding: 15px 0 11px;
+  margin-bottom: 14px;
+}
+.topbar-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.topbar-lead { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.topbar-title { margin: 0; font-size: 20px; font-weight: 700; color: var(--ink); letter-spacing: -.01em; }
+.topbar-count { font-size: 12.5px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* Pulsante ricerca/comandi con scorciatoia */
+.topbar-cmd {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+  border-radius: 12px; padding: 8px 12px; font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+.topbar-cmd:hover { border-color: color-mix(in srgb, var(--psn-blue) 45%, var(--line)); color: var(--ink); box-shadow: var(--shadow-soft); }
+.topbar-cmd .tk-ico { font-size: 15px; }
+.topbar-cmd kbd, .palette kbd, .palette-foot kbd {
+  font-family: var(--font); font-size: 11px; font-weight: 700; color: var(--ink);
+  background: var(--surface-soft); border: 1px solid var(--line); border-bottom-width: 2px;
+  border-radius: 6px; padding: 1px 6px; line-height: 1.4;
+}
+
+/* KPI densi */
+.topbar-kpis { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.topbar-kpis.hidden { display: none; }
+.kpi {
+  display: inline-flex; align-items: baseline; gap: 7px;
+  background: var(--surface-soft); border: 1px solid var(--line-soft);
+  border-radius: 10px; padding: 6px 12px;
+}
+.kpi-val { font-size: 16px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.kpi-lab { font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.kpi.kpi-strong { background: color-mix(in srgb, var(--psn-blue) 10%, var(--surface)); border-color: color-mix(in srgb, var(--psn-blue) 24%, var(--line-soft)); }
+.kpi.kpi-strong .kpi-val { color: var(--psn-navy); }
+.kpi.kpi-accent { background: color-mix(in srgb, var(--psn-cyan) 14%, var(--surface)); border-color: color-mix(in srgb, var(--psn-cyan) 30%, var(--line-soft)); }
+
+/* ---- Avatar utente (condiviso: note, attività) -------------------------- */
+.uavatar {
+  display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  border-radius: 50%; background: var(--uav, var(--psn-blue)); color: #fff;
+  font-weight: 700; line-height: 1; letter-spacing: .01em; box-shadow: 0 1px 2px rgba(0,0,79,.18);
+  text-transform: uppercase;
+}
+
+/* ---- Command palette (⌘K) ---------------------------------------------- */
+.palette-overlay {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(6, 10, 40, .42); backdrop-filter: blur(3px);
+  display: flex; align-items: flex-start; justify-content: center; padding: 12vh 20px 20px;
+}
+.palette {
+  width: min(640px, 100%); background: var(--surface); border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(6,10,40,.4); overflow: hidden; border: 1px solid var(--line-soft);
+  display: flex; flex-direction: column; max-height: 66vh;
+}
+.palette-search { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line-soft); }
+.palette-ico { font-size: 18px; color: var(--muted); }
+.palette-search input {
+  flex: 1; border: 0; outline: none; background: transparent; font-family: var(--font);
+  font-size: 16px; color: var(--ink);
+}
+.palette-list { overflow-y: auto; padding: 6px; }
+.palette-item {
+  display: flex; align-items: center; gap: 11px; padding: 9px 12px; border-radius: 10px; cursor: pointer;
+}
+.palette-item .pi-ico { width: 22px; text-align: center; font-size: 15px; flex: 0 0 auto; }
+.palette-item .pi-label { font-size: 14px; color: var(--ink); font-weight: 600; }
+.palette-item .pi-sub { margin-left: auto; font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.palette-item.active { background: color-mix(in srgb, var(--psn-blue) 14%, var(--surface)); }
+.palette-item.active .pi-label { color: var(--psn-navy); }
+.palette-empty { padding: 22px; text-align: center; color: var(--muted); font-size: 13.5px; }
+.palette-foot { padding: 9px 14px; border-top: 1px solid var(--line-soft); font-size: 11.5px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+
+/* ---- Drawer registro attività ------------------------------------------ */
+.drawer-overlay {
+  position: fixed; inset: 0; z-index: 85; background: rgba(6,10,40,.38);
+  display: flex; justify-content: flex-end;
+}
+.drawer {
+  width: min(420px, 100%); height: 100%; background: var(--surface);
+  box-shadow: -20px 0 60px rgba(6,10,40,.32); display: flex; flex-direction: column;
+  animation: drawer-in .22s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes drawer-in { from { transform: translateX(24px); opacity: .6; } to { transform: none; opacity: 1; } }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--line-soft); }
+.drawer-head h3 { margin: 0; font-size: 16px; color: var(--ink); }
+.drawer-scroll { overflow-y: auto; padding: 14px 16px; }
+.drawer-hint { font-size: 12px; color: var(--muted); }
+
+/* ---- Lista attività (drawer + timeline modale) -------------------------- */
+.act-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.act-item { display: flex; gap: 10px; align-items: flex-start; }
+.act-body { min-width: 0; }
+.act-line { font-size: 13px; color: var(--text); line-height: 1.45; }
+.act-line em { font-style: normal; font-weight: 700; color: var(--psn-navy); }
+.act-actor { font-weight: 700; color: var(--ink); }
+.act-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.act-item.act-move .uavatar { box-shadow: 0 0 0 2px color-mix(in srgb, var(--psn-blue) 30%, transparent); }
+
+/* ---- Densità compatta --------------------------------------------------- */
+body.density-compact .kcard-inner { padding: 9px 12px 10px 15px; }
+body.density-compact .kcard-what { -webkit-line-clamp: 2; margin-bottom: 7px; }
+body.density-compact .kcard-title { font-size: 14px; }
+body.density-compact .kcol-body { gap: 8px; }
+body.density-compact .kchip { padding: 2px 8px; }
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 860px) {
+  .crm-topbar { position: static; }
+  .topbar-actions { gap: 6px; }
+  .topbar-cmd { display: none; }
+}
