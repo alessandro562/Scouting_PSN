@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 2;
+export const SEED_CONTENT_VERSION = 3;
 
 export const startups = [
       {
@@ -37,7 +37,9 @@ export const startups = [
         material:"Scheda tecnica sensori, SLA manutenzione, API, pricing PoC",
         next1:"Selezionare un soggetto gestore dell’asset pubblico o partecipato con un parco container monitorabile.",
         next2:"Definire un perimetro pilota con numero container, tipologia rifiuto, storico ritiri e indicatori logistici.",
-        nextOut:"Piano PoC con sensori, responsabilità operative, indicatori e modello di estensione."
+        nextOut:"Piano PoC con sensori, responsabilità operative, indicatori e modello di estensione.",
+        website:"https://iotilize.me",
+        logo:"assets/logos/iotilize.png"
       },
       {
         id:"fedro",
@@ -474,7 +476,10 @@ export const startups = [
         trl:"9",
         valuation:"Ready to scale",
         traction:"Prodotto sul mercato · Clienti attivi · Ricavi generati",
-        keyPeople:"Michele Pomposo"
+        keyPeople:"Michele Pomposo",
+        website:"https://www.tiledesk.com",
+        logo:"assets/logos/tiledesk.png",
+        dipendenti:"11-50"
       },
       {
         id:"ganiga",
@@ -656,7 +661,11 @@ export const startups = [
         valuation:"Early traction · pre-seed (round 300 K€, 1,5 M€ post-money)",
         traction:"26 aziende qualificate, 16 contatti qualificati, 100 K€+ ricavi da 4 clienti (ricorrente ~7 K€/mese), 1 live pilot, 3 PoP; 4 NDA, 2 MOU, 2 programmi di accelerazione, 4 EOI. Premio Innovazione America (Camera dei Deputati, apr 2025). Advisory board (ToMove): TIM, IVECO, INWIT, NTT Data. Round pre-seed 300 K€ (1,5 M€ post-money), in cerca di 175 K€.",
         keyPeople:"Dario Sabella (CEO, chairman ETSI MEC, 50+ brevetti), Federica Bozzi (Founding Partner – Operations, EU STF701 Cyber Resilience Act), Maurizio Bulgarini (Founding Partner – Compliance & Data, DPO)",
-        toConfirm:["trl"]
+        logo:"assets/logos/nextgcloud.png",
+        certifications:["ISO 9001","ISO 27001","ISO 27017"],
+        awards:["Premio Innovazione America — Camera dei Deputati (2025)"],
+        clients:[{name:"TIM"},{name:"IVECO"},{name:"INWIT"},{name:"NTT Data"}],
+        toConfirm:["trl","clients"]
       },
       {
         id:"beelzebub",
@@ -703,7 +712,11 @@ export const startups = [
         valuation:"Early-stage · pre-seed/seed (fondata 2025, 2-10 dipendenti; NVIDIA Inception)",
         traction:"2.000+ GitHub star, 450+ install/settimana in 45+ Paesi; engineer di Microsoft, Google, Cisco e Red Hat tra gli utenti; deployment presso organizzazioni corporate, critiche e governative. Membro NVIDIA Inception e Anthropic Cyber Verification Program. Dic 2025: cattura live dell'operazione del threat group TeamPCP, accreditata dalla Cloud Security Alliance. Prodotti: Beelzebub Cloud (managed), Arcangelo, Caronte.",
         keyPeople:"Mario Candela (Founder, creatore del progetto open-source beelzebub)",
-        toConfirm:["trl","valuation","keyPeople"]
+        logo:"assets/logos/beelzebub.png",
+        dipendenti:"2-10",
+        awards:["Membro NVIDIA Inception","Anthropic Cyber Verification Program"],
+        clients:[{name:"Microsoft"},{name:"Google"},{name:"Cisco"},{name:"Red Hat"},{name:"Telekom Security"},{name:"OSRAM"},{name:"Datapizza"}],
+        toConfirm:["trl","valuation","keyPeople","clients"]
       },
       {
         id:"focoos",
@@ -750,6 +763,10 @@ export const startups = [
         valuation:"Seed €2,65M (2025), guidato da Galaxia, PiemonteNext, VC Partners SGR, Vertis SGR, Vento, Exor Ventures",
         traction:"Spin-off del Politecnico di Torino (DAUIN); modelli fino a 4× più efficienti e 10× più veloci rispetto agli standard di mercato; piattaforma live (app.focoos.ai) e applicazione verticale Sentinel. Seed €2,65M (2025). I3P Start-up of the Year 2025. Parte dell'ecosistema OGR Tech / I3P.",
         keyPeople:"Antonio Tavera (Co-Founder), Fabio Cermelli (Co-Founder), Barbara Caputo (Co-Founder, Professoressa al Politecnico di Torino)",
+        logo:"assets/logos/focoos.png",
+        dipendenti:"2-10",
+        investors:["Galaxia","PiemonteNext","VC Partners SGR","Vertis SGR","Vento","Exor Ventures"],
+        awards:["I3P Start-up of the Year 2025"],
         toConfirm:["trl"]
       }
     ];

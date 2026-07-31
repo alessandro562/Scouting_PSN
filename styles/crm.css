@@ -118,6 +118,8 @@ body.density-compact .kcard-what { -webkit-line-clamp: 2; margin-bottom: 7px; }
 body.density-compact .kcard-title { font-size: 14px; }
 body.density-compact .kcol-body { gap: 8px; }
 body.density-compact .kchip { padding: 2px 8px; }
+body.density-compact .kcard-logo { width: 30px; height: 30px; }
+body.density-compact .kcard-head { margin-bottom: 6px; }
 
 /* ---- Responsive --------------------------------------------------------- */
 @media (max-width: 860px) {
