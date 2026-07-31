@@ -1,18 +1,16 @@
 // ===========================================================================
 // analytics.js — vista Analytics del portfolio.
-// Hero KPI scuro + bento di pannelli, dati normalizzati e colore per-entità.
-// Identità → categoriale (settore, maturità); magnitudo → tinta unica
-// sequenziale (verticali, città); ordinale → ramp (TRL, fasi).
+// Gerarchia editoriale: un numero-guida, poi statistiche di supporto, poi i
+// pannelli in bento. Dati normalizzati e colore per-entità (chartcolors.js).
+// Identità → categoriale · magnitudo → tinta unica · ordinale → ramp.
 // ===========================================================================
 import { state } from "../store.js";
 import {
   applyFilters, psnPrimary, sectorOf, trlOf,
   cityOf, macroAreaOf, maturityBucketOf,
 } from "./filters.js";
-import { barList, stackedBar, columnChart, donut } from "./charts.js";
-import { sectorColor, maturityColor, stageColor, trlColor } from "./chartcolors.js";
-
-const SINGLE = "#5F75C5"; // tinta unica per i grafici di magnitudo
+import { barList, stackedBar, columnChart, donut, mountChartTooltip } from "./charts.js";
+import { sectorColor, maturityColor, stageColor, trlColor, SINGLE } from "./chartcolors.js";
 
 function esc(v) { return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
@@ -27,7 +25,8 @@ function countBy(list, keyFn, { dropDash = true } = {}) {
 }
 const tint = (items, color) => items.map((it) => ({ ...it, color }));
 
-function hero(list) {
+// Hero: numero-guida + statistiche di supporto.
+function hero(list, stageItems) {
   const n = list.length;
   const trls = list.map(trlOf).filter((t) => t != null);
   const avgTrl = trls.length ? (trls.reduce((a, b) => a + b, 0) / trls.length).toFixed(1).replace(".", ",") : "—";
@@ -36,17 +35,35 @@ function hero(list) {
   const sectors = new Set(list.map(sectorOf).filter((v) => v !== "—")).size;
   const verticals = new Set(list.map(psnPrimary).filter((v) => v !== "—")).size;
   const cities = new Set(list.map(cityOf).filter((v) => v !== "—")).size;
-  const cells = [
-    { v: n, l: "Startup nel perimetro", s: "sul totale filtrato" },
-    { v: avgTrl, l: "TRL medio", s: "maturità tecnologica" },
-    { v: `${ready}`, l: "Ready to scale", s: `${readyPct}% del portfolio` },
-    { v: sectors, l: "Settori", s: "categorie coperte" },
-    { v: verticals, l: "Verticali PSN", s: "aree di interesse" },
-    { v: cities, l: "Città", s: "presidio territoriale" },
+
+  // Micro-barra di composizione della pipeline dentro l'hero (contesto immediato).
+  const spark = stageItems.filter((x) => x.value > 0)
+    .map((x) => `<span style="flex:${x.value};background:${x.color}" title="${esc(x.label)}: ${x.value}"></span>`)
+    .join("");
+
+  const stats = [
+    { v: avgTrl, l: "TRL medio" },
+    { v: ready, l: "Ready to scale", s: `${readyPct}%` },
+    { v: sectors, l: "Settori" },
+    { v: verticals, l: "Verticali PSN" },
+    { v: cities, l: "Città" },
   ];
-  return `<div class="an-hero">${cells
-    .map((c, i) => `<div class="an-hcell${i === 0 ? " an-hcell-lead" : ""}"><div class="an-hval">${esc(c.v)}</div><div class="an-hlab">${esc(c.l)}</div><div class="an-hsub">${esc(c.s)}</div></div>`)
-    .join("")}</div>`;
+  return `
+    <section class="an-hero">
+      <div class="an-lead">
+        <div class="an-lead-val">${esc(n)}</div>
+        <div class="an-lead-lab">startup nel perimetro</div>
+        <div class="an-spark">${spark}</div>
+        <div class="an-lead-sub">composizione della pipeline</div>
+      </div>
+      <div class="an-stats">
+        ${stats.map((c) => `
+          <div class="an-stat">
+            <div class="an-stat-val">${esc(c.v)}${c.s ? `<span class="an-stat-tag">${esc(c.s)}</span>` : ""}</div>
+            <div class="an-stat-lab">${esc(c.l)}</div>
+          </div>`).join("")}
+      </div>
+    </section>`;
 }
 
 function panel(title, subtitle, body, cls = "") {
@@ -55,7 +72,7 @@ function panel(title, subtitle, body, cls = "") {
     <div class="an-body">${body}</div>
   </section>`;
 }
-function sectionTitle(t) { return `<h2 class="an-section">${esc(t)}</h2>`; }
+function sectionTitle(t) { return `<h2 class="an-section"><span>${esc(t)}</span></h2>`; }
 
 export function renderAnalytics(container) {
   if (!container) return;
@@ -63,7 +80,7 @@ export function renderAnalytics(container) {
   const n = list.length;
   if (!n) { container.innerHTML = `<div class="an-empty">Nessuna startup nel perimetro dei filtri attivi.</div>`; return; }
 
-  // Pipeline (fasi = ordinale → ramp)
+  // Pipeline (ordinale → ramp)
   const stageItems = state.stages.map((st, i) => ({ label: st.name, value: list.filter((s) => s.stage_id === st.id).length, color: stageColor(i) }));
 
   // Portafoglio
@@ -85,17 +102,15 @@ export function renderAnalytics(container) {
   const areaItems = tint(countBy(list, macroAreaOf).sort((a, b) => AREA_ORDER.indexOf(a.label) - AREA_ORDER.indexOf(b.label)), SINGLE);
 
   container.innerHTML = `
-    ${hero(list)}
+    ${hero(list, stageItems)}
 
-    ${sectionTitle("Pipeline")}
+    ${sectionTitle("Pipeline e portafoglio")}
     <div class="an-grid">
       ${panel("Distribuzione della pipeline", "Composizione per fase sul portfolio filtrato", stackedBar(stageItems, { total: n }), "an-wide")}
     </div>
-
-    ${sectionTitle("Portafoglio")}
-    <div class="an-grid an-grid-32">
-      ${panel("Composizione per settore", "Quota di ciascun settore", donut(sectorItems), "an-span-3")}
-      ${panel("Copertura verticali PSN", "Startup per verticale — evidenzia i gap", barList(psnItems, { total: n }), "an-span-5")}
+    <div class="an-grid">
+      ${panel("Composizione per settore", "Quota di ciascun settore", donut(sectorItems))}
+      ${panel("Copertura verticali PSN", "Startup per verticale — evidenzia i gap di copertura", barList(psnItems, { total: n }))}
     </div>
 
     ${sectionTitle("Maturità tecnologica")}
@@ -104,9 +119,11 @@ export function renderAnalytics(container) {
       ${panel("Stadio di maturità", "Fase di crescita normalizzata (valuation + TRL)", barList(maturityItems, { total: n }))}
     </div>
 
-    ${sectionTitle("Geografia")}
+    ${sectionTitle("Presidio territoriale")}
     <div class="an-grid an-grid-53">
       ${panel("Distribuzione per città", "Sedi ricondotte alla città", cityItems.length ? barList(cityItems, { total: n }) : `<p class="muted chart-empty">Nessuna sede indicata.</p>`, "an-span-5")}
       ${panel("Macro-area", "Nord · Centro · Sud e Isole", areaItems.length ? barList(areaItems, { total: n }) : `<p class="muted chart-empty">Nessuna sede.</p>`, "an-span-3")}
     </div>`;
+
+  mountChartTooltip(container);
 }
