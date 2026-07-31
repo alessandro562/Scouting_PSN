@@ -7,11 +7,13 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 4;
+export const SEED_CONTENT_VERSION = 5;
 
 export const startups = [
       {
         id:"iotilize",
+        trl:"7",
+        toConfirm:["trl"],
         name:"iotilize.me",
         area:"Ambiente / Smart Operations",
         path:"PoC operativo",
@@ -43,6 +45,8 @@ export const startups = [
       },
       {
         id:"fedro",
+        trl:"5",
+        toConfirm:["trl"],
         logo:"assets/logos/fedro.png",
         name:"FEDRO",
         area:"Data Quality / Data Intelligence",
@@ -73,6 +77,8 @@ export const startups = [
       },
       {
         id:"talpa",
+        trl:"6",
+        toConfirm:["trl"],
         logo:"assets/logos/talpa.png",
         website:"https://www.talpa-inspection.ch/",
         name:"TALPA Inspection",
@@ -104,6 +110,8 @@ export const startups = [
       },
       {
         id:"surwiz",
+        trl:"7",
+        toConfirm:["trl"],
         name:"Surwiz",
         area:"Data Intelligence / Citizen Feedback",
         path:"Approfondimento funzionale",
@@ -133,6 +141,8 @@ export const startups = [
       },
       {
         id:"act4city",
+        trl:"6",
+        toConfirm:["trl"],
         logo:"assets/logos/act4city.jpg",
         website:"https://www.act4city.com/",
         name:"Act4City",
@@ -164,6 +174,8 @@ export const startups = [
       },
       {
         id:"ask4pa",
+        trl:"7",
+        toConfirm:["trl"],
         logo:"assets/logos/ask4pa.svg",
         name:"Heres / ASK4PA",
         area:"Workflow PA / Help Desk",
@@ -194,6 +206,8 @@ export const startups = [
       },
       {
         id:"civimatica",
+        trl:"6",
+        toConfirm:["trl"],
         logo:"assets/logos/civimatica.webp",
         website:"https://www.civimatica.com/",
         name:"Civimatica",

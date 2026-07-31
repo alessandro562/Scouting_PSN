@@ -89,8 +89,13 @@ export function renderAnalytics(container) {
 
   // Maturità tecnologica
   const trlMap = new Map();
-  list.forEach((s) => { const t = trlOf(s); if (t != null) trlMap.set(t, (trlMap.get(t) || 0) + 1); });
+  let trlMissing = 0;
+  list.forEach((s) => { const t = trlOf(s); if (t != null) trlMap.set(t, (trlMap.get(t) || 0) + 1); else trlMissing++; });
   const trlItems = [...trlMap.entries()].sort((a, b) => a[0] - b[0]).map(([t, v]) => ({ label: `TRL ${t}`, value: v, color: trlColor(t) }));
+  // La copertura è esplicita: i conteggi devono sempre riconciliare col totale.
+  const trlSub = trlMissing
+    ? `Livelli di maturità tecnologica — ${n - trlMissing} di ${n} startup (${trlMissing} senza TRL)`
+    : `Livelli di maturità tecnologica (1–9) — tutte le ${n} startup`;
   const MAT_ORDER = ["Ready to scale", "Seed / Early traction", "Early stage", "n.d."];
   const maturityItems = countBy(list, maturityBucketOf, { dropDash: false })
     .sort((a, b) => MAT_ORDER.indexOf(a.label) - MAT_ORDER.indexOf(b.label))
@@ -115,7 +120,7 @@ export function renderAnalytics(container) {
 
     ${sectionTitle("Maturità tecnologica")}
     <div class="an-grid">
-      ${panel("Distribuzione TRL", "Livelli di maturità tecnologica (1–9)", trlItems.length ? columnChart(trlItems, { total: n }) : `<p class="muted chart-empty">Nessun TRL indicato.</p>`)}
+      ${panel("Distribuzione TRL", trlSub, trlItems.length ? columnChart(trlItems, { total: n }) : `<p class="muted chart-empty">Nessun TRL indicato.</p>`)}
       ${panel("Stadio di maturità", "Fase di crescita normalizzata (valuation + TRL)", barList(maturityItems, { total: n }))}
     </div>
 
