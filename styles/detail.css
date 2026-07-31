@@ -70,6 +70,24 @@ details.dfold > .dbody { padding: 0 0 16px; }
 .uc-list li { position: relative; padding-left: 20px; font-size: 14px; line-height: 1.5; color: var(--text); }
 .uc-list li::before { content: ""; position: absolute; left: 3px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--psn-cyan); }
 
+/* ---- Chip credenziali (certificazioni, premi, investitori) ------------- */
+.cred-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
+.cred-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface-soft); border: 1px solid var(--line-soft); border-radius: 999px;
+  padding: 6px 12px; font-size: 12.5px; font-weight: 600; color: var(--ink);
+}
+.cred-ico { font-size: 12px; }
+.chip-logo { width: 16px; height: 16px; object-fit: contain; border-radius: 3px; }
+
+/* ---- Muro di loghi clienti --------------------------------------------- */
+.logo-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; margin-bottom: 8px; }
+.logo-cell {
+  display: flex; align-items: center; justify-content: center; height: 58px; padding: 10px 12px;
+  background: #fff; border: 1px solid var(--line-soft); border-radius: 12px;
+}
+.logo-cell img { max-width: 100%; max-height: 100%; object-fit: contain; filter: saturate(1); }
+
 /* ---- Nota di classificazione PSN --------------------------------------- */
 .note-block {
   margin-top: 13px; font-size: 13px; line-height: 1.55; color: var(--text);

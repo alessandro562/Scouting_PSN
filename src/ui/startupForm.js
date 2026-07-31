@@ -58,6 +58,11 @@ export function openStartupForm(row = null, opts = {}) {
   const technologies = Array.isArray(d.technologies)
     ? d.technologies.map((t) => (Array.isArray(t) ? `${t[0]} | ${t[1] || ""}` : t)).join("\n")
     : "";
+  const certifications = Array.isArray(d.certifications) ? d.certifications.join("\n") : "";
+  const awards = Array.isArray(d.awards) ? d.awards.join("\n") : "";
+  const entLines = (arr) => (Array.isArray(arr) ? arr.map((x) => (typeof x === "string" ? x : `${x.name || ""}${x.logo ? " | " + x.logo : ""}`)).join("\n") : "");
+  const investors = entLines(d.investors);
+  const clients = entLines(d.clients);
 
   root().innerHTML = `
     <div class="modal-overlay" data-close-overlay>
@@ -94,6 +99,32 @@ export function openStartupForm(row = null, opts = {}) {
               ${field("Problema affrontato", "f-problem", d.problem || "", { area: true, rows: 3 })}
               ${field("Rilevanza per la PA", "f-relevance", d.relevance || "", { area: true })}
               ${field("Elementi distintivi", "f-differentiator", d.differentiator || "", { area: true })}
+            </details>
+
+            <details class="form-block" open>
+              <summary>Azienda & mercato</summary>
+              <div class="form-grid">
+                ${field("Sito web", "f-website", d.website || "", { placeholder: "https://…" })}
+                ${field("URL logo", "f-logo", d.logo || "", { placeholder: "assets/logos/slug.png o https://…" })}
+                ${field("Sede", "f-sede", d.sede || "")}
+                ${field("Anno di fondazione", "f-founded", d.founded || "")}
+                ${field("Dipendenti", "f-dipendenti", d.dipendenti || "", { placeholder: "es. 2-10" })}
+                ${field("Fatturato", "f-fatturato", d.fatturato || "", { placeholder: "es. 100 K€ (2024)" })}
+                ${field("TRL", "f-trl", d.trl || "", { placeholder: "1–9" })}
+                ${field("Maturità / Valuation", "f-valuation", d.valuation || "")}
+              </div>
+              ${field("Traction & riconoscimenti", "f-traction", d.traction || "", { area: true, rows: 3 })}
+              ${field("Team / key people", "f-keyPeople", d.keyPeople || "", { area: true })}
+            </details>
+
+            <details class="form-block">
+              <summary>Credenziali & relazioni</summary>
+              <div class="form-grid">
+                ${field("Certificazioni (una per riga)", "f-certifications", certifications, { area: true, rows: 3, placeholder: "ISO 27001\nISO 9001" })}
+                ${field("Premi e riconoscimenti (uno per riga)", "f-awards", awards, { area: true, rows: 3, placeholder: "Start-up of the Year 2025" })}
+              </div>
+              ${field("Investitori (uno per riga: Nome | URL logo)", "f-investors", investors, { area: true, rows: 3, placeholder: "Exor Ventures\nGalaxia | https://…/galaxia.png" })}
+              ${field("Clienti (uno per riga: Nome | URL logo)", "f-clients", clients, { area: true, rows: 4, placeholder: "Microsoft | assets/clients/acme/microsoft.png\nGoogle" })}
             </details>
 
             <details class="form-block">
@@ -182,6 +213,17 @@ function readTech(id) {
   });
 }
 
+// "Nome | urlLogo" per riga → { name, logo? }
+function readEntities(id) {
+  return readList(id).map((line) => {
+    const idx = line.indexOf("|");
+    if (idx === -1) return { name: line };
+    const name = line.slice(0, idx).trim();
+    const logo = line.slice(idx + 1).trim();
+    return logo ? { name, logo } : { name };
+  });
+}
+
 async function save(row) {
   const get = (id) => document.getElementById(id)?.value.trim() ?? "";
   const name = get("f-name");
@@ -197,6 +239,20 @@ async function save(row) {
     problem: get("f-problem"),
     relevance: get("f-relevance"),
     differentiator: get("f-differentiator"),
+    website: get("f-website"),
+    logo: get("f-logo"),
+    sede: get("f-sede"),
+    founded: get("f-founded"),
+    dipendenti: get("f-dipendenti"),
+    fatturato: get("f-fatturato"),
+    trl: get("f-trl"),
+    valuation: get("f-valuation"),
+    traction: get("f-traction"),
+    keyPeople: get("f-keyPeople"),
+    certifications: readList("f-certifications"),
+    awards: readList("f-awards"),
+    investors: readEntities("f-investors"),
+    clients: readEntities("f-clients"),
     input: get("f-input"),
     processing: get("f-processing"),
     output: get("f-output"),

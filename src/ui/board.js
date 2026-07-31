@@ -51,6 +51,19 @@ function sectorColor(sector) {
   return SECTOR_COLOR[sector] || "#5F75C5";
 }
 
+// Iniziali dal nome (monogramma di fallback quando manca il logo).
+function initials(name) {
+  const parts = String(name || "").replace(/[^\p{L}\p{N}\s]/gu, " ").trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return "•";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
+// Dominio leggibile da un URL.
+function domainOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return String(url || "").replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0]; }
+}
+
 const STALE_DAYS = 21;
 
 // Giorni trascorsi nella fase corrente (proxy: stageSince, poi updated_at).
@@ -92,6 +105,14 @@ function tileHtml(card) {
   const days = daysInStage(card);
   const stale = days != null && days > STALE_DAYS;
   const next = nextStageOf(card);
+  const logo = card.data?.logo;
+  const site = card.data?.website;
+  const logoHtml = logo
+    ? `<span class="kcard-logo"><img src="${esc(logo)}" alt="${esc(card.name)}" loading="lazy" onerror="this.parentNode.classList.add('kcard-logo-mono');this.parentNode.textContent='${esc(initials(card.name))}'"></span>`
+    : `<span class="kcard-logo kcard-logo-mono">${esc(initials(card.name))}</span>`;
+  const siteHtml = site
+    ? `<a class="kcard-site" href="${esc(site)}" target="_blank" rel="noopener noreferrer" title="Apri ${esc(site)}"><span class="kcard-site-ico" aria-hidden="true">🔗</span>${esc(domainOf(site))}</a>`
+    : "";
   return `
     <article class="kcard searchable ${stale ? "kcard-stale" : ""}" data-id="${esc(card.id)}" style="--sector:${color}" tabindex="0" role="button" aria-label="Apri ${esc(card.name)}">
       <div class="kcard-quick">
@@ -103,7 +124,13 @@ function tileHtml(card) {
           <span class="kcard-sector"><span class="kcard-dot"></span>${esc(sector)}</span>
           ${notes ? `<span class="kcard-notes" title="${notes} note">💬 ${notes}</span>` : ""}
         </div>
-        <h4 class="kcard-title">${esc(card.name)}</h4>
+        <div class="kcard-head">
+          ${logoHtml}
+          <div class="kcard-headmain">
+            <h4 class="kcard-title">${esc(card.name)}</h4>
+            ${siteHtml}
+          </div>
+        </div>
         ${what ? `<p class="kcard-what">${esc(what)}</p>` : ""}
         <div class="kcard-meta">
           ${primary ? `<span class="kchip">${esc(primary)}</span>` : ""}
@@ -258,6 +285,9 @@ function wireDelegation(container) {
 
   container.addEventListener("click", async (e) => {
     if (dragging) return;
+
+    // Un link (es. sito web) apre la sua destinazione, non la modale.
+    if (e.target.closest("a")) { e.stopPropagation(); return; }
 
     // Azioni rapide sulla card (non aprono la modale).
     const advance = e.target.closest("[data-advance]");

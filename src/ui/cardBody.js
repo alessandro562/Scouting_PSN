@@ -31,6 +31,45 @@ function psn(s) {
   return s.psn || { primary: s.area, secondary: "", innovation: "", usecase: s.poc, note: "" };
 }
 
+// Chip testuali (certificazioni, premi) con icona opzionale.
+function chips(items, icon) {
+  const list = (Array.isArray(items) ? items : []).filter(has);
+  if (!list.length) return "";
+  return `<div class="cred-chips">${list
+    .map((x) => `<span class="cred-chip">${icon ? `<span class="cred-ico">${icon}</span>` : ""}${t(x)}</span>`)
+    .join("")}</div>`;
+}
+
+// Normalizza una voce in {name, logo} (accetta stringa o oggetto).
+function asEntity(x) { return typeof x === "string" ? { name: x } : (x || {}); }
+
+// Investitori: chip con mini-logo se disponibile.
+function investorsBlock(investors) {
+  const list = (Array.isArray(investors) ? investors : []).map(asEntity).filter((x) => has(x.name) || has(x.logo));
+  if (!list.length) return "";
+  return `<div class="cred-chips">${list
+    .map((x) => `<span class="cred-chip">${has(x.logo) ? `<img class="chip-logo" src="${esc(x.logo)}" alt="" loading="lazy">` : `<span class="cred-ico">💼</span>`}${t(x.name)}</span>`)
+    .join("")}</div>`;
+}
+
+// Clienti: muro di loghi + chip per quelli senza logo.
+function clientsBlock(clients) {
+  const list = (Array.isArray(clients) ? clients : []).map(asEntity).filter((x) => has(x.name) || has(x.logo));
+  if (!list.length) return "";
+  const withLogo = list.filter((x) => has(x.logo));
+  const noLogo = list.filter((x) => !has(x.logo));
+  let out = "";
+  if (withLogo.length) {
+    out += `<div class="logo-wall">${withLogo
+      .map((x) => `<span class="logo-cell" title="${esc(x.name || "")}"><img src="${esc(x.logo)}" alt="${esc(x.name || "")}" loading="lazy"></span>`)
+      .join("")}</div>`;
+  }
+  if (noLogo.length) {
+    out += `<div class="cred-chips">${noLogo.map((x) => `<span class="cred-chip">${t(x.name)}</span>`).join("")}</div>`;
+  }
+  return out;
+}
+
 // Riga anagrafica (label/valore) — vuota → stringa vuota (omessa).
 function fact(label, value, s, key) {
   if (!has(value)) return "";
@@ -80,6 +119,8 @@ export function renderStartupDetail(s) {
     fact("Fondazione", s.founded, s, "founded"),
     fact("TRL", s.trl, s, "trl"),
     fact("Maturità / Valuation", s.valuation, s, "valuation"),
+    fact("Fatturato", s.fatturato, s, "fatturato"),
+    fact("Dipendenti", s.dipendenti, s, "dipendenti"),
     factLink("Sito", s.website, s, "website"),
     fact("Target di riferimento", s.audience, s, "audience"),
     fact("Team", s.keyPeople, s, "keyPeople"),
@@ -116,6 +157,20 @@ export function renderStartupDetail(s) {
   const classificazione = (psnFacts || psnNote)
     ? section("Classificazione PSN", (psnFacts ? `<div class="facts">${psnFacts}</div>` : "") + psnNote)
     : "";
+
+  // ---- Certificati e premi -----------------------------------------------
+  const certChips = chips(s.certifications, "📜");
+  const awardChips = chips(s.awards, "🏅");
+  const credInner =
+    (certChips ? `<div class="dsub">Certificazioni</div>${certChips}` : "") +
+    (awardChips ? `<div class="dsub">Premi e riconoscimenti</div>${awardChips}` : "");
+  const credenziali = section("Certificati e premi", credInner);
+
+  // ---- Investitori --------------------------------------------------------
+  const investitori = section("Investitori", investorsBlock(s.investors));
+
+  // ---- Clienti ------------------------------------------------------------
+  const clienti = section("Clienti", clientsBlock(s.clients));
 
   // ---- Come funziona (collassabile) --------------------------------------
   const flowSteps = [
@@ -170,6 +225,9 @@ export function renderStartupDetail(s) {
       ${sintesi}
       ${soluzione}
       ${casiUso}
+      ${clienti}
+      ${credenziali}
+      ${investitori}
       ${classificazione}
       ${comeFunziona}
       ${percorso}
