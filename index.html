@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="styles/views.css" />
   <link rel="stylesheet" href="styles/crm.css" />
   <link rel="stylesheet" href="styles/detail.css" />
+  <link rel="stylesheet" href="styles/present.css" />
+  <link rel="stylesheet" href="styles/print.css" />
 </head>
 <body>
 
@@ -109,6 +111,7 @@
             <button class="topbar-cmd" id="topbar-cmd" title="Ricerca rapida e comandi (⌘K)">
               <span class="tk-ico">⌕</span> Cerca <kbd>⌘K</kbd>
             </button>
+            <button class="btn ghost" id="topbar-present" title="Presenta le startup filtrate a schermo intero">▶ Presenta</button>
             <button class="btn ghost" id="topbar-activity" title="Registro attività del team">🕘 Attività</button>
             <button class="btn ghost" id="topbar-density" title="Densità delle card" aria-pressed="false">⇕ Densità</button>
             <button class="btn ghost" id="topbar-export" title="Esporta le startup filtrate in CSV">⬇ CSV</button>
@@ -277,6 +280,8 @@
   <div id="form-root"></div>
   <div id="palette-root"></div>
   <div id="activity-root"></div>
+  <div id="present-root"></div>
+  <div id="print-root"></div>
   <div id="toast-root"></div>
 
   <!-- Librerie vendorizzate (nessuna dipendenza da CDN a runtime) -->

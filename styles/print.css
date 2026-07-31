@@ -1,0 +1,76 @@
+/* ===========================================================================
+   print.css — one-pager A4 brandizzato WDA/PSN.
+   Caricato per ultimo: in stampa nasconde l'app e lascia solo #print-root.
+   =========================================================================== */
+
+#print-root { display: none; }
+
+/* ---- Layout della scheda (valido a schermo e in stampa) ----------------- */
+.onepager {
+  font-family: var(--font);
+  color: #12183A;
+  background: #fff;
+  width: 100%;
+  display: flex; flex-direction: column; gap: 9px;
+}
+.op-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; padding-bottom: 9px; border-bottom: 2px solid #12183A; }
+.op-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.op-logo {
+  width: 46px; height: 46px; flex: 0 0 auto; object-fit: contain;
+  border: 1px solid #E3E8F5; border-radius: 9px; background: #fff;
+}
+.op-logo-mono { display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; color: #3D57B4; background: #EEF2FC; }
+.op-head h1 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1; }
+.op-site { font-size: 10.5px; color: #5A6488; margin-top: 3px; }
+/* I loghi di brand sono in bianco: vanno su fondo scuro anche sulla carta. */
+.op-brand {
+  display: flex; align-items: center; gap: 11px; flex: 0 0 auto;
+  background: #0B0F38; border-radius: 8px; padding: 8px 13px;
+}
+.op-brand img { height: 22px; width: auto; object-fit: contain; }
+.op-brand-div { width: 1px; height: 18px; background: rgba(255,255,255,.28); }
+
+.op-lead { margin: 0; font-size: 12px; line-height: 1.45; color: #23305C; font-weight: 600; }
+
+.op-facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 12px; padding: 9px 0; border-top: 1px solid #E7EBF6; border-bottom: 1px solid #E7EBF6; }
+.op-fact { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.op-fk { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #7B85A8; }
+.op-fv { font-size: 10px; color: #12183A; line-height: 1.3; }
+
+.op-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.op-col { min-width: 0; }
+.onepager h2 { margin: 8px 0 3px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #3D57B4; }
+.op-col :first-child { margin-top: 0; }
+.onepager p { margin: 0; font-size: 9.6px; line-height: 1.45; color: #2A3358; }
+.op-uc { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 3px; }
+.op-uc li { position: relative; padding-left: 10px; font-size: 9.6px; line-height: 1.4; color: #2A3358; }
+.op-uc li::before { content: ""; position: absolute; left: 0; top: 5px; width: 4px; height: 4px; border-radius: 50%; background: #0E9BA8; }
+
+.op-psn { display: flex; gap: 10px; align-items: baseline; background: #F2F5FD; border-left: 3px solid #3D57B4; border-radius: 5px; padding: 7px 10px; }
+.op-psn-k { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #3D57B4; white-space: nowrap; }
+.op-psn-v { font-size: 9.6px; color: #23305C; line-height: 1.35; }
+
+.op-block h2 { margin-top: 0; }
+.op-chiprow { display: flex; gap: 8px; align-items: baseline; }
+.op-chip-k { font-size: 7.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #7B85A8; white-space: nowrap; min-width: 62px; }
+.op-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.op-chip { font-size: 8.6px; background: #F3F5FB; border: 1px solid #E3E8F5; border-radius: 999px; padding: 2px 7px; color: #2A3358; }
+
+.op-foot { margin-top: auto; padding-top: 8px; border-top: 1px solid #E7EBF6; display: flex; justify-content: space-between; gap: 14px; font-size: 7.6px; color: #8A93B2; }
+.op-foot-team { text-align: right; max-width: 55%; }
+
+/* ---- Stampa -------------------------------------------------------------- */
+@page { size: A4 portrait; margin: 12mm; }
+
+@media print {
+  /* Nasconde l'intera applicazione e i layer dinamici. */
+  #app, #modal-root, #form-root, #dialog-root, #toast-root,
+  #palette-root, #activity-root, #login-overlay, #setup-overlay { display: none !important; }
+
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+  #print-root { display: block !important; }
+  .onepager { height: 100%; }
+
+  /* Colori fedeli (loghi, accenti) */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+}

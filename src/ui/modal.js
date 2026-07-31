@@ -18,6 +18,9 @@ import { openStartupForm } from "./startupForm.js";
 import { toast, toastError } from "./toast.js";
 import { avatarHtml, displayName } from "./avatar.js";
 import { renderActivityTimeline } from "./activity.js";
+import { renderAttachments } from "./attachments.js";
+import { printOnePager } from "./onepager.js";
+import { openPresent } from "./present.js";
 
 let openId = null;
 let currentUserId = null;
@@ -74,6 +77,8 @@ export async function openStartupModal(row, opts = {}) {
             </div>
           </div>
           <div class="modal-head-actions">
+            <button class="btn ghost" data-present title="Mostra a schermo intero">▶ Presenta</button>
+            <button class="btn ghost" data-onepager title="Genera il one-pager PDF">⬇ One-pager</button>
             <button class="btn ghost" data-edit>Modifica</button>
             <button class="btn ghost danger" data-delete>Elimina</button>
             <button class="icon-btn modal-close" data-close aria-label="Chiudi">✕</button>
@@ -98,6 +103,11 @@ export async function openStartupModal(row, opts = {}) {
             </form>
           </section>
 
+          <section class="attach-section">
+            <h3>Allegati</h3>
+            <div id="modal-attachments"><p class="muted">Caricamento…</p></div>
+          </section>
+
           <section class="activity-section">
             <h3>Attività</h3>
             <div id="modal-activity"><p class="muted">Caricamento…</p></div>
@@ -110,6 +120,7 @@ export async function openStartupModal(row, opts = {}) {
   wireModal(row);
   await refreshNotes();
   renderActivityTimeline(row.id, root().querySelector("#modal-activity"));
+  renderAttachments(row.id, root().querySelector("#modal-attachments"));
   if (opts.focusNote) {
     const ta = root().querySelector("#note-input");
     if (ta) { ta.focus(); ta.scrollIntoView({ block: "center" }); }
@@ -129,6 +140,17 @@ function wireModal(row) {
   r.querySelector("[data-edit]")?.addEventListener("click", () => {
     closeModal();
     openStartupForm(row);
+  });
+
+  r.querySelector("[data-onepager]")?.addEventListener("click", () => {
+    const st = state.stages.find((x) => x.id === row.stage_id);
+    printOnePager(row, st ? st.name : "");
+  });
+
+  r.querySelector("[data-present]")?.addEventListener("click", () => {
+    const id = row.id;
+    closeModal();
+    openPresent(id);
   });
 
   r.querySelector("[data-delete]")?.addEventListener("click", async () => {
