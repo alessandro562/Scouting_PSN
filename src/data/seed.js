@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 3;
+export const SEED_CONTENT_VERSION = 4;
 
 export const startups = [
       {
@@ -43,6 +43,7 @@ export const startups = [
       },
       {
         id:"fedro",
+        logo:"assets/logos/fedro.png",
         name:"FEDRO",
         area:"Data Quality / Data Intelligence",
         path:"Co-progettazione tecnica",
@@ -72,6 +73,8 @@ export const startups = [
       },
       {
         id:"talpa",
+        logo:"assets/logos/talpa.png",
+        website:"https://www.talpa-inspection.ch/",
         name:"TALPA Inspection",
         area:"Infrastrutture / Ambiente",
         path:"Approfondimento tecnico",
@@ -130,6 +133,8 @@ export const startups = [
       },
       {
         id:"act4city",
+        logo:"assets/logos/act4city.jpg",
+        website:"https://www.act4city.com/",
         name:"Act4City",
         area:"Servizi al cittadino / GovTech",
         path:"Approfondimento funzionale",
@@ -159,6 +164,7 @@ export const startups = [
       },
       {
         id:"ask4pa",
+        logo:"assets/logos/ask4pa.svg",
         name:"Heres / ASK4PA",
         area:"Workflow PA / Help Desk",
         path:"Approfondimento funzionale",
@@ -188,6 +194,8 @@ export const startups = [
       },
       {
         id:"civimatica",
+        logo:"assets/logos/civimatica.webp",
+        website:"https://www.civimatica.com/",
         name:"Civimatica",
         area:"Smart City / Mobilità",
         path:"PoC operativo",
@@ -217,6 +225,8 @@ export const startups = [
       },
       {
         id:"cyberevolution",
+        logo:"assets/logos/cyberevolution.png",
+        website:"https://cyberevolution.it/",
         name:"Cyberevolution",
         area:"Cybersecurity",
         what:"Protezione cyber per impianti industriali tramite hardware dedicato.",
@@ -247,6 +257,7 @@ export const startups = [
       },
       {
         id:"truescreen",
+        logo:"assets/logos/truescreen.png",
         name:"Truescreen",
         area:"Cybersecurity & Legal-Tech",
         what:"Certificazione legale e immodificabile di documenti e contenuti digitali.",
@@ -276,6 +287,8 @@ export const startups = [
       },
       {
         id:"cylock",
+        logo:"assets/logos/cylock.png",
+        website:"https://www.cylock.tech/",
         name:"CyLock",
         area:"Cybersecurity",
         what:"Identificazione automatica di vulnerabilità e rischi cyber esterni.",
@@ -363,6 +376,7 @@ export const startups = [
       },
       {
         id:"aigarage",
+        logo:"assets/logos/aigarage.png",
         name:"AI Garage",
         area:"Cybersecurity & Reg-Tech",
         what:"Automazione della compliance cyber nella gestione fornitori.",
@@ -394,6 +408,8 @@ export const startups = [
       },
       {
         id:"cyberaware",
+        logo:"assets/logos/cyberaware.png",
+        website:"https://cyber-aware.it/",
         name:"CyberAware",
         area:"Cybersecurity",
         what:"Piattaforma di formazione per ridurre il rischio umano nella cybersecurity.",
@@ -483,6 +499,8 @@ export const startups = [
       },
       {
         id:"ganiga",
+        logo:"assets/logos/ganiga.jpg",
+        website:"https://www.ganiga.ai/it",
         name:"Ganiga",
         area:"GreenTech & Smart Cities",
         what:"Trasforma i rifiuti in dati tramite riconoscimento automatico con AI.",
@@ -512,6 +530,8 @@ export const startups = [
       },
       {
         id:"i2d",
+        logo:"assets/logos/i2d.png",
+        website:"https://i2d.it/",
         name:"i2d",
         area:"Intelligenza artificiale / Generative AI",
         what:"Analisi e interpretazione dei feedback clienti tramite Generative AI.",
@@ -542,6 +562,8 @@ export const startups = [
       },
       {
         id:"yourease",
+        logo:"assets/logos/yourease.svg",
+        website:"https://yourease.it/",
         name:"Yourease",
         area:"Silver economy / Senior living",
         what:"Piattaforma digitale IoT per migliorare autonomia e gestione nel senior living.",
@@ -572,6 +594,7 @@ export const startups = [
       },
       {
         id:"loki",
+        logo:"assets/logos/loki.png",
         name:"LOKI",
         area:"Smart Cities / Manutenzione stradale & accessibilità",
         what:"Monitoraggio intelligente della manutenzione stradale e dell’accessibilità pedonale con hardware plug & play e AI.",
