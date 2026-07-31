@@ -1,0 +1,87 @@
+/* ===========================================================================
+   present.css — modalità presentazione a schermo intero.
+   Slide sobria su fondo brand PSN, pensata per essere proiettata.
+   =========================================================================== */
+
+.ps-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, #12184A 0%, #0B0F38 55%, #070A28 100%);
+  color: #fff; padding: 4vh 5vw;
+}
+.ps-overlay::before {
+  content: ""; position: absolute; right: -8vw; top: -12vh; width: 46vw; height: 46vw; pointer-events: none;
+  background: radial-gradient(circle at center, rgba(72,230,234,.16), transparent 68%);
+}
+.ps-overlay::after {
+  content: ""; position: absolute; left: -6vw; bottom: -16vh; width: 40vw; height: 40vw; pointer-events: none;
+  background: radial-gradient(circle at center, rgba(131,96,194,.20), transparent 70%);
+}
+
+.ps-stage { position: relative; z-index: 1; width: min(1180px, 100%); }
+.ps-slide { display: flex; flex-direction: column; gap: clamp(14px, 2.4vh, 26px); }
+
+.ps-top { display: flex; align-items: center; gap: 20px; }
+.ps-logo {
+  width: clamp(56px, 6vw, 78px); height: clamp(56px, 6vw, 78px); flex: 0 0 auto;
+  object-fit: contain; background: #fff; border-radius: 16px; padding: 8px;
+}
+.ps-logo-mono {
+  display: flex; align-items: center; justify-content: center; padding: 0;
+  background: rgba(255,255,255,.10); color: #fff; font-weight: 700; font-size: clamp(20px, 2.2vw, 28px);
+  border: 1px solid rgba(255,255,255,.18);
+}
+.ps-title { min-width: 0; flex: 1; }
+.ps-title h1 { margin: 0; font-size: clamp(30px, 4.2vw, 58px); font-weight: 700; letter-spacing: -.03em; line-height: 1.02; }
+.ps-vert { margin-top: 8px; font-size: clamp(12px, 1.2vw, 15px); font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: #48E6EA; }
+.ps-count { font-size: clamp(15px, 1.5vw, 20px); font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; flex: 0 0 auto; }
+.ps-count span { color: #7b87bd; font-weight: 600; }
+
+.ps-lead { margin: 0; font-size: clamp(15px, 1.7vw, 23px); line-height: 1.42; color: #dfe5ff; max-width: 62ch; }
+
+.ps-body { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(20px, 3vw, 48px); align-items: start; }
+.ps-k { display: block; font-size: clamp(10px, .95vw, 12px); font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #8f9cce; margin-bottom: 10px; }
+.ps-uc ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.ps-uc li { position: relative; padding-left: 20px; font-size: clamp(13px, 1.25vw, 17px); line-height: 1.45; color: #eef1ff; }
+.ps-uc li::before { content: ""; position: absolute; left: 0; top: .55em; width: 7px; height: 7px; border-radius: 50%; background: #48E6EA; }
+
+.ps-facts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px 18px; }
+.ps-fact { border-left: 2px solid rgba(255,255,255,.16); padding-left: 12px; }
+.ps-fk { display: block; font-size: clamp(9px, .85vw, 11px); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #8f9cce; }
+.ps-fv { display: block; margin-top: 4px; font-size: clamp(13px, 1.2vw, 17px); color: #fff; font-weight: 600; }
+
+.ps-traction { background: rgba(255,255,255,.06); border-radius: 14px; padding: 14px 18px; }
+.ps-traction p { margin: 0; font-size: clamp(12px, 1.05vw, 15px); line-height: 1.5; color: #dfe5ff; }
+
+.ps-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: clamp(8px, 1.6vh, 18px); border-top: 1px solid rgba(255,255,255,.10); }
+.ps-brand { display: flex; align-items: center; gap: 14px; }
+.ps-brand img { height: clamp(22px, 2.4vw, 30px); width: auto; object-fit: contain; }
+.ps-div { width: 1px; height: 22px; background: rgba(255,255,255,.20); }
+.ps-site { font-size: clamp(11px, 1vw, 14px); color: #8f9cce; }
+
+/* Comandi */
+.ps-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  width: 56px; height: 56px; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.07); color: #fff;
+  font-size: 30px; line-height: 1; font-family: var(--font);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .16s ease, transform .16s ease; opacity: .55;
+}
+.ps-nav:hover { background: rgba(255,255,255,.16); opacity: 1; }
+.ps-prev { left: 2vw; }
+.ps-next { right: 2vw; }
+.ps-close {
+  position: absolute; top: 22px; right: 24px; z-index: 2; cursor: pointer;
+  border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.07); color: #cfd6f5;
+  border-radius: 999px; padding: 8px 14px; font-size: 12.5px; font-weight: 700; font-family: var(--font);
+  transition: background .16s ease; opacity: .7;
+}
+.ps-close:hover { background: rgba(255,255,255,.16); opacity: 1; }
+
+body.presenting { overflow: hidden; }
+
+@media (max-width: 900px) {
+  .ps-body { grid-template-columns: 1fr; }
+  .ps-nav { width: 44px; height: 44px; font-size: 24px; }
+}

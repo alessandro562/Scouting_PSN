@@ -21,6 +21,7 @@ import { cardsForStage } from "./store.js";
 import { subscribeRealtime, unsubscribeRealtime } from "./realtime.js";
 import { openPalette } from "./ui/palette.js";
 import { openActivityDrawer } from "./ui/activity.js";
+import { openPresent } from "./ui/present.js";
 import { toast, toastError } from "./ui/toast.js";
 
 const LS_VIEW = "crm-view";
@@ -227,6 +228,7 @@ function wireChrome() {
 
   // Toolbar: palette, registro attività, densità, export CSV
   onClick("topbar-cmd", () => openPalette({ setView, openStartupForm, openStageMenu }));
+  onClick("topbar-present", () => openPresent());
   onClick("topbar-activity", () => openActivityDrawer());
   onClick("topbar-density", () => toggleDensity());
   onClick("topbar-export", () => exportCsv());
