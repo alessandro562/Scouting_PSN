@@ -16,8 +16,27 @@ const pctOf = (v, total) => (total ? Math.round((v / total) * 100) : 0);
 const tip = (label, value, total) =>
   `data-tip="${esc(label)}" data-tip-val="${esc(value)}${total ? ` · ${pctOf(value, total)}% del totale` : ""}"`;
 
+// ---- Cross-filtering -------------------------------------------------------
+// Ogni grafico può dichiarare la dimensione che rappresenta (`fk`). Gli item che
+// portano un `fv` diventano cliccabili: il click filtra l'intera vista. Quando
+// la dimensione ha già una selezione, la voce scelta va in evidenza e le altre
+// si smorzano — restano leggibili e cliccabili per cambiare scelta al volo.
+const clickable = (it, fk) => fk && it.fv !== undefined && it.fv !== null;
+const isOn = (it, active) => active != null && String(active) === String(it.fv);
+
+// Attributi di selezione da apporre all'elemento cliccabile.
+function sel(it, fk, active) {
+  if (!clickable(it, fk)) return "";
+  return ` data-fk="${esc(fk)}" data-fv="${esc(it.fv)}" role="button" tabindex="0" aria-pressed="${isOn(it, active)}"`;
+}
+// Classe corrispondente: ck = cliccabile, is-on = selezionato, is-off = smorzato.
+function ck(it, fk, active, base) {
+  if (!clickable(it, fk)) return base;
+  return `${base} ck${active == null ? "" : isOn(it, active) ? " is-on" : " is-off"}`;
+}
+
 // ---- Barre orizzontali. items: [{label, value, color}] --------------------
-export function barList(items, { total = null } = {}) {
+export function barList(items, { total = null, fk = null, active = null } = {}) {
   if (!items.length) return `<p class="muted chart-empty">Nessun dato.</p>`;
   const max = Math.max(1, ...items.map((i) => i.value));
   return `<div class="bar-list">${items
@@ -25,7 +44,7 @@ export function barList(items, { total = null } = {}) {
       const w = Math.max(2, (it.value / max) * 100);
       const color = it.color || colorFor(i);
       return `
-      <div class="bar-row" ${tip(it.label, it.value, total)}>
+      <div class="${ck(it, fk, active, "bar-row")}" ${tip(it.label, it.value, total)}${sel(it, fk, active)}>
         <div class="bar-label" title="${esc(it.label)}"><span class="bar-dot" style="background:${color}"></span>${esc(it.label)}</div>
         <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div>
         <div class="bar-value">${it.value}${total ? `<span class="bar-pct">${pctOf(it.value, total)}%</span>` : ""}</div>
@@ -35,21 +54,22 @@ export function barList(items, { total = null } = {}) {
 }
 
 // ---- Barra 100% segmentata. items: [{label, value, color}] ----------------
-export function stackedBar(items, { total = null } = {}) {
+export function stackedBar(items, { total = null, fk = null, active = null } = {}) {
   const live = items.filter((it) => it.value > 0);
   const sum = total || items.reduce((s, i) => s + i.value, 0);
   if (!sum) return `<p class="muted chart-empty">Nessun dato.</p>`;
   const segs = live
     .map((it, i) => {
       const p = pctOf(it.value, sum);
-      return `<div class="sb-seg" style="flex:${it.value};background:${it.color || colorFor(i)}" ${tip(it.label, it.value, sum)}>
+      return `<div class="${ck(it, fk, active, "sb-seg")}" style="flex:${it.value};background:${it.color || colorFor(i)}" ${tip(it.label, it.value, sum)}${sel(it, fk, active)}>
         <span class="sb-num">${it.value}</span>${p >= 12 ? `<span class="sb-pct">${p}%</span>` : ""}
       </div>`;
     })
     .join("");
-  // Legenda: le fasi a zero restano visibili ma smorzate (informazione utile).
+  // Legenda: le fasi a zero restano visibili ma smorzate (informazione utile)
+  // e cliccabili quanto i segmenti, perché spesso sono il bersaglio più comodo.
   const legend = items
-    .map((it, i) => `<div class="sb-leg${it.value === 0 ? " sb-leg-zero" : ""}">
+    .map((it, i) => `<div class="${ck(it, fk, active, "sb-leg")}${it.value === 0 ? " sb-leg-zero" : ""}" ${sel(it, fk, active)}>
         <span class="legend-dot" style="background:${it.value === 0 ? NEUTRAL : it.color || colorFor(i)}"></span>
         <span>${esc(it.label)}</span><b>${it.value}</b><span class="legend-pct">${pctOf(it.value, sum)}%</span>
       </div>`)
@@ -58,7 +78,7 @@ export function stackedBar(items, { total = null } = {}) {
 }
 
 // ---- Colonne verticali con linea di base. items: [{label, value, color}] --
-export function columnChart(items, { total = null } = {}) {
+export function columnChart(items, { total = null, fk = null, active = null } = {}) {
   if (!items.length) return `<p class="muted chart-empty">Nessun dato.</p>`;
   const max = Math.max(1, ...items.map((i) => i.value));
   return `<div class="cols">${items
@@ -66,7 +86,7 @@ export function columnChart(items, { total = null } = {}) {
       const h = Math.max(4, (it.value / max) * 100);
       const color = it.color || colorFor(i);
       return `
-      <div class="col-item" ${tip(it.label, it.value, total)}>
+      <div class="${ck(it, fk, active, "col-item")}" ${tip(it.label, it.value, total)}${sel(it, fk, active)}>
         <div class="col-val">${it.value}</div>
         <div class="col-bar-wrap"><div class="col-bar" style="height:${h}%;background:${color}"></div></div>
         <div class="col-label">${esc(it.label)}</div>
@@ -76,7 +96,7 @@ export function columnChart(items, { total = null } = {}) {
 }
 
 // ---- Donut SVG con distacchi + legenda. items: [{label, value, color}] ----
-export function donut(items, { size = 196, thickness = 22 } = {}) {
+export function donut(items, { size = 196, thickness = 22, fk = null, active = null } = {}) {
   const total = items.reduce((s, i) => s + i.value, 0);
   if (!total) return `<p class="muted chart-empty">Nessun dato.</p>`;
   const r = (size - thickness) / 2;
@@ -88,16 +108,16 @@ export function donut(items, { size = 196, thickness = 22 } = {}) {
     .map((it, i) => {
       const len = (it.value / total) * C;
       const draw = Math.max(0.6, len - gap);
-      const seg = `<circle class="donut-seg" cx="${cx}" cy="${cy}" r="${r}" fill="none"
+      const seg = `<circle class="${ck(it, fk, active, "donut-seg")}" cx="${cx}" cy="${cy}" r="${r}" fill="none"
         stroke="${it.color || colorFor(i)}" stroke-width="${thickness}" stroke-linecap="round"
         stroke-dasharray="${draw} ${C - draw}" stroke-dashoffset="${-offset}"
-        transform="rotate(-90 ${cx} ${cy})" ${tip(it.label, it.value, total)}></circle>`;
+        transform="rotate(-90 ${cx} ${cy})" ${tip(it.label, it.value, total)}${sel(it, fk, active)}></circle>`;
       offset += len;
       return seg;
     })
     .join("");
   const legend = items
-    .map((it, i) => `<div class="legend-item" ${tip(it.label, it.value, total)}>
+    .map((it, i) => `<div class="${ck(it, fk, active, "legend-item")}" ${tip(it.label, it.value, total)}${sel(it, fk, active)}>
         <span class="legend-dot" style="background:${it.color || colorFor(i)}"></span>
         <span class="legend-label">${esc(it.label)}</span>
         <span class="legend-val">${it.value}</span>

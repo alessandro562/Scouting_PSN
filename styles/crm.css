@@ -127,3 +127,10 @@ body.density-compact .kcard-head { margin-bottom: 6px; }
   .topbar-actions { gap: 6px; }
   .topbar-cmd { display: none; }
 }
+
+/* I chip di fase filtrano come i grafici: stessa affordance, stessa evidenza. */
+.kpi-ck { cursor: pointer; transition: background .16s ease, border-color .16s ease; }
+.kpi-ck:hover { background: var(--surface-soft); }
+.kpi-ck:focus-visible { outline: 2px solid var(--wda-cyan); outline-offset: 2px; }
+.kpi.is-on { background: var(--blue-soft); border-color: color-mix(in srgb, var(--psn-blue) 32%, transparent); }
+.kpi.is-on .kpi-val, .kpi.is-on .kpi-lab { color: var(--wda-blue); }

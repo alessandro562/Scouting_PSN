@@ -6,6 +6,7 @@
 import { state, addSavedView, deleteSavedView, reloadSavedViews, emitChange } from "../store.js";
 import {
   getFilters, setFilter, setFilters, resetFilters, activeFilterCount,
+  activeFilterChips, clearFilter,
   distinctSectors, distinctPsn, distinctValuations,
 } from "./filters.js";
 import { toast, toastError } from "./toast.js";
@@ -39,6 +40,7 @@ export function mountFilterBar(container) {
       <div class="fb-spacer"></div>
       <button id="fb-save" class="btn ghost">★ Salva vista</button>
     </div>
+    <div class="fb-chips" id="fb-chips"></div>
     <div class="saved-views" id="saved-views"></div>
   `;
   syncControls();
@@ -70,6 +72,32 @@ export function syncControls() {
   const tmin = document.getElementById("fb-trlmin"); if (tmin) tmin.value = f.trlMin ?? "";
   const tmax = document.getElementById("fb-trlmax"); if (tmax) tmax.value = f.trlMax ?? "";
   const cnt = document.getElementById("fb-count"); if (cnt) { const n = activeFilterCount(); cnt.textContent = n ? `(${n})` : ""; }
+  renderChips();
+}
+
+// Pillole dei filtri attivi: rendono leggibile a colpo d'occhio perché l'elenco
+// è ridotto e permettono di togliere una singola condizione. Sono la controparte
+// necessaria del filtro-da-grafico, che altrimenti agirebbe "di nascosto".
+function renderChips() {
+  const host = document.getElementById("fb-chips");
+  if (!host) return;
+  const chips = activeFilterChips();
+  if (!chips.length) { host.innerHTML = ""; host.classList.add("hidden"); return; }
+  host.classList.remove("hidden");
+  host.innerHTML = `
+    <span class="fb-chips-k">Filtri attivi</span>
+    ${chips.map((c) => `
+      <button class="fb-chip" data-clear="${esc(c.key)}" title="Rimuovi questo filtro">
+        <span class="fb-chip-k">${esc(c.label)}</span>
+        <span class="fb-chip-v">${esc(c.value)}</span>
+        <span class="fb-chip-x">✕</span>
+      </button>`).join("")}
+    <button class="fb-chip fb-chip-all" data-clear-all>Azzera tutto</button>`;
+
+  host.querySelectorAll("[data-clear]").forEach((b) =>
+    b.addEventListener("click", () => { clearFilter(b.getAttribute("data-clear")); syncControls(); }));
+  host.querySelector("[data-clear-all]")
+    ?.addEventListener("click", () => { resetFilters(); syncControls(); });
 }
 
 export function renderSavedViews() {
