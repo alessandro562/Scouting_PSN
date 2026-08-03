@@ -1,14 +1,19 @@
 // ===========================================================================
 // cardBody.js — dettaglio della scheda startup.
-// Architettura a sezioni clusterizzate con progressive disclosure:
-//  · Lead (una frase di sintesi)
-//  · In sintesi (anagrafica + traction)      [aperta]
-//  · La soluzione (descrizione/problema/PA)   [aperta]
-//  · Casi d'uso ed elementi distintivi        [aperta]
-//  · Classificazione PSN                       [aperta]
-//  · Come funziona (input→output, tecnologie)  [collassabile]
-//  · Percorso in PSN (PoC, indicatori, next)   [collassabile]
-// I campi vuoti vengono OMESSI (niente box "—"). `s` = { ...row.data, psn: row.psn }.
+//
+// Architettura: in cima UN SOLO paragrafo (`intro`) che risponde a quattro
+// domande — che cos'è, che cosa offre, che cosa fa in pratica, per chi. Tutto
+// il resto vive dentro un pettine di blocchi collassabili CHIUSI di default,
+// costruiti tutti dallo stesso componente `acc()`: ordine, numero ed etichette
+// non cambiano mai da una startup all'altra, così spostarsi fra una scheda
+// ricca e una povera non fa "saltare" la struttura.
+//
+// I blocchi senza dati non spariscono: restano come riga spenta non apribile
+// (`accEmpty`), perché una struttura che cambia forma è più disorientante di
+// una riga vuota. Se però un intero pannello è vuoto si stampa un solo
+// messaggio, non un cimitero di righe spente.
+//
+// `s` = { ...row.data, psn: row.psn }.
 // ===========================================================================
 
 function esc(v) {
@@ -50,6 +55,39 @@ function investorsBlock(investors) {
   return `<div class="cred-chips">${list
     .map((x) => `<span class="cred-chip">${has(x.logo) ? `<img class="chip-logo" src="${esc(x.logo)}" alt="" loading="lazy">` : `<span class="cred-ico">💼</span>`}${t(x.name)}</span>`)
     .join("")}</div>`;
+}
+
+// Finanziamenti: una card per round, dal più recente. È l'unico punto della
+// scheda dove i numeri hanno il permesso di essere grandi — serve a confrontare
+// due startup in due secondi, cosa impossibile quando l'importo è sepolto in
+// una frase di prosa dentro `valuation`.
+function fundingBlock(s) {
+  const rounds = (Array.isArray(s.funding) ? s.funding : []).filter((r) => r && (has(r.tipo) || has(r.importo)));
+  const chipsInv = investorsBlock(s.investors);
+
+  if (!rounds.length) {
+    // Nessun round strutturato: si ripiega su valuation + chip investitori.
+    const v = has(s.valuation) ? `<p class="acc-p">${t(s.valuation)}${confirmBadge(s, "valuation")}</p>` : "";
+    return v + chipsInv;
+  }
+
+  const cards = rounds.map((r) => `
+    <div class="round">
+      <div class="round-top">
+        ${has(r.tipo) ? `<span class="round-stage">${t(r.tipo)}</span>` : ""}
+        ${has(r.importo) ? `<span class="round-amount">${t(r.importo)}</span>` : ""}
+        ${has(r.data) && r.data !== "—" ? `<span class="round-date">${t(r.data)}</span>` : ""}
+      </div>
+      ${has(r.lead) && r.lead !== "—" ? `<div class="round-lead"><span class="round-k">Capofila</span>${t(r.lead)}</div>` : ""}
+      ${Array.isArray(r.investitori) && r.investitori.filter(has).length
+        ? `<div class="round-inv">${r.investitori.filter(has).map((x) => `<span class="cred-chip">${t(x)}</span>`).join("")}</div>` : ""}
+      ${has(r.nota) ? `<p class="round-note">${t(r.nota)}</p>` : ""}
+    </div>`).join("");
+
+  const totale = has(s.totalRaised)
+    ? `<div class="round-total"><span class="round-k">Totale raccolto</span><strong>${t(s.totalRaised)}</strong></div>`
+    : "";
+  return `<div class="rounds">${cards}</div>${totale}`;
 }
 
 // ---- Approfondimenti (verbali delle call con la startup) -----------------
@@ -126,33 +164,6 @@ function deepDivesSection(s) {
   return `<div class="dd-wrap">${cards}</div>`;
 }
 
-// Richiamo all'ultimo approfondimento, mostrato in Panoramica: senza questo
-// il verbale della call resta nascosto dietro una scheda che si può non notare.
-function lastDiveTeaser(dives) {
-  if (!dives.length) return "";
-  const d = [...dives].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))[0];
-  const cls = OUTCOME_CLASS[d.outcome] || "hold";
-  const dateLabel = has(d.date)
-    ? new Date(d.date).toLocaleDateString("it-IT", { day: "2-digit", month: "long", year: "numeric" })
-    : "";
-  const counts = [
-    (d.strengths || []).filter(has).length ? `${(d.strengths || []).filter(has).length} punti di forza` : "",
-    (d.risks || []).filter(has).length ? `${(d.risks || []).filter(has).length} rischi` : "",
-    (d.actions || []).filter((a) => a && has(a.text)).length
-      ? `${(d.actions || []).filter((a) => a && has(a.text)).length} impegni` : "",
-  ].filter(Boolean).join(" · ");
-  return `
-    <div class="dd-teaser">
-      <div class="dd-teaser-head">
-        <span class="dd-teaser-k">Ultimo approfondimento${dives.length > 1 ? ` · ${dives.length} call` : ""}</span>
-        ${has(d.outcome) ? `<span class="dd-outcome dd-out-${cls}">${t(d.outcome)}</span>` : ""}
-      </div>
-      ${dateLabel || counts ? `<div class="dd-teaser-meta">${esc(dateLabel)}${dateLabel && counts ? " — " : ""}${esc(counts)}</div>` : ""}
-      ${has(d.summary) ? `<p class="dd-teaser-txt">${t(d.summary)}</p>` : ""}
-      <button type="button" class="dd-teaser-btn" data-goto-tab="deepdives">Apri il verbale completo →</button>
-    </div>`;
-}
-
 // Clienti: muro di loghi + chip per quelli senza logo.
 function clientsBlock(clients) {
   const list = (Array.isArray(clients) ? clients : []).map(asEntity).filter((x) => has(x.name) || has(x.logo));
@@ -185,20 +196,38 @@ function prose(title, body, s, key) {
   return `<div class="prose-block"><h4>${esc(title)}</h4><p>${t(body)}${confirmBadge(s, key)}</p></div>`;
 }
 
-// Sezione collassabile con chevron.
-function fold(title, inner, { open = false } = {}) {
-  if (!inner) return "";
+// ---- Componente accordion condiviso --------------------------------------
+// È l'unico modo in cui questa scheda mostra un blocco di dettaglio. Usarlo
+// ovunque è la ragione per cui una card ricca e una povera si assomigliano:
+// l'omogeneità è una proprietà del codice, non della disciplina redazionale.
+// `meta` è un conteggio o uno scalare corto mostrato a destra, che permette di
+// leggere la sostanza del blocco senza aprirlo.
+function acc(label, meta, inner) {
+  if (!inner) return accEmpty(label);
   return `
-    <details class="dsection dfold" ${open ? "open" : ""}>
-      <summary class="dsection-title">${esc(title)}<span class="dchevron" aria-hidden="true"></span></summary>
-      <div class="dbody">${inner}</div>
+    <details class="acc">
+      <summary class="acc-head">
+        <span class="acc-chev" aria-hidden="true"></span>
+        <span class="acc-title">${esc(label)}</span>
+        ${meta ? `<span class="acc-meta">${esc(meta)}</span>` : ""}
+      </summary>
+      <div class="acc-body">${inner}</div>
     </details>`;
 }
-// Sezione sempre aperta (non collassabile).
-function section(title, inner) {
-  if (!inner) return "";
-  return `<section class="dsection"><div class="dsection-title static">${esc(title)}</div><div class="dbody">${inner}</div></section>`;
+
+// Riga spenta: stessa altezza e stesso allineamento di un blocco pieno, ma non
+// è un <details> — non promette un contenuto che non c'è, quindi non delude.
+function accEmpty(label) {
+  return `
+    <div class="acc acc-row is-empty">
+      <span class="acc-dash" aria-hidden="true"></span>
+      <span class="acc-title">${esc(label)}</span>
+      <span class="acc-meta">da raccogliere</span>
+    </div>`;
 }
+
+// Sotto-titolo interno a un blocco (micro-caps).
+function sub(title) { return `<div class="dsub">${esc(title)}</div>`; }
 
 // Stato vuoto di un pannello: la struttura a schede è fissa su ogni scheda
 // (stesso numero di tab, stesso ordine), così passare da una card all'altra
@@ -208,151 +237,169 @@ function panelEmpty(text) {
   return `<div class="panel-empty">${esc(text)}</div>`;
 }
 
+// Un pannello: se ha almeno un blocco pieno stampa TUTTI i blocchi in ordine
+// (l'omogeneità serve quando c'è qualcosa da confrontare); se sono tutti vuoti
+// stampa un solo messaggio, per non aprire una scheda su un cimitero di righe.
+function panel(blocks, emptyText) {
+  const pieni = blocks.filter((b) => !b.includes("is-empty"));
+  const inner = pieni.length ? blocks.join("") : panelEmpty(emptyText);
+  return `<div class="sdetail">${inner}</div>`;
+}
+
 export function startupPanels(s) {
   const p = psn(s);
   const usecases = (Array.isArray(s.usecases) ? s.usecases : []).filter(has);
   const technologies = (Array.isArray(s.technologies) ? s.technologies : []).filter(
     (x) => (Array.isArray(x) ? has(x[0]) || has(x[1]) : has(x))
   );
+  const dives = (Array.isArray(s.deepDives) ? s.deepDives : []).filter((d) => d && (has(d.date) || has(d.summary)));
 
-  // ---- Lead ---------------------------------------------------------------
-  const lead = has(s.what) ? `<p class="detail-lead">${t(s.what)}</p>` : "";
+  // ---- Apertura: l'unica cosa esposta ------------------------------------
+  // `intro` è scritto apposta per rispondere alle quattro domande. `what` resta
+  // come ripiego per i record non ancora aggiornati, ma non compare mai
+  // insieme: era proprio la sua sovrapposizione con `description` (50% medio,
+  // 14 startup su 23 oltre il 50%) a creare il muro di testo.
+  const introTxt = has(s.intro) ? s.intro : s.what;
+  const lead = has(introTxt) ? `<p class="detail-lead">${t(introTxt)}</p>` : "";
 
-  // ---- In sintesi (anagrafica + traction) --------------------------------
-  const facts = [
+  // ================= Panoramica =================
+  const anagrafica = [
     fact("Settore", s.sector),
     fact("Sede", s.sede, s, "sede"),
     fact("Fondazione", s.founded, s, "founded"),
     fact("TRL", s.trl, s, "trl"),
-    fact("Maturità / Valuation", s.valuation, s, "valuation"),
-    fact("Fatturato", s.fatturato, s, "fatturato"),
     fact("Dipendenti", s.dipendenti, s, "dipendenti"),
-    // Il sito non è ripetuto qui: è già in evidenza nell'intestazione della
-    // scheda e sulla tile della board.
-    fact("Target di riferimento", s.audience, s, "audience", true),
+    fact("Fatturato", s.fatturato, s, "fatturato"),
+    fact("Ambito applicativo", s.area, s, "area", true),
     fact("Team", s.keyPeople, s, "keyPeople", true),
   ].join("");
-  const tractionBlock = has(s.traction)
-    ? `<div class="callout-soft"><span class="cs-k">Traction &amp; riconoscimenti</span><p>${t(s.traction)}${confirmBadge(s, "traction")}</p></div>`
-    : "";
-  const sintesi = section("In sintesi", (facts ? `<div class="facts">${facts}</div>` : "") + tractionBlock);
+  const bDati = acc("Dati dell'azienda",
+    [s.sede, s.founded].filter(has).join(" · "),
+    anagrafica ? `<div class="facts">${anagrafica}</div>` : "");
 
-  // ---- La soluzione -------------------------------------------------------
-  const solInner =
-    prose("Cosa fa", s.description || (has(s.what) ? "" : s.what), s, "description") +
-    prose("Il problema che risolve", s.problem, s, "problem") +
-    prose("Perché è rilevante per la PA", s.relevance, s, "relevance");
-  const soluzione = section("La soluzione", solInner);
+  const problemaInner =
+    prose("Il problema", s.problem, s, "problem") +
+    (has(s.relevance) ? `<div class="note-block">${t(s.relevance)}</div>` : "");
+  const bProblema = acc("Problema e rilevanza per la PA", has(s.relevance) ? "PA" : "", problemaInner);
 
-  // ---- Casi d'uso ed elementi distintivi ---------------------------------
-  const ucInner =
-    (usecases.length ? `<ul class="uc-list">${usecases.map((x) => `<li>${t(x)}</li>`).join("")}</ul>` : "") +
-    (has(s.differentiator)
-      ? `<div class="prose-block"><h4>Elementi distintivi</h4><p>${t(s.differentiator)}${confirmBadge(s, "differentiator")}</p></div>`
+  const bCasi = acc("Casi d'uso concreti", usecases.length ? String(usecases.length) : "",
+    usecases.length ? `<ul class="uc-list">${usecases.map((x) => `<li>${t(x)}</li>`).join("")}</ul>` : "");
+
+  const bDistingue = acc("Che cosa la distingue", "",
+    has(s.differentiator) ? `<p class="acc-p">${t(s.differentiator)}${confirmBadge(s, "differentiator")}</p>` : "");
+
+  // Descrizione estesa: tenuta come ultimo blocco perché l'apertura ne porta
+  // già la sostanza. Serve a chi vuole il testo integrale, non a chi scorre.
+  const bDescrizione = acc("Descrizione estesa", "",
+    has(s.description) ? `<p class="acc-p">${t(s.description)}${confirmBadge(s, "description")}</p>` : "");
+
+  // ================= Tecnologia e PSN =================
+  const flowSteps = [["Input", s.input], ["Elaborazione", s.processing], ["Output", s.output]]
+    .filter(([, v]) => has(v));
+  const bFlusso = acc("Come funziona, passo per passo",
+    flowSteps.length ? `${flowSteps.length} passaggi` : "",
+    flowSteps.length
+      ? `<div class="flowrail">${flowSteps
+          .map(([k, v]) => `<div class="flowrail-step"><span class="flowrail-k">${esc(k)}</span><span class="flowrail-v">${t(v)}</span></div>`)
+          .join("")}</div>`
       : "");
-  const casiUso = section("Casi d'uso ed elementi distintivi", ucInner);
 
-  // ---- Classificazione PSN -----------------------------------------------
+  const bTecnologie = acc("Tecnologie e componenti",
+    technologies.length ? String(technologies.length) : "",
+    technologies.length
+      ? `<dl class="tech-dl">${technologies
+          .map((x) => {
+            const label = Array.isArray(x) ? x[0] : x;
+            const desc = Array.isArray(x) ? x[1] : "";
+            return `<div class="tech-item"><dt>${t(label)}</dt>${has(desc) ? `<dd>${t(desc)}</dd>` : ""}</div>`;
+          })
+          .join("")}</dl>`
+      : "");
+
   const psnFacts = [
-    fact("Verticale PSN primario", p.primary),
     fact("Aree PSN correlate", p.secondary),
     fact("Aree di innovazione", p.innovation),
     fact("Caso d'uso PSN", p.usecase, null, null, true),
-    fact("Ambito applicativo", s.area, s, "area", true),
   ].join("");
-  const psnNote = has(p.note) ? `<div class="note-block">${t(p.note)}</div>` : "";
-  const classificazione = (psnFacts || psnNote)
-    ? section("Classificazione PSN", (psnFacts ? `<div class="facts">${psnFacts}</div>` : "") + psnNote)
-    : "";
+  const bPsn = acc("Classificazione PSN", has(p.primary) ? p.primary : "",
+    (has(p.primary) ? `<span class="psn-pill">${t(p.primary)}</span>` : "") +
+      (psnFacts ? `<div class="facts">${psnFacts}</div>` : "") +
+      (has(p.note) ? `<div class="note-block">${t(p.note)}</div>` : ""));
 
-  // ---- Certificati e premi -----------------------------------------------
-  const certChips = chips(s.certifications, "📜");
-  const awardChips = chips(s.awards, "🏅");
-  const credInner =
-    (certChips ? `<div class="dsub">Certificazioni</div>${certChips}` : "") +
-    (awardChips ? `<div class="dsub">Premi e riconoscimenti</div>${awardChips}` : "");
-  const credenziali = section("Certificati e premi", credInner);
-
-  // ---- Investitori --------------------------------------------------------
-  const investitori = section("Investitori", investorsBlock(s.investors));
-
-  // ---- Clienti ------------------------------------------------------------
-  const clienti = section("Clienti", clientsBlock(s.clients));
-
-  // ---- Come funziona (collassabile) --------------------------------------
-  const flowSteps = [
-    ["Input", s.input],
-    ["Elaborazione", s.processing],
-    ["Output", s.output],
-  ].filter(([, v]) => has(v));
-  const flowHtml = flowSteps.length
-    ? `<div class="flow">${flowSteps
-        .map(([k, v]) => `<div class="flow-step"><span class="flow-k">${esc(k)}</span><span class="flow-v">${t(v)}</span></div>`)
-        .join('<span class="flow-arrow" aria-hidden="true">→</span>')}</div>`
-    : "";
-  const techHtml = technologies.length
-    ? `<ul class="tech-list">${technologies
-        .map((x) => {
-          const label = Array.isArray(x) ? x[0] : x;
-          const desc = Array.isArray(x) ? x[1] : "";
-          return `<li><span class="tech-k">${t(label)}</span>${has(desc) ? `<span class="tech-v">${t(desc)}</span>` : ""}</li>`;
-        })
-        .join("")}</ul>`
-    : "";
-  const comeFunziona = section(
-    "Come funziona",
-    (flowHtml ? `<div class="dsub">Dai dati al risultato</div>${flowHtml}` : "") +
-      (techHtml ? `<div class="dsub">Tecnologie utilizzate</div>${techHtml}` : "")
-  );
-
-  // ---- Percorso in PSN (collassabile) ------------------------------------
-  const pathFacts = [
-    fact("Verifica preliminare consigliata", s.deepen, s, "deepen", true),
-    fact("Sperimentazione / PoC", s.poc, s, "poc", true),
+  const pocFacts = [
+    fact("Perimetro proposto", s.poc, s, "poc", true),
     fact("Durata indicativa", s.duration),
-    fact("Indicatori di valutazione", s.kpi, null, null, true),
     fact("Prerequisito principale", s.prereq, null, null, true),
+    fact("Indicatori di valutazione", s.kpi, null, null, true),
   ].join("");
+  const bPoc = acc("Ipotesi di sperimentazione (PoC)", has(s.duration) ? s.duration : "",
+    pocFacts ? `<div class="facts">${pocFacts}</div>` : "");
+
+  // `deepen` e `why` si sovrappongono al 44% in media (12 startup su 23 oltre
+  // il 50%): messi in gerarchia oggetto/motivo la ridondanza si dissolve senza
+  // riscrivere i testi.
+  const bVerifica = acc("Da verificare prima di procedere", "",
+    has(s.deepen) || has(s.why)
+      ? `<div class="checkcard">
+           ${has(s.deepen) ? `<div class="checkcard-k">${t(s.deepen)}</div>` : ""}
+           ${has(s.why) ? `<p class="checkcard-v">${t(s.why)}</p>` : ""}
+         </div>` +
+        (has(s.material) ? sub("Materiali da chiedere") + `<p class="acc-p">${t(s.material)}</p>` : "")
+      : "");
+
   const steps = [s.next1, s.next2, s.nextOut].filter(has);
-  const stepsHtml = steps.length
-    ? `<div class="dsub">Prossimi passi</div><ol class="steps-list">${steps
-        .map((x) => `<li>${t(x)}</li>`)
-        .join("")}</ol>`
-    : "";
-  const percorso = section(
-    "Percorso in PSN",
-    (pathFacts ? `<div class="facts">${pathFacts}</div>` : "") + stepsHtml
-  );
+  const bProssimi = acc("Prossimi passi", steps.length ? `${steps.length} passi` : "",
+    steps.length ? `<ol class="steps-list">${steps.map((x) => `<li>${t(x)}</li>`).join("")}</ol>` : "");
 
-  // La scheda è divisa in pannelli tematici (schede) invece di un unico
-  // scroll: si trova prima l'informazione e si scorre molto meno.
-  const wrap = (inner) => `<div class="sdetail">${inner}</div>`;
-  const dives = (Array.isArray(s.deepDives) ? s.deepDives : []).filter((d) => d && (has(d.date) || has(d.summary)));
-  const teaser = dives.length ? lastDiveTeaser(dives) : "";
+  // ================= Riconoscimenti e certificazioni =================
+  const certs = (Array.isArray(s.certifications) ? s.certifications : []).filter(has);
+  const awards = (Array.isArray(s.awards) ? s.awards : []).filter(has);
+  const bCert = acc("Certificazioni e conformità", certs.length ? String(certs.length) : "",
+    certs.length ? chips(certs, "📜") : "");
+  const bPremi = acc("Premi e riconoscimenti", awards.length ? String(awards.length) : "",
+    awards.length ? `<ul class="award-list">${awards.map((x) => `<li>${t(x)}</li>`).join("")}</ul>` : "");
 
-  // Le quattro schede sono sempre presenti e nello stesso ordine: dove manca
-  // il contenuto compare un messaggio invece della scheda, così la barra non
-  // cambia forma spostandosi da una startup all'altra.
-  const relazioni = clienti + credenziali + investitori;
-  const tecnico = comeFunziona + classificazione + percorso;
+  // ================= Clienti e investitori =================
+  const clients = (Array.isArray(s.clients) ? s.clients : []).map(asEntity).filter((x) => has(x.name) || has(x.logo));
+  const bClienti = acc("Clienti e referenze", clients.length ? String(clients.length) : "",
+    clientsBlock(s.clients));
 
-  const panels = [
-    { id: "overview", label: "Panoramica", html: wrap(lead + sintesi + (teaser ? `<div class="dsection">${teaser}</div>` : "") + soluzione + casiUso) },
+  const bInvest = acc("Investitori e round di finanziamento",
+    has(s.totalRaised) ? s.totalRaised : "",
+    fundingBlock(s));
+
+  const bTrazione = acc("Trazione", "",
+    has(s.traction) ? `<p class="acc-p">${t(s.traction)}${confirmBadge(s, "traction")}</p>` : "");
+
+  // ---- Pannelli: ordine ed etichette identici su ogni startup -------------
+  return [
+    {
+      id: "overview", label: "Panoramica",
+      html: `<div class="sdetail">${lead}${[bDati, bProblema, bCasi, bDistingue, bDescrizione].join("")}</div>`,
+    },
     {
       id: "deepdives", label: "Approfondimenti", count: dives.length || undefined,
-      html: wrap(dives.length ? deepDivesSection(s) : panelEmpty("Nessun approfondimento ancora. Qui compariranno i verbali delle call fatte con la startup.")),
+      html: `<div class="sdetail">${
+        dives.length ? deepDivesSection(s)
+                     : panelEmpty("Nessun approfondimento ancora. Qui compariranno i verbali delle call fatte con la startup.")
+      }</div>`,
     },
     {
-      id: "relations", label: "Clienti & credenziali",
-      html: wrap(relazioni || panelEmpty("Nessuna credenziale raccolta ancora. Qui compariranno clienti, certificazioni, premi e investitori quando disponibili.")),
+      id: "tech", label: "Tecnologia e PSN",
+      html: panel([bFlusso, bTecnologie, bPsn, bPoc, bVerifica, bProssimi],
+        "Nessun dettaglio tecnico o di classificazione PSN disponibile ancora."),
     },
     {
-      id: "tech", label: "Tecnologia & PSN",
-      html: wrap(tecnico || panelEmpty("Nessun dettaglio tecnico o di classificazione PSN disponibile ancora.")),
+      id: "credentials", label: "Riconoscimenti e certificazioni",
+      html: panel([bCert, bPremi],
+        "Nessun riconoscimento registrato. Qui compariranno certificazioni, conformità normative, premi e programmi di accelerazione."),
+    },
+    {
+      id: "market", label: "Clienti e investitori",
+      html: panel([bClienti, bInvest, bTrazione],
+        "Nessun dato di mercato raccolto. Qui compariranno clienti e referenze, round di finanziamento con importi e investitori, e le metriche di trazione."),
     },
   ];
-
-  return panels;
 }
 
 // Compatibilità: markup completo in un unico blocco (usato fuori dalla modale).

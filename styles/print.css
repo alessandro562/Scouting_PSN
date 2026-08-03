@@ -74,3 +74,13 @@
   /* Colori fedeli (loghi, accenti) */
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
+
+/* I blocchi della scheda sono chiusi di default: in stampa vanno tutti aperti,
+   altrimenti il PDF esce con le sole intestazioni. */
+@media print {
+  details.acc > .acc-body { display: block !important; }
+  .acc-chev, .acc-dash, .acc-meta { display: none !important; }
+  .acc-head { padding: 6px 0 !important; margin: 0 !important; }
+  .acc-body { padding: 0 0 10px 0 !important; animation: none !important; }
+  .acc-row.is-empty { display: none !important; }
+}

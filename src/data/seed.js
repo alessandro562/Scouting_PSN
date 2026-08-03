@@ -7,11 +7,12 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 10;
+export const SEED_CONTENT_VERSION = 11;
 
 export const startups = [
       {
         id:"iotilize",
+        intro:"iotilize.me è una soluzione IoT per il monitoraggio di container e asset ambientali normalmente non connessi. Applica sensori LPWA ai cassonetti e ai contenitori e restituisce in un'unica piattaforma posizione, livello di riempimento, movimenti e anomalie, trasformandoli in pianificazione dei ritiri. È pensata per municipalizzate, centri di raccolta e operatori dei rifiuti che oggi decidono gli svuotamenti a calendario invece che sui dati.",
         trl:"7",
         toConfirm:["trl"],
         name:"iotilize.me",
@@ -45,6 +46,7 @@ export const startups = [
       },
       {
         id:"fedro",
+        intro:"FEDRO è una soluzione di data quality che si colloca a monte dei progetti di AI e analisi dati della PA. Acquisisce fonti eterogenee e ne riconosce i campi equivalenti, collega i record che descrivono la stessa entità, elimina i duplicati e ne ricostruisce una vista coerente e interrogabile. È pensata per enti con archivi frammentati, uffici dati e innovazione e progetti di interoperabilità che devono bonificare la base dati prima di costruirci servizi sopra.",
         website:"https://fedro-data.it/",
         trl:"7",
         toConfirm:["trl"],
@@ -78,6 +80,7 @@ export const startups = [
       },
       {
         id:"talpa",
+        intro:"TALPA Inspection è una soluzione di ispezione non distruttiva per le infrastrutture in cemento armato. Monta sensori su drone o robot per rilevare gli indicatori della corrosione interna delle armature e geolocalizza ogni misura su una rappresentazione digitale dell'opera, producendo una mappa del rischio invece di un semplice reportage fotografico. È pensata per gestori infrastrutturali, concessionari e utility che devono programmare le manutenzioni su asset estesi.",
         trl:"6",
         toConfirm:["trl"],
         logo:"assets/logos/talpa.png",
@@ -111,6 +114,7 @@ export const startups = [
       },
       {
         id:"surwiz",
+        intro:"Surwiz è una soluzione di analisi automatica dei feedback testuali. Prende risposte aperte, commenti e contributi non strutturati e li organizza in temi ricorrenti, priorità e azioni di miglioramento, sostituendo la lettura manuale di migliaia di risposte con una sintesi replicabile. È pensata per uffici comunicazione, qualità dei servizi e innovazione che raccolgono molte risposte qualitative nelle consultazioni pubbliche ma non riescono a trasformarle in decisioni.",
         trl:"7",
         toConfirm:["trl"],
         name:"Surwiz",
@@ -142,6 +146,7 @@ export const startups = [
       },
       {
         id:"act4city",
+        intro:"Act4City è una piattaforma di assistenza digitale multicanale per gli enti locali. Organizza le informazioni ufficiali dell'amministrazione in una base interrogabile e consente al cittadino di porre domande in linguaggio naturale via web, chat o voce, ricevendo risposte ancorate alle fonti comunali invece che a un modello generico. È pensata per comuni, URP e uffici digitali di enti piccoli e medi sommersi da richieste ricorrenti.",
         trl:"6",
         toConfirm:["trl"],
         logo:"assets/logos/act4city.jpg",
@@ -175,6 +180,7 @@ export const startups = [
       },
       {
         id:"ask4pa",
+        intro:"Heres / ASK4PA è una piattaforma modulare per la gestione assistita delle richieste alla Pubblica Amministrazione. Interpreta la richiesta del cittadino, la classifica, apre il ticket, lo smista all'ufficio competente e attiva i flussi operativi a valle, spostandosi dalla semplice risposta informativa all'automazione del front-office. È pensata per amministrazioni con volumi elevati di richieste, URP evoluti e help desk che devono ridurre il carico sugli operatori.",
         // TRL confermato nella call del 30/07/2026: piattaforma in esercizio
         // presso clienti reali, ISO 27001, copertura test al 95%.
         trl:"9",
@@ -259,6 +265,7 @@ export const startups = [
       },
       {
         id:"civimatica",
+        intro:"Civimatica è una soluzione di edge computing per la lettura dello spazio urbano. Installa dispositivi che elaborano immagini e segnali direttamente sul posto e ne estraggono metadati strutturati su traffico, parcheggi, code e anomalie, senza trasmettere né conservare le immagini originali. È pensata per comuni, mobility manager e gestori del trasporto pubblico che vogliono dati fisici puntuali sulla città rispettando i vincoli di privacy.",
         trl:"6",
         toConfirm:["trl"],
         logo:"assets/logos/civimatica.webp",
@@ -292,6 +299,7 @@ export const startups = [
       },
       {
         id:"cyberevolution",
+        intro:"Cyberevolution è una società di cybersecurity industriale specializzata nella protezione delle reti OT. Il suo dispositivo LECS si installa in modalità plug & play sulle reti di impianto e ne sorveglia il traffico con algoritmi di rilevamento delle anomalie, proteggendo macchinari e sistemi di controllo senza richiedere la riprogettazione dell'architettura esistente. È pensata per operatori industriali, utility e gestori di infrastrutture critiche con impianti produttivi da mettere in sicurezza.",
         logo:"assets/logos/cyberevolution.png",
         website:"https://cyberevolution.it/",
         name:"Cyberevolution",
@@ -324,6 +332,7 @@ export const startups = [
       },
       {
         id:"truescreen",
+        intro:"Truescreen è una piattaforma di legal-tech e cybersecurity dedicata alla prova digitale. Acquisisce foto, video, documenti e pagine web con una metodologia forense brevettata e li restituisce firmati, notarizzati e non più modificabili, integrabili via API nei sistemi già in uso. È pensata per studi legali, assicurazioni, imprese e uffici della PA che devono produrre contenuti digitali con pieno valore probatorio in sede legale o amministrativa.",
         website:"https://truescreen.io/it/",
         logo:"assets/logos/truescreen.png",
         name:"Truescreen",
@@ -355,6 +364,7 @@ export const startups = [
       },
       {
         id:"cylock",
+        intro:"CyLock è una piattaforma di gestione proattiva del rischio cyber basata su AI. Analizza in modo automatico e continuo la superficie di attacco esterna di un'organizzazione, individua le vulnerabilità sfruttabili e le restituisce ordinate per priorità con le indicazioni operative per rimediare. È pensata per imprese, provider di servizi gestiti e Pubblica Amministrazione che devono conoscere e ridurre nel tempo la propria esposizione.",
         logo:"assets/logos/cylock.png",
         website:"https://www.cylock.tech/",
         name:"CyLock",
@@ -386,6 +396,7 @@ export const startups = [
       },
       {
         id:"resilientx",
+        intro:"ResilientX è una piattaforma SaaS per la gestione del rischio cyber esterno. Mappa in modo continuo gli asset digitali esposti su internet, ne rileva le vulnerabilità ed estende il controllo alla catena dei fornitori, mantenendo aggiornato il quadro dell'esposizione man mano che l'infrastruttura cambia. È pensata per organizzazioni enterprise, soggetti regolamentati e Pubblica Amministrazione che devono presidiare perimetro digitale e supply chain.",
         website:"https://resilientx.com",
         name:"ResilientX",
         area:"Cybersecurity",
@@ -416,6 +427,7 @@ export const startups = [
       },
       {
         id:"intrusa",
+        intro:"Intrusa è una piattaforma cloud di sicurezza e conformità normativa. Centralizza la raccolta e il monitoraggio dei log dei sistemi IT e li correla con i requisiti delle normative applicabili, così che il presidio della sicurezza e la dimostrazione della conformità avvengano sullo stesso insieme di dati. È pensata per imprese e Pubblica Amministrazione che devono governare la sicurezza IT e documentare la conformità agli auditor.",
         website:"https://intrusa.io/",
         name:"Intrusa",
         area:"Cybersecurity",
@@ -446,6 +458,7 @@ export const startups = [
       },
       {
         id:"aigarage",
+        intro:"AI Garage è una piattaforma di gestione del rischio cyber lungo la catena dei fornitori. Automatizza la valutazione dei fornitori, i flussi di adeguamento alle normative europee e la raccolta della documentazione di audit, sostituendo i questionari gestiti a mano con un monitoraggio continuo e una reportistica pronta per le verifiche. È pensata per imprese e Pubblica Amministrazione che devono dimostrare il controllo sui propri fornitori sotto NIS2 e normative collegate.",
         website:"https://www.aigarage.it/",
         logo:"assets/logos/aigarage.png",
         name:"AI Garage",
@@ -479,6 +492,7 @@ export const startups = [
       },
       {
         id:"cyberaware",
+        intro:"CyberAware è una piattaforma di formazione e consapevolezza sulla sicurezza informatica. Eroga percorsi interattivi e simulazioni continue al personale e ne certifica i risultati, misurando nel tempo la riduzione del comportamento a rischio invece di limitarsi al corso una tantum. È pensata per imprese e Pubblica Amministrazione che vogliono agire sul fattore umano, che resta la via d'ingresso più frequente degli attacchi.",
         logo:"assets/logos/cyberaware.png",
         website:"https://cyber-aware.it/",
         name:"CyberAware",
@@ -509,6 +523,7 @@ export const startups = [
       },
       {
         id:"pugliai",
+        intro:"PugliAI è una piattaforma di AI generativa per l'automazione dei processi documentali e di contenuto. Combina modelli linguistici e flussi di lavoro configurabili per produrre, revisionare e analizzare testi e dati aziendali, portando l'AI dentro procedure ripetitive invece di lasciarla come strumento a sé. È pensata per imprese e Pubblica Amministrazione che vogliono ridurre il tempo speso nella produzione di documenti e nell'analisi di grandi volumi testuali.",
         website:"https://pugliai.com",
         name:"PugliAI",
         area:"Intelligenza artificiale / Generative AI",
@@ -539,6 +554,7 @@ export const startups = [
       },
       {
         id:"tiledesk",
+        intro:"Tiledesk è una piattaforma open source per la creazione di agenti conversazionali basati su AI. Consente di costruire e orchestrare agenti che rispondono agli utenti sui canali digitali e assistono gli operatori interni, con la possibilità di passare la conversazione a una persona quando serve. È pensata per imprese e Pubblica Amministrazione che vogliono automatizzare l'assistenza a cittadini e clienti mantenendo il controllo sul flusso e sui dati.",
         name:"Tiledesk",
         area:"Customer service automation",
         what:"Agenti AI personalizzabili per automatizzare assistenza e processi interni.",
@@ -571,6 +587,7 @@ export const startups = [
       },
       {
         id:"ganiga",
+        intro:"Ganiga è una società di smart waste management basata su computer vision. Applica il riconoscimento automatico dei materiali ai punti di conferimento per misurare che cosa viene realmente gettato, rilevare la contaminazione della raccolta differenziata e trasformare il rifiuto in un dato utilizzabile per la gestione. È pensata per gestori pubblici e privati dei rifiuti, municipalizzate e amministrazioni che vogliono aumentare la qualità del riciclo con evidenze e non con stime.",
         logo:"assets/logos/ganiga.jpg",
         website:"https://www.ganiga.ai/it",
         name:"Ganiga",
@@ -602,6 +619,7 @@ export const startups = [
       },
       {
         id:"i2d",
+        intro:"i2d è una piattaforma di raccolta e analisi del feedback basata su AI generativa. Raccoglie le opinioni degli utenti da touchpoint fisici e digitali attraverso i propri moduli InsightGPT e YouFeed e ne ricava indicazioni operative, trasformando materiale qualitativo non strutturato in priorità di intervento. È pensata per imprese e Pubblica Amministrazione che vogliono capire l'esperienza di clienti e cittadini nei punti in cui il servizio viene effettivamente erogato.",
         logo:"assets/logos/i2d.png",
         website:"https://i2d.it/",
         name:"i2d",
@@ -634,6 +652,7 @@ export const startups = [
       },
       {
         id:"yourease",
+        intro:"Yourease è una piattaforma digitale per il senior living e la cura assistita. Integra dispositivi IoT ambientali, applicazioni per operatori e familiari e strumenti di gestione della struttura, così che il monitoraggio del benessere dell'anziano e l'organizzazione del lavoro di reparto avvengano nello stesso ecosistema. È pensata per RSA, residenze assistite e servizi di welfare territoriale che vogliono aumentare l'autonomia degli ospiti senza appesantire il personale.",
         logo:"assets/logos/yourease.svg",
         website:"https://yourease.it/",
         name:"Yourease",
@@ -666,6 +685,7 @@ export const startups = [
       },
       {
         id:"loki",
+        intro:"LOKI (Laboratory Of Key Innovations) è una startup che sviluppa sistemi di monitoraggio per la manutenzione stradale e l'accessibilità pedonale. Un dispositivo plug & play si installa su veicoli già circolanti e, con algoritmi di AI, individua, geolocalizza con precisione decimetrica e classifica dissesti e barriere architettoniche, nel rispetto del GDPR. È pensata per comuni, enti gestori di strade e assicurazioni che vogliono passare dalla manutenzione a chiamata a quella programmata.",
         logo:"assets/logos/loki.png",
         name:"LOKI",
         area:"Smart Cities / Manutenzione stradale & accessibilità",
@@ -713,6 +733,7 @@ export const startups = [
       },
       {
         id:"nextgcloud",
+        intro:"Next G Cloud è un'azienda deep-tech specializzata in confidential computing e AI privata e sovrana nel continuum edge-cloud. Esegue dati e carichi di lavoro AI dentro ambienti cifrati e attestati, così che restino illeggibili anche al fornitore dell'infrastruttura, con architettura ibrida e indipendente dal vendor. È pensata per imprese e PA dei settori finance, legale, industriale e smart city che devono usare il cloud mantenendo sovranità del dato e conformità europea.",
         name:"Next G Cloud",
         area:"Cybersecurity / Cloud sovrano & Confidential Computing",
         what:"AI privata e sovrana e confidential computing per l’edge cloud: proteggere dati e workload AI nel continuum edge-cloud con sovranità europea.",
@@ -764,6 +785,7 @@ export const startups = [
       },
       {
         id:"beelzebub",
+        intro:"Beelzebub è una piattaforma di cybersecurity AI-native che unisce attacco e difesa in un unico ciclo autonomo. Emula in continuo il comportamento dell'avversario per scoprire i percorsi sfruttabili, dispone esche a runtime che rilevano l'intrusione senza falsi positivi e la contengono in millisecondi. È pensata per organizzazioni corporate, infrastrutture critiche e PA soggette a NIS2 che affrontano attacchi condotti da agenti automatici.",
         name:"Beelzebub",
         area:"Cybersecurity / AI-native security · deception & autonomous SOC",
         what:"Piattaforma di cybersecurity AI-native che fonde red team e blue team in un unico purple-team loop autonomo a machine-speed: emulazione continua dell'avversario, deception a runtime e threat intelligence autonoma.",
@@ -825,6 +847,7 @@ export const startups = [
       },
       {
         id:"focoos",
+        intro:"Focoos AI è una deep-tech spin-off del Politecnico di Torino dedicata alla visione artificiale. Copre l'intero ciclo della vision AI — dataset, addestramento, ottimizzazione e messa in esercizio — con reti neurali pronte all'uso fino a 4 volte più efficienti e 10 volte più veloci degli standard, eseguibili anche su dispositivi a basso consumo. È pensata per sviluppatori, integratori e aziende che vogliono incorporare la visione artificiale nei propri prodotti.",
         name:"Focoos AI",
         area:"AI / Computer Vision · piattaforma per reti neurali efficienti",
         what:"Piattaforma che semplifica e accelera l'adozione della visione artificiale con reti neurali pronte all'uso e facilmente adattabili, per portare funzionalità di visione avanzata su qualsiasi dispositivo — anche a basso consumo — riducendo tempi e costi di sviluppo.",
