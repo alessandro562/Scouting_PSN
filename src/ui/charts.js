@@ -125,7 +125,11 @@ export function donut(items, { size = 196, thickness = 22, fk = null, active = n
   const center = hit
     ? { value: hit.value, label: hit.label }
     : { value: total, label: "startup" };
-  const r = (size - thickness) / 2;
+  // Margine fra il bordo esterno del tratto e il riquadro: l'SVG ritaglia tutto
+  // ciò che esce, e senza margine l'anello lo tocca esattamente, quindi
+  // qualunque ispessimento (o anche solo l'antialiasing) lo taglia.
+  const PAD = 3;
+  const r = (size - thickness) / 2 - PAD;
   const cx = size / 2, cy = size / 2;
   const C = 2 * Math.PI * r;
   // Estremità piatte + stacco di 2px nel colore della superficie. Con le
