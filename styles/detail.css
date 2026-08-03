@@ -70,6 +70,56 @@ details.dfold > .dbody { padding: 0 0 16px; }
 .uc-list li { position: relative; padding-left: 20px; font-size: 14px; line-height: 1.5; color: var(--text); }
 .uc-list li::before { content: ""; position: absolute; left: 3px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: var(--psn-cyan); }
 
+/* ---- Approfondimenti (verbali delle call) ------------------------------ */
+.dd-wrap { display: flex; flex-direction: column; gap: 14px; }
+.dd-card {
+  border: 1px solid var(--line-soft); border-radius: 14px; padding: 15px 17px;
+  background: linear-gradient(180deg, #fff, #FBFCFF);
+  box-shadow: 0 1px 2px rgba(0,0,79,.04);
+}
+.dd-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.dd-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dd-date { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.dd-type { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); background: var(--surface-soft); border-radius: 999px; padding: 3px 9px; }
+.dd-outcome { font-size: 11.5px; font-weight: 700; border-radius: 999px; padding: 4px 11px; white-space: nowrap; }
+.dd-out-ok   { background: var(--green-soft, #E6F7EF); color: #12724E; }
+.dd-out-wait { background: var(--amber-soft); color: var(--amber); }
+.dd-out-hold { background: var(--blue-soft); color: var(--wda-blue); }
+.dd-out-stop { background: var(--red-soft); color: var(--red); }
+.dd-title { margin-top: 8px; font-size: 14px; font-weight: 700; color: var(--ink); }
+.dd-peoples { margin-top: 8px; display: flex; flex-direction: column; gap: 3px; }
+.dd-people { font-size: 12px; color: var(--text); }
+.dd-people span { display: inline-block; min-width: 74px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.dd-summary { margin: 10px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--text); }
+
+.dd-list { margin-top: 12px; }
+.dd-list-k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+.dd-list ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.dd-list li { position: relative; padding-left: 18px; font-size: 13px; line-height: 1.5; color: var(--text); }
+.dd-list li::before { position: absolute; left: 0; top: 0; font-size: 12px; }
+.dd-ok .dd-list-k { color: #12724E; }
+.dd-ok li::before { content: "✓"; color: #17936A; }
+.dd-risk .dd-list-k { color: var(--amber); }
+.dd-risk li::before { content: "⚠"; color: var(--amber); }
+.dd-actions .dd-list-k { color: var(--wda-blue); }
+.dd-actions li::before { content: "☐"; color: var(--wda-blue); }
+.dd-owner { display: inline-block; font-weight: 700; color: var(--ink); margin-right: 6px; }
+.dd-due { color: var(--muted); font-size: 11.5px; }
+
+.dd-topics { margin-top: 12px; border-top: 1px solid var(--line-soft); padding-top: 10px; border-radius: 0; background: none; box-shadow: none; border-left: 0; border-right: 0; border-bottom: 0; }
+.dd-topics > summary { cursor: pointer; list-style: none; font-size: 12px; font-weight: 700; color: var(--wda-blue); padding: 0; }
+.dd-topics > summary::-webkit-details-marker { display: none; }
+.dd-topics > summary::before { content: "▸ "; }
+.dd-topics[open] > summary::before { content: "▾ "; }
+.dd-topics dl { margin: 10px 0 0; display: flex; flex-direction: column; gap: 9px; }
+.dd-topics dt { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.dd-topics dd { margin: 2px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text); }
+
+.dd-foot { margin-top: 12px; padding-top: 9px; border-top: 1px solid var(--line-soft); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.dd-foot strong { color: var(--ink); }
+.dd-foot a { color: var(--wda-blue); text-decoration: none; }
+.dd-foot a:hover { text-decoration: underline; }
+
 /* ---- Chip credenziali (certificazioni, premi, investitori) ------------- */
 .cred-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
 .cred-chip {

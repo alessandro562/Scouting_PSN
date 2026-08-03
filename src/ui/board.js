@@ -81,6 +81,21 @@ function ageLabel(days) {
   return `${days}g in fase`;
 }
 
+// Esito dell'ultimo approfondimento (verbale della call), se presente.
+const OUTCOME_CHIP = {
+  "Prosegue": ["ok", "✓"],
+  "In attesa di materiali": ["wait", "⏳"],
+  "Da rivalutare": ["hold", "⟳"],
+  "Non prosegue": ["stop", "✕"],
+};
+function lastOutcome(card) {
+  const dives = card.data?.deepDives;
+  if (!Array.isArray(dives) || !dives.length) return null;
+  const sorted = [...dives].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+  const o = sorted[0]?.outcome;
+  return o && OUTCOME_CHIP[o] ? { label: o, cls: OUTCOME_CHIP[o][0], ico: OUTCOME_CHIP[o][1] } : null;
+}
+
 // Fase successiva nell'ordine della board (per l'azione rapida "avanza").
 function nextStageOf(card) {
   const idx = state.stages.findIndex((s) => s.id === card.stage_id);
@@ -107,6 +122,7 @@ function tileHtml(card) {
   const next = nextStageOf(card);
   const logo = card.data?.logo;
   const site = card.data?.website;
+  const outcome = lastOutcome(card);
   const logoHtml = logo
     ? `<span class="kcard-logo"><img src="${esc(logo)}" alt="${esc(card.name)}" loading="lazy" onerror="this.parentNode.classList.add('kcard-logo-mono');this.parentNode.textContent='${esc(initials(card.name))}'"></span>`
     : `<span class="kcard-logo kcard-logo-mono">${esc(initials(card.name))}</span>`;
@@ -137,6 +153,7 @@ function tileHtml(card) {
           ${trl ? `<span class="kchip kchip-ghost">TRL ${esc(trl)}</span>` : ""}
           ${Array.isArray(card.data?.toConfirm) && card.data.toConfirm.length ? `<span class="kchip kchip-warn" title="Contiene dati da confermare">⚠ da confermare</span>` : ""}
           ${days != null ? `<span class="kchip kchip-age ${stale ? "kchip-age-stale" : ""}" title="Tempo nella fase corrente">⏱ ${esc(ageLabel(days))}</span>` : ""}
+          ${outcome ? `<span class="kchip kchip-out kchip-out-${outcome.cls}" title="Esito dell'ultimo approfondimento">${outcome.ico} ${esc(outcome.label)}</span>` : ""}
         </div>
       </div>
     </article>

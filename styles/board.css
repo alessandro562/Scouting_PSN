@@ -230,6 +230,13 @@ aside { background: var(--psn-gradient-dark) !important; }
 /* Chip "da confermare" sulla tile della board */
 .kchip.kchip-warn { background: var(--amber-soft); color: var(--amber); border: 1px solid color-mix(in srgb, var(--amber) 26%, #fff); }
 
+/* Chip esito dell'ultimo approfondimento */
+.kchip.kchip-out { border: 1px solid transparent; }
+.kchip-out-ok   { background: #E6F7EF; color: #12724E; border-color: #BFE8D5; }
+.kchip-out-wait { background: var(--amber-soft); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 26%, #fff); }
+.kchip-out-hold { background: var(--blue-soft); color: var(--wda-blue); border-color: #CFE0FB; }
+.kchip-out-stop { background: var(--red-soft); color: var(--red); border-color: #F2CFCB; }
+
 /* Chip aging (tempo in fase) */
 .kchip.kchip-age { background: var(--surface-soft); color: var(--muted); border: 1px solid var(--line-soft); }
 .kchip.kchip-age-stale { background: var(--amber-soft); color: var(--amber); border-color: color-mix(in srgb, var(--amber) 26%, #fff); }
