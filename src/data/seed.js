@@ -7,14 +7,22 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 11;
+export const SEED_CONTENT_VERSION = 12;
 
 export const startups = [
       {
         id:"iotilize",
+        funding:[{"tipo":"Angel / pre-seed","importo":"n.d.","data":"ott 2023","lead":"NextSTEP (NextEnergy Group)","investitori":["NextSTEP"]},{"tipo":"Grant pubblico","importo":"n.d.","data":"Pre Seed Plus, POR FESR Lazio","lead":"Lazio Innova","investitori":["Regione Lazio"]},{"tipo":"Premi iniziali","importo":"12 k€","data":"2023","lead":"—","investitori":["Dock3","Maker Faire Rome","Rotary"]}],
+        clients:[{"name":"AMA"},{"name":"COSMARI"},{"name":"Furlotti Group"},{"name":"ASTRA Ecologia"},{"name":"ACEA (PoC, CTE Roma)"}],
+        awards:["Unindustria Startup Network 2026 — startup più innovativa del Lazio (feb 2026)","Bando Pre Seed Plus, POR FESR Lazio — vincitrice","Incubata in Dock3, Università Roma Tre"],
+        investors:["NextSTEP (NextEnergy Group)","Lazio Innova / Regione Lazio","Dock3 — Università Roma Tre"],
+        keyPeople:"Matteo Giaccone (CEO e CTO, co-founder), Francesco Goberti (COO, co-founder), Francesco Castellano (CFO, co-founder)",
+        dipendenti:"2-10",
+        founded:"2023",
+        sede:"Roma",
         intro:"iotilize.me è una soluzione IoT per il monitoraggio di container e asset ambientali normalmente non connessi. Applica sensori LPWA ai cassonetti e ai contenitori e restituisce in un'unica piattaforma posizione, livello di riempimento, movimenti e anomalie, trasformandoli in pianificazione dei ritiri. È pensata per municipalizzate, centri di raccolta e operatori dei rifiuti che oggi decidono gli svuotamenti a calendario invece che sui dati.",
         trl:"7",
-        toConfirm:["trl"],
+        toConfirm:["trl","clients"],
         name:"iotilize.me",
         area:"Ambiente / Smart Operations",
         path:"PoC operativo",
@@ -46,6 +54,9 @@ export const startups = [
       },
       {
         id:"fedro",
+        awards:["IKIGAI Toscana — programma di pre-accelerazione (Regione Toscana, Fondazione MPS)"],
+        keyPeople:"Achille Globo (Founder e CEO), Tiziano Papini (co-founder)",
+        sede:"Arezzo",
         intro:"FEDRO è una soluzione di data quality che si colloca a monte dei progetti di AI e analisi dati della PA. Acquisisce fonti eterogenee e ne riconosce i campi equivalenti, collega i record che descrivono la stessa entità, elimina i duplicati e ne ricostruisce una vista coerente e interrogabile. È pensata per enti con archivi frammentati, uffici dati e innovazione e progetti di interoperabilità che devono bonificare la base dati prima di costruirci servizi sopra.",
         website:"https://fedro-data.it/",
         trl:"7",
@@ -80,6 +91,13 @@ export const startups = [
       },
       {
         id:"talpa",
+        awards:["Venture Kick — stage 1 e 2 (2023)","ETH Pioneer Fellowship — Lukas Bircher (2024)","Premio ETH 100K"],
+        funding:[{"tipo":"Grant Innosuisse","importo":"362,7 k CHF","data":"apr 2023 – mag 2025","lead":"Innosuisse","investitori":["Innosuisse"]},{"tipo":"Premio ETH 100K","importo":"100 k USD (convertibile)","data":"2024","lead":"—","investitori":["Boost VC","Earthling VC"]},{"tipo":"Grant Venture Kick","importo":"60 k CHF","data":"2023","lead":"Venture Kick","investitori":["Venture Kick"]}],
+        totalRaised:"~1,0 M CHF (in prevalenza grant non diluitivi)",
+        keyPeople:"Federico Martinelli-Orlando (Co-founder e CEO), Lukas Bircher (Co-founder)",
+        dipendenti:"2-10",
+        founded:"2025",
+        sede:"Zurigo (Svizzera) — spin-off ETH Zürich",
         intro:"TALPA Inspection è una soluzione di ispezione non distruttiva per le infrastrutture in cemento armato. Monta sensori su drone o robot per rilevare gli indicatori della corrosione interna delle armature e geolocalizza ogni misura su una rappresentazione digitale dell'opera, producendo una mappa del rischio invece di un semplice reportage fotografico. È pensata per gestori infrastrutturali, concessionari e utility che devono programmare le manutenzioni su asset estesi.",
         trl:"6",
         toConfirm:["trl"],
@@ -114,9 +132,15 @@ export const startups = [
       },
       {
         id:"surwiz",
+        awards:["IKIGAI HUB — tra le 5 startup selezionate su oltre 170 candidature (mar 2025)"],
+        clients:[{"name":"IREN Mercato"},{"name":"Humanitas"},{"name":"Banca Widiba"}],
+        valuation:"Bootstrap — nessun round equity annunciato",
+        keyPeople:"Gianluca Brochiero (Fondatore e CEO)",
+        founded:"2024",
+        sede:"Milano",
         intro:"Surwiz è una soluzione di analisi automatica dei feedback testuali. Prende risposte aperte, commenti e contributi non strutturati e li organizza in temi ricorrenti, priorità e azioni di miglioramento, sostituendo la lettura manuale di migliaia di risposte con una sintesi replicabile. È pensata per uffici comunicazione, qualità dei servizi e innovazione che raccolgono molte risposte qualitative nelle consultazioni pubbliche ma non riescono a trasformarle in decisioni.",
         trl:"7",
-        toConfirm:["trl"],
+        toConfirm:["trl","clients"],
         name:"Surwiz",
         area:"Data Intelligence / Citizen Feedback",
         path:"Approfondimento funzionale",
@@ -146,9 +170,12 @@ export const startups = [
       },
       {
         id:"act4city",
+        keyPeople:"Simone Sartoni (Founder e CEO)",
+        dipendenti:"2-10",
+        sede:"Milano",
         intro:"Act4City è una piattaforma di assistenza digitale multicanale per gli enti locali. Organizza le informazioni ufficiali dell'amministrazione in una base interrogabile e consente al cittadino di porre domande in linguaggio naturale via web, chat o voce, ricevendo risposte ancorate alle fonti comunali invece che a un modello generico. È pensata per comuni, URP e uffici digitali di enti piccoli e medi sommersi da richieste ricorrenti.",
         trl:"6",
-        toConfirm:["trl"],
+        toConfirm:["trl","dipendenti","keyPeople"],
         logo:"assets/logos/act4city.jpg",
         website:"https://www.act4city.com/",
         name:"Act4City",
@@ -180,6 +207,10 @@ export const startups = [
       },
       {
         id:"ask4pa",
+        clients:[{"name":"ATC Piemonte"},{"name":"Mondadori Education"},{"name":"Rizzoli Education"},{"name":"DeAScuola"}],
+        investors:["Next4 Group (socio di controllo dal mar 2025)"],
+        awards:["Challenge Carrefour \"Drive ME 2\" — premio 20.000 € (giu 2022)"],
+        sede:"Bologna",
         intro:"Heres / ASK4PA è una piattaforma modulare per la gestione assistita delle richieste alla Pubblica Amministrazione. Interpreta la richiesta del cittadino, la classifica, apre il ticket, lo smista all'ufficio competente e attiva i flussi operativi a valle, spostandosi dalla semplice risposta informativa all'automazione del front-office. È pensata per amministrazioni con volumi elevati di richieste, URP evoluti e help desk che devono ridurre il carico sugli operatori.",
         // TRL confermato nella call del 30/07/2026: piattaforma in esercizio
         // presso clienti reali, ISO 27001, copertura test al 95%.
@@ -214,9 +245,9 @@ export const startups = [
         nextOut:"Mappa workflow, requisiti di integrazione, metriche di ticketing e proposta di PoC modulare.",
         website:"https://heres.ai",
         founded:"2017",
-        dipendenti:"40+ (circa metà sviluppatori)",
-        keyPeople:"Andrea Gabrielli, Matteo Ligabue (Direttore tecnico)",
-        certifications:["ISO 27001","Conformità AI Act (by design)"],
+        dipendenti:"11-50",
+        keyPeople:"Andrea Gabrielli (co-fondatore e CEO), Matteo Ligabue (co-fondatore, Direttore tecnico)",
+        certifications:["ISO 9001","ISO 27001","UNI/PdR 125:2022 — parità di genere"],
         deepDives:[
           {
             date:"2026-07-30",
