@@ -64,8 +64,6 @@ function slide(row, i, n) {
       <div class="ps-foot">
         <div class="ps-brand">
           <img src="assets/logo-wda.png" alt="WDA">
-          <span class="ps-div"></span>
-          <img src="assets/logo-psn.png" alt="PSN">
         </div>
         ${has(s.website) ? `<span class="ps-site">${t(String(s.website).replace(/^https?:\/\//, "").replace(/\/$/, ""))}</span>` : ""}
       </div>

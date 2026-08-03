@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 7;
+export const SEED_CONTENT_VERSION = 8;
 
 export const startups = [
       {
@@ -175,8 +175,10 @@ export const startups = [
       },
       {
         id:"ask4pa",
-        trl:"7",
-        toConfirm:["trl"],
+        // TRL confermato nella call del 30/07/2026: piattaforma in esercizio
+        // presso clienti reali, ISO 27001, copertura test al 95%.
+        trl:"9",
+        toConfirm:[],
         logo:"assets/logos/ask4pa.svg",
         name:"Heres / ASK4PA",
         area:"Workflow PA / Help Desk",

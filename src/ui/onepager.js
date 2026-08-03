@@ -63,8 +63,6 @@ export function buildOnePager(row, stageName = "") {
         </div>
         <div class="op-brand">
           <img src="assets/logo-wda.png" alt="WDA">
-          <span class="op-brand-div"></span>
-          <img src="assets/logo-psn.png" alt="Polo Strategico Nazionale">
         </div>
       </header>
 

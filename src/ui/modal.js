@@ -84,7 +84,7 @@ export async function openStartupModal(row, opts = {}) {
     .join("")
     .toUpperCase();
   const brand = logo
-    ? `<span class="modal-logo"><img src="${esc(logo)}" alt="" loading="lazy"></span>`
+    ? `<span class="modal-logo" data-initials="${esc(initials)}"><img src="${esc(logo)}" alt="" loading="lazy" onerror="this.parentElement.classList.add('modal-mono'); this.style.display='none'; this.parentElement.textContent=this.parentElement.dataset.initials;"></span>`
     : `<span class="modal-logo modal-mono">${esc(initials)}</span>`;
   const site = row.data && row.data.website;
 
@@ -167,18 +167,22 @@ function wireModal(row) {
   const close = () => closeModal();
 
   // Schede: mostra un solo pannello per volta e riporta lo scroll in cima.
-  r.querySelector("#modal-tabs")?.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-tab]");
+  const switchTab = (tabId) => {
+    const btn = r.querySelector(`[data-tab="${tabId}"]`);
     if (!btn) return;
-    const id = btn.getAttribute("data-tab");
     r.querySelectorAll(".mtab").forEach((b) => {
       const on = b === btn;
       b.classList.toggle("active", on);
       b.setAttribute("aria-selected", on ? "true" : "false");
     });
-    r.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== id));
+    r.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== tabId));
     const sc = r.querySelector(".modal-scroll");
     if (sc) sc.scrollTop = 0;
+  };
+  r.querySelector("#modal-tabs")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]");
+    if (!btn) return;
+    switchTab(btn.getAttribute("data-tab"));
   });
 
   r.querySelector("[data-close]")?.addEventListener("click", close);
@@ -214,6 +218,13 @@ function wireModal(row) {
     } catch (e) {
       toastError("Errore nell'eliminazione", e);
     }
+  });
+
+  // Teaser button: navigates to the full deepdives tab.
+  r.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-goto-tab]");
+    if (!btn) return;
+    switchTab(btn.getAttribute("data-goto-tab"));
   });
 
   r.querySelector("#modal-stage-select")?.addEventListener("change", async (e) => {

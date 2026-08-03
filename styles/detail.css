@@ -131,6 +131,15 @@ details.dfold > .dbody { padding: 0 0 16px; }
 .dd-foot a { color: var(--wda-blue); text-decoration: none; }
 .dd-foot a:hover { text-decoration: underline; }
 
+/* ---- Teaser dell'ultimo approfondimento (richiamo nella Panoramica) ------ */
+.dd-teaser { background: color-mix(in srgb, var(--psn-blue) 6%, var(--surface)); border: 1px solid color-mix(in srgb, var(--psn-blue) 20%, var(--line-soft)); border-radius: 12px; padding: 14px 16px; }
+.dd-teaser-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.dd-teaser-k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--psn-navy); }
+.dd-teaser-meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.dd-teaser-txt { margin: 8px 0; font-size: 13.5px; line-height: 1.5; color: var(--text); }
+.dd-teaser-btn { cursor: pointer; border: none; background: none; color: var(--wda-blue); font-size: 13px; font-weight: 600; padding: 0; text-align: left; text-decoration: none; }
+.dd-teaser-btn:hover { text-decoration: underline; }
+
 /* ---- Chip credenziali (certificazioni, premi, investitori) ------------- */
 .cred-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px; }
 .cred-chip {
