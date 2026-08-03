@@ -163,7 +163,7 @@
 /* Donut */
 .donut-wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .donut { flex: 0 0 auto; }
-.donut-seg { transition: opacity .18s ease, stroke-width .18s ease; cursor: default; }
+.donut-seg { transition: opacity .18s ease; cursor: default; }
 .donut-wrap .donut-seg:hover { opacity: .82; }
 .donut-total { font-size: 26px; font-weight: 700; fill: var(--psn-navy); letter-spacing: -.02em; pointer-events: none; }
 .donut-sub { font-size: 9.5px; fill: var(--muted); text-transform: uppercase; letter-spacing: .14em; pointer-events: none; }
@@ -236,7 +236,7 @@
 
 /* Donut: la fetta scelta si stacca leggermente. */
 .donut-seg.ck:hover { filter: brightness(1.1); }
-.donut-seg.is-on { stroke-width: 26; }
+.donut-seg.is-on { filter: saturate(1.06); }
 .legend-item.ck { border-radius: 8px; padding: 3px 7px; margin: 0 -7px; transition: background .16s ease; }
 .legend-item.ck:hover { background: var(--surface-soft); }
 .legend-item.is-on { background: var(--blue-soft); font-weight: 700; }
