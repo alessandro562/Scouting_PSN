@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 6;
+export const SEED_CONTENT_VERSION = 7;
 
 export const startups = [
       {
@@ -45,6 +45,7 @@ export const startups = [
       },
       {
         id:"fedro",
+        website:"https://fedro-data.it/",
         trl:"5",
         toConfirm:["trl"],
         logo:"assets/logos/fedro.png",
@@ -321,6 +322,7 @@ export const startups = [
       },
       {
         id:"truescreen",
+        website:"https://truescreen.io/it/",
         logo:"assets/logos/truescreen.png",
         name:"Truescreen",
         area:"Cybersecurity & Legal-Tech",
@@ -382,6 +384,7 @@ export const startups = [
       },
       {
         id:"resilientx",
+        website:"https://resilientx.com",
         name:"ResilientX",
         area:"Cybersecurity",
         what:"Monitoraggio continuo dei rischi cyber provenienti dall’esterno.",
@@ -411,6 +414,7 @@ export const startups = [
       },
       {
         id:"intrusa",
+        website:"https://intrusa.io/",
         name:"Intrusa",
         area:"Cybersecurity",
         what:"Piattaforma centralizzata per monitoraggio log e conformità normativa.",
@@ -440,6 +444,7 @@ export const startups = [
       },
       {
         id:"aigarage",
+        website:"https://www.aigarage.it/",
         logo:"assets/logos/aigarage.png",
         name:"AI Garage",
         area:"Cybersecurity & Reg-Tech",
@@ -502,6 +507,7 @@ export const startups = [
       },
       {
         id:"pugliai",
+        website:"https://pugliai.com",
         name:"PugliAI",
         area:"Intelligenza artificiale / Generative AI",
         what:"Automazione di contenuti e processi aziendali con AI generativa.",
