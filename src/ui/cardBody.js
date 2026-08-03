@@ -52,6 +52,79 @@ function investorsBlock(investors) {
     .join("")}</div>`;
 }
 
+// ---- Approfondimenti (verbali delle call con la startup) -----------------
+const OUTCOME_CLASS = {
+  "Prosegue": "ok",
+  "In attesa di materiali": "wait",
+  "Da rivalutare": "hold",
+  "Non prosegue": "stop",
+};
+
+function ddList(title, items, cls) {
+  const list = (Array.isArray(items) ? items : []).filter(has);
+  if (!list.length) return "";
+  return `<div class="dd-list dd-${cls}">
+    <div class="dd-list-k">${esc(title)}</div>
+    <ul>${list.map((x) => `<li>${t(x)}</li>`).join("")}</ul>
+  </div>`;
+}
+
+function ddActions(actions) {
+  const list = (Array.isArray(actions) ? actions : []).filter((a) => a && has(a.text));
+  if (!list.length) return "";
+  return `<div class="dd-list dd-actions">
+    <div class="dd-list-k">Impegni presi</div>
+    <ul>${list.map((a) => `<li>
+      ${has(a.owner) ? `<span class="dd-owner">${t(a.owner)}</span>` : ""}${t(a.text)}${has(a.due) ? ` <span class="dd-due">entro ${t(a.due)}</span>` : ""}
+    </li>`).join("")}</ul>
+  </div>`;
+}
+
+function deepDivesSection(s) {
+  const dives = (Array.isArray(s.deepDives) ? s.deepDives : []).filter((d) => d && (has(d.date) || has(d.summary)));
+  if (!dives.length) return "";
+  // Più recenti in alto.
+  const sorted = [...dives].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+  const cards = sorted.map((d) => {
+    const cls = OUTCOME_CLASS[d.outcome] || "hold";
+    const dateLabel = has(d.date)
+      ? new Date(d.date).toLocaleDateString("it-IT", { day: "2-digit", month: "long", year: "numeric" })
+      : "";
+    const people = [
+      has(d.participantsPsn) && Array.isArray(d.participantsPsn) && d.participantsPsn.length
+        ? `<div class="dd-people"><span>PSN / WDA</span>${t(d.participantsPsn.join(", "))}</div>` : "",
+      has(d.participantsStartup) && Array.isArray(d.participantsStartup) && d.participantsStartup.length
+        ? `<div class="dd-people"><span>Startup</span>${t(d.participantsStartup.join(", "))}</div>` : "",
+    ].join("");
+    const topics = (Array.isArray(d.topics) ? d.topics : []).filter((x) => x && has(x.title));
+    return `
+      <article class="dd-card">
+        <header class="dd-head">
+          <div class="dd-meta">
+            ${dateLabel ? `<span class="dd-date">${esc(dateLabel)}</span>` : ""}
+            ${has(d.type) ? `<span class="dd-type">${t(d.type)}</span>` : ""}
+          </div>
+          ${has(d.outcome) ? `<span class="dd-outcome dd-out-${cls}">${t(d.outcome)}</span>` : ""}
+        </header>
+        ${has(d.title) ? `<div class="dd-title">${t(d.title)}</div>` : ""}
+        ${people ? `<div class="dd-peoples">${people}</div>` : ""}
+        ${has(d.summary) ? `<p class="dd-summary">${t(d.summary)}</p>` : ""}
+        ${ddList("Punti di forza emersi", d.strengths, "ok")}
+        ${ddList("Rischi e punti aperti", d.risks, "risk")}
+        ${ddActions(d.actions)}
+        ${topics.length ? `<details class="dd-topics">
+          <summary>Temi approfonditi (${topics.length})</summary>
+          <dl>${topics.map((x) => `<dt>${t(x.title)}</dt><dd>${t(x.text)}</dd>`).join("")}</dl>
+        </details>` : ""}
+        ${has(d.nextMeeting) || has(d.recordingUrl) ? `<footer class="dd-foot">
+          ${has(d.nextMeeting) ? `<span>Prossimo incontro: <strong>${t(d.nextMeeting)}</strong></span>` : ""}
+          ${has(d.recordingUrl) ? `<a href="${esc(d.recordingUrl)}" target="_blank" rel="noopener noreferrer">Appunti e trascrizione</a>` : ""}
+        </footer>` : ""}
+      </article>`;
+  }).join("");
+  return section(`Approfondimenti (${sorted.length})`, `<div class="dd-wrap">${cards}</div>`);
+}
+
 // Clienti: muro di loghi + chip per quelli senza logo.
 function clientsBlock(clients) {
   const list = (Array.isArray(clients) ? clients : []).map(asEntity).filter((x) => has(x.name) || has(x.logo));
@@ -223,6 +296,7 @@ export function renderStartupDetail(s) {
     <div class="sdetail">
       ${lead}
       ${sintesi}
+      ${deepDivesSection(s)}
       ${soluzione}
       ${casiUso}
       ${clienti}

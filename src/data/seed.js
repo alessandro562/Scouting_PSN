@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 5;
+export const SEED_CONTENT_VERSION = 6;
 
 export const startups = [
       {
@@ -202,7 +202,57 @@ export const startups = [
         material:"Scheda moduli, scheda MePA, architettura, export workflow, pricing modulare",
         next1:"Selezionare un processo pubblico con richieste ripetitive e regole di routing chiare.",
         next2:"Verificare in demo i moduli Orienta e Ticket, distinguendo funzionalità pronte, configurabili e custom.",
-        nextOut:"Mappa workflow, requisiti di integrazione, metriche di ticketing e proposta di PoC modulare."
+        nextOut:"Mappa workflow, requisiti di integrazione, metriche di ticketing e proposta di PoC modulare.",
+        website:"https://heres.ai",
+        founded:"2017",
+        dipendenti:"40+ (circa metà sviluppatori)",
+        keyPeople:"Andrea Gabrielli, Matteo Ligabue (Direttore tecnico)",
+        certifications:["ISO 27001","Conformità AI Act (by design)"],
+        deepDives:[
+          {
+            date:"2026-07-30",
+            type:"Approfondimento tecnico",
+            title:"Incontro conoscitivo PSN <> Heres",
+            participantsPsn:["Debora De Ruosi (Innovation Lead PSN)","Manuel Mulattieri (PSN)","Alessandro Piccinini (WDA)"],
+            participantsStartup:["Andrea Gabrielli","Matteo Ligabue (Direttore tecnico)","Kledia Topciu","Francesco"],
+            summary:"Approfondimento tecnico sulla piattaforma ERES: orchestrazione agentica, architettura modulare, pipeline di sicurezza e protezione dei dati dei clienti. Heres nasce nel 2017 come system integrator e-commerce/customer experience (oltre 40 persone, circa metà sviluppatori) con esperienza NLP pre-GenAI; con l'arrivo dei modelli generativi ha ricostruito lo stack mantenendo le logiche di gestione conversazione, memoria di stato e console, e adottando N8N come orchestratore.",
+            outcome:"In attesa di materiali",
+            strengths:[
+              "La proprietà intellettuale resta al cliente: flussi N8N, prompt e database vettoriali sono di proprietà esclusiva del cliente, che può portare il lavoro in-house senza dipendere dal fornitore.",
+              "Architettura gerarchica a moduli: un orchestratore master instrada verso sotto-agenti specializzati, separando le logiche e ottimizzando il consumo di token.",
+              "Certificazione ISO 27001 e progettazione conforme all'AI Act; pipeline di sicurezza in 3 fasi con sanificazione degli input e rimozione delle PII (regex + modello Gemma locale).",
+              "Qualità del processo di sviluppo: scansione immagini con Trivy, analisi statica con SonarQube, copertura dei test al 95%, test di vulnerabilità quotidiani.",
+              "Human-in-the-loop con escalation parametrizzata (es. apertura ticket automatica se l'operatore non risponde entro 30 secondi) e integrazione con Salesforce/Zendesk.",
+              "Agenti valutatori in background che analizzano qualità delle conversazioni, sentiment e correttezza del retrieval, suggerendo miglioramenti alla knowledge base.",
+              "Nessun vincolo infrastrutturale: AWS usato solo per l'hosting dei container, standard Open Telemetry, deploy sia cloud sia on-premise.",
+            ],
+            risks:[
+              "Vendor lock-in sulle licenze N8N in caso di commercializzazione della soluzione (sollevato da Debora De Ruosi): l'uso attuale è interno, ma occorre chiarire il modello di licenza. Heres si è detta disponibile a valutare alternative come LangChain (licenza MIT).",
+              "Dipendenza funzionale da un orchestratore di terze parti per il cuore della piattaforma.",
+              "Gestione delle vulnerabilità e controlli di sicurezza da approfondire in modo specifico (richiesta esplicita di PSN).",
+              "Modello commerciale e struttura dei prezzi/licenze non ancora definiti.",
+              "Casi d'uso concreti in ambito PA non ancora presentati.",
+            ],
+            actions:[
+              { owner:"Matteo Ligabue", text:"Mostrare le funzionalità voce (sintesi vocale e voce-testo)." },
+              { owner:"Andrea Gabrielli", text:"Preparare un documento di approfondimento tecnico-architetturale per valutare il rischio di vendor lock-in.", due:"prossimo incontro" },
+              { owner:"Andrea Gabrielli", text:"Presentare casi d'uso concreti di implementazione nella Pubblica Amministrazione." },
+              { owner:"Andrea Gabrielli", text:"Definire il modello commerciale e le strutture di prezzo correlate alle licenze." },
+            ],
+            openPoints:["Licenze N8N e vendor lock-in","Casi d'uso PA","Modello commerciale e pricing","Gestione vulnerabilità"],
+            topics:[
+              { title:"Architettura della piattaforma", text:"Orchestratore modulare basato su N8N che gestisce agenti specializzati, workflow automatizzati e interazioni multicanale, combinando flessibilità operativa e integrazioni backend. Convivono flussi conversazionali e flussi di processo (classificazione e instradamento ticket) per una gestione deterministica dove necessaria." },
+              { title:"Console e strumenti di analisi", text:"Console personalizzabile per cliente che integra componenti AI per osservabilità e analisi: visualizzazione conversazioni, filtri, monitoraggio KPI ed estrazione di informazioni strutturate (goal e topic) da dati non strutturati tramite LLM." },
+              { title:"Knowledge base e RAG", text:"Pipeline di ingestion su N8N che processano PDF, SharePoint, siti web e CMS; le informazioni vengono vettorializzate per alimentare il RAG e permettere risposte basate su dati aggiornati e specifici del cliente." },
+              { title:"Gestione dei prompt", text:"Prompt versionati e organizzati tramite uno strumento interno, così che ogni agente usi la versione corretta in produzione e il team di conversation design mantenga il controllo sulla logica." },
+              { title:"Capacità operative multimodali", text:"Gli agenti eseguono azioni concrete (annullare ordini, commentare ticket, produrre documenti da firmare) e gestiscono input multimodali, incluso il caricamento di documenti come la carta d'identità." },
+              { title:"Sicurezza e protezione dei dati", text:"Pipeline in tre fasi contro il prompt injection: sanificazione deterministica degli input, rimozione delle PII con espressioni regolari e modello Gemma locale, validazione post-generazione della risposta. Latenza mantenuta sui 3-4 secondi." },
+              { title:"Infrastruttura e rilascio", text:"Container Docker (Redis, N8N, worker, sidecar per conversione PDF→markdown) su cluster Kubernetes, con integrazione continua su registry Docker privato e possibilità di auto-hosting. Documentazione tecnica di 70-100 pagine." },
+              { title:"Ottimizzazione dei costi", text:"Riduzione dei costi dei token applicando modelli differenziati per tipo di task e gestendo il rumore derivante dall'integrazione di numerosi tool (anche basati su Model Context Protocol) per mantenere alta la precisione." },
+            ],
+            nextMeeting:"settembre 2026",
+          },
+        ],
       },
       {
         id:"civimatica",
