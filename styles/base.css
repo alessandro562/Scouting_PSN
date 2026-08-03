@@ -2187,3 +2187,23 @@
       background: #F1F9FD;
     }
 
+
+    /* ===== v21 de-branding PSN: solo logo WDA, centrato ===== */
+    /* Qualsiasi marchio o separatore PSN sopravvissuto in pagina resta nascosto:
+       la dashboard non gira su infrastruttura PSN e non deve esporne l'identità. */
+    .brand-logo-psn,
+    .footer-logo-psn,
+    .cobrand-divider,
+    .footer-divider,
+    .op-brand-div,
+    .ps-div {
+      display: none !important;
+    }
+
+    /* Con un solo marchio il co-branding non ha più senso: WDA va centrato. */
+    .cobrand-logos,
+    .auth-logos,
+    .footer-brand {
+      justify-content: center !important;
+      gap: 0 !important;
+    }
