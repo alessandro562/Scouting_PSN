@@ -122,9 +122,7 @@ export function renderAnalytics(container) {
     .map(([t, v]) => ({ label: `TRL ${t}`, value: v, color: trlColor(t), fv: t }));
   // La copertura è esplicita: i conteggi devono sempre riconciliare col totale.
   const trlTot = trlScope.length;
-  const trlSub = trlMissing
-    ? `Livelli di maturità tecnologica — ${trlTot - trlMissing} di ${trlTot} startup (${trlMissing} senza TRL)`
-    : `Livelli di maturità tecnologica (1–9) — tutte le ${trlTot} startup`;
+  const trlSub = trlMissing ? `${trlTot - trlMissing} di ${trlTot} startup · ${trlMissing} senza TRL` : "";
   const MAT_ORDER = ["Ready to scale", "Seed / Early traction", "Early stage", "n.d."];
   const matScope = scopeFor("maturity");
   const maturityItems = countBy(matScope, maturityBucketOf, { dropDash: false })
@@ -146,33 +144,33 @@ export function renderAnalytics(container) {
 
     ${sectionTitle("Pipeline e portafoglio")}
     <div class="an-grid">
-      ${panel("Distribuzione della pipeline", "Composizione per fase — clicca una fase per filtrare",
+      ${panel("Distribuzione della pipeline", "Clicca una fase per filtrare",
         stackedBar(stageItems, { total: stScope.length, fk: "stage", active: act("stage") }), "an-wide")}
     </div>
     <div class="an-grid">
-      ${panel("Composizione per settore", "Quota di ciascun settore",
-        donut(sectorItems, { fk: "sector", active: act("sector") }))}
-      ${panel("Copertura verticali PSN", "Startup per verticale — evidenzia i gap di copertura",
-        barList(psnItems, { total: psnScope.length, fk: "psn", active: act("psn") }))}
+      ${panel("Composizione per settore", "",
+        donut(sectorItems, { size: 148, thickness: 18, fk: "sector", active: act("sector") }))}
+      ${panel("Copertura verticali PSN", "Evidenzia i gap di copertura",
+        barList(psnItems, { total: psnScope.length, fk: "psn", active: act("psn"), maxRows: 7 }))}
     </div>
 
-    ${sectionTitle("Maturità tecnologica")}
+    ${sectionTitle("Maturità e presidio territoriale")}
+    <div class="an-grid an-grid-53">
+      ${panel("Distribuzione per città", "", cityItems.length
+        ? barList(cityItems, { total: cityScope.length, fk: "city", active: act("city"), maxRows: 6 })
+        : `<p class="muted chart-empty">Nessuna sede indicata.</p>`, "an-span-5")}
+      <div class="an-col">
+        ${panel("Stadio di maturità", "Normalizzato da valuation + TRL",
+          barList(maturityItems, { total: matScope.length, fk: "maturity", active: act("maturity") }))}
+        ${panel("Macro-area", "", areaItems.length
+          ? barList(areaItems, { total: areaScope.length, fk: "area", active: act("area") })
+          : `<p class="muted chart-empty">Nessuna sede.</p>`)}
+      </div>
+    </div>
     <div class="an-grid">
       ${panel("Distribuzione TRL", trlSub, trlItems.length
         ? columnChart(trlItems, { total: trlTot, fk: "trl", active: act("trl") })
-        : `<p class="muted chart-empty">Nessun TRL indicato.</p>`)}
-      ${panel("Stadio di maturità", "Fase di crescita normalizzata (valuation + TRL)",
-        barList(maturityItems, { total: matScope.length, fk: "maturity", active: act("maturity") }))}
-    </div>
-
-    ${sectionTitle("Presidio territoriale")}
-    <div class="an-grid an-grid-53">
-      ${panel("Distribuzione per città", "Sedi ricondotte alla città", cityItems.length
-        ? barList(cityItems, { total: cityScope.length, fk: "city", active: act("city") })
-        : `<p class="muted chart-empty">Nessuna sede indicata.</p>`, "an-span-5")}
-      ${panel("Macro-area", "Nord · Centro · Sud e Isole", areaItems.length
-        ? barList(areaItems, { total: areaScope.length, fk: "area", active: act("area") })
-        : `<p class="muted chart-empty">Nessuna sede.</p>`, "an-span-3")}
+        : `<p class="muted chart-empty">Nessun TRL indicato.</p>`, "an-wide")}
     </div>`;
 
   mountChartTooltip(container);
@@ -186,6 +184,13 @@ function wire(container) {
   const pick = (t) => toggleFilter(t.getAttribute("data-fk"), t.getAttribute("data-fv"));
   container.addEventListener("click", (e) => {
     if (e.target.closest("[data-clear-all]")) { resetFilters(); return; }
+    const more = e.target.closest("[data-more]");
+    if (more) {
+      const list = more.closest(".bar-list");
+      const open = list.classList.toggle("show-all");
+      more.textContent = more.getAttribute(open ? "data-less-label" : "data-more-label");
+      return;
+    }
     const t = e.target.closest("[data-fk]");
     if (t) pick(t);
   });

@@ -62,8 +62,8 @@ function row(s) {
       <td>${stageSelect(s)}</td>
       <td><span class="cell-pill">${esc(psnPrimary(s))}</span></td>
       <td><span class="cell-edit" data-edit="trl" data-id="${s.id}" title="Clicca per modificare">${trl == null ? "—" : trl}</span></td>
-      <td class="col-val">${esc(valuationOf(s))}</td>
-      <td><span class="cell-edit" data-edit="sede" data-id="${s.id}" title="Clicca per modificare">${esc(sedeOf(s))}</span></td>
+      <td class="col-val" title="${esc(valuationOf(s))}">${esc(valuationOf(s))}</td>
+      <td class="col-sede"><span class="cell-edit" data-edit="sede" data-id="${s.id}" title="${esc(sedeOf(s))} — clicca per modificare">${esc(sedeOf(s))}</span></td>
       <td class="col-notes">${notes ? `🗒 ${notes}` : "—"}</td>
       <td class="col-updated">${fmtDate(s.updated_at)}</td>
     </tr>`;
