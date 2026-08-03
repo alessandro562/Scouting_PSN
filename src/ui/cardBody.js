@@ -126,6 +126,33 @@ function deepDivesSection(s) {
   return `<div class="dd-wrap">${cards}</div>`;
 }
 
+// Richiamo all'ultimo approfondimento, mostrato in Panoramica: senza questo
+// il verbale della call resta nascosto dietro una scheda che si può non notare.
+function lastDiveTeaser(dives) {
+  if (!dives.length) return "";
+  const d = [...dives].sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))[0];
+  const cls = OUTCOME_CLASS[d.outcome] || "hold";
+  const dateLabel = has(d.date)
+    ? new Date(d.date).toLocaleDateString("it-IT", { day: "2-digit", month: "long", year: "numeric" })
+    : "";
+  const counts = [
+    (d.strengths || []).filter(has).length ? `${(d.strengths || []).filter(has).length} punti di forza` : "",
+    (d.risks || []).filter(has).length ? `${(d.risks || []).filter(has).length} rischi` : "",
+    (d.actions || []).filter((a) => a && has(a.text)).length
+      ? `${(d.actions || []).filter((a) => a && has(a.text)).length} impegni` : "",
+  ].filter(Boolean).join(" · ");
+  return `
+    <div class="dd-teaser">
+      <div class="dd-teaser-head">
+        <span class="dd-teaser-k">Ultimo approfondimento${dives.length > 1 ? ` · ${dives.length} call` : ""}</span>
+        ${has(d.outcome) ? `<span class="dd-outcome dd-out-${cls}">${t(d.outcome)}</span>` : ""}
+      </div>
+      ${dateLabel || counts ? `<div class="dd-teaser-meta">${esc(dateLabel)}${dateLabel && counts ? " — " : ""}${esc(counts)}</div>` : ""}
+      ${has(d.summary) ? `<p class="dd-teaser-txt">${t(d.summary)}</p>` : ""}
+      <button type="button" class="dd-teaser-btn" data-goto-tab="deepdives">Apri il verbale completo →</button>
+    </div>`;
+}
+
 // Clienti: muro di loghi + chip per quelli senza logo.
 function clientsBlock(clients) {
   const list = (Array.isArray(clients) ? clients : []).map(asEntity).filter((x) => has(x.name) || has(x.logo));
@@ -293,9 +320,10 @@ export function startupPanels(s) {
   // scroll: si trova prima l'informazione e si scorre molto meno.
   const wrap = (inner) => `<div class="sdetail">${inner}</div>`;
   const dives = (Array.isArray(s.deepDives) ? s.deepDives : []).filter((d) => d && (has(d.date) || has(d.summary)));
+  const teaser = dives.length ? lastDiveTeaser(dives) : "";
 
   const panels = [
-    { id: "overview", label: "Panoramica", html: wrap(lead + sintesi + soluzione + casiUso) },
+    { id: "overview", label: "Panoramica", html: wrap(lead + sintesi + (teaser ? `<div class="dsection">${teaser}</div>` : "") + soluzione + casiUso) },
   ];
   if (dives.length) {
     panels.push({ id: "deepdives", label: "Approfondimenti", count: dives.length, html: wrap(deepDivesSection(s)) });
