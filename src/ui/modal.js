@@ -1,7 +1,7 @@
 // ===========================================================================
 // modal.js — modale di dettaglio startup (contenuto ricco) + thread note.
 // ===========================================================================
-import { renderStartupDetail } from "./cardBody.js";
+import { startupPanels } from "./cardBody.js";
 import {
   state,
   startupById,
@@ -58,6 +58,36 @@ export async function openStartupModal(row, opts = {}) {
   const myEmail = userData?.user?.email || currentUser.email || "";
 
   const s = toDetail(row);
+
+  // Pannelli tematici della scheda + quelli di collaborazione della modale.
+  const panels = startupPanels(s);
+  const noteCount = (window.__noteCounts && window.__noteCounts[row.id]) || 0;
+  const tabs = [
+    ...panels.map((p) => ({ id: p.id, label: p.label, count: p.count })),
+    { id: "notes", label: "Note", count: noteCount || undefined },
+    { id: "files", label: "Materiali & attività" },
+  ];
+  const tabBar = tabs
+    .map((t, i) => `<button class="mtab ${i === 0 ? "active" : ""}" data-tab="${esc(t.id)}" role="tab" aria-selected="${i === 0}">
+        ${esc(t.label)}${t.count ? `<span class="mtab-n">${t.count}</span>` : ""}
+      </button>`)
+    .join("");
+
+  // Logo (o monogramma) accanto al nome: stessa identità visiva della tile.
+  const logo = row.data && row.data.logo;
+  const initials = String(row.name || "?")
+    .replace(/[^\p{L}\p{N} ]/gu, " ")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+  const brand = logo
+    ? `<span class="modal-logo"><img src="${esc(logo)}" alt="" loading="lazy"></span>`
+    : `<span class="modal-logo modal-mono">${esc(initials)}</span>`;
+  const site = row.data && row.data.website;
+
   const stageOptions = state.stages
     .map((st) => `<option value="${esc(st.id)}" ${st.id === row.stage_id ? "selected" : ""}>${esc(st.name)}</option>`)
     .join("");
@@ -68,12 +98,14 @@ export async function openStartupModal(row, opts = {}) {
         <header class="modal-head">
           <div class="modal-head-main">
             <div class="modal-title-row">
+              ${brand}
               <h2>${esc(row.name)}</h2>
               ${row.sector ? `<span class="pill blue">${esc(row.sector)}</span>` : ""}
             </div>
             <div class="modal-stage">
               <label>Fase:</label>
               <select id="modal-stage-select">${stageOptions}</select>
+              ${site ? `<a class="modal-site" href="${esc(site)}" target="_blank" rel="noopener noreferrer">${esc(String(site).replace(/^https?:\/\//, "").replace(/\/$/, ""))} ↗</a>` : ""}
             </div>
           </div>
           <div class="modal-head-actions">
@@ -85,33 +117,36 @@ export async function openStartupModal(row, opts = {}) {
           </div>
         </header>
 
+        <nav class="modal-tabs" id="modal-tabs" role="tablist">${tabBar}</nav>
+
         <div class="modal-scroll">
-          <div class="modal-detail">${renderStartupDetail(s)}</div>
+          ${panels.map((p, i) => `<div class="tab-panel ${i === 0 ? "" : "hidden"}" data-panel="${esc(p.id)}">${p.html}</div>`).join("")}
 
-          <section class="notes-section">
-            <h3>Note</h3>
-            <div class="notes-list" id="notes-list"><p class="muted">Caricamento…</p></div>
-            <form class="note-form" id="note-form">
-              <div class="note-form-avatar">${avatarHtml(myEmail, 30)}</div>
-              <div class="note-form-main">
-                <textarea id="note-input" rows="2" placeholder="Aggiungi una nota…"></textarea>
-                <div class="note-form-foot">
-                  <span class="note-as">Stai scrivendo come <strong>${esc(displayName(myEmail))}</strong></span>
-                  <button type="submit" class="btn primary">Aggiungi nota</button>
+          <div class="tab-panel hidden" data-panel="notes">
+            <section class="notes-section">
+              <div class="notes-list" id="notes-list"><p class="muted">Caricamento…</p></div>
+              <form class="note-form" id="note-form">
+                <div class="note-form-avatar">${avatarHtml(myEmail, 30)}</div>
+                <div class="note-form-main">
+                  <textarea id="note-input" rows="2" placeholder="Aggiungi una nota…"></textarea>
+                  <div class="note-form-foot">
+                    <span class="note-as">Stai scrivendo come <strong>${esc(displayName(myEmail))}</strong></span>
+                    <button type="submit" class="btn primary">Aggiungi nota</button>
+                  </div>
                 </div>
-              </div>
-            </form>
-          </section>
+              </form>
+            </section>
+          </div>
 
-          <section class="attach-section">
-            <h3>Allegati</h3>
-            <div id="modal-attachments"><p class="muted">Caricamento…</p></div>
-          </section>
-
-          <section class="activity-section">
-            <h3>Attività</h3>
-            <div id="modal-activity"><p class="muted">Caricamento…</p></div>
-          </section>
+          <div class="tab-panel hidden" data-panel="files">
+            <section class="attach-section">
+              <div id="modal-attachments"><p class="muted">Caricamento…</p></div>
+            </section>
+            <section class="activity-section">
+              <h3>Registro attività</h3>
+              <div id="modal-activity"><p class="muted">Caricamento…</p></div>
+            </section>
+          </div>
         </div>
       </div>
     </div>
@@ -130,6 +165,21 @@ export async function openStartupModal(row, opts = {}) {
 function wireModal(row) {
   const r = root();
   const close = () => closeModal();
+
+  // Schede: mostra un solo pannello per volta e riporta lo scroll in cima.
+  r.querySelector("#modal-tabs")?.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-tab]");
+    if (!btn) return;
+    const id = btn.getAttribute("data-tab");
+    r.querySelectorAll(".mtab").forEach((b) => {
+      const on = b === btn;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    r.querySelectorAll(".tab-panel").forEach((p) => p.classList.toggle("hidden", p.dataset.panel !== id));
+    const sc = r.querySelector(".modal-scroll");
+    if (sc) sc.scrollTop = 0;
+  });
 
   r.querySelector("[data-close]")?.addEventListener("click", close);
   r.querySelector("[data-close-overlay]")?.addEventListener("click", (e) => {
