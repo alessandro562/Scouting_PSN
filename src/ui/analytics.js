@@ -34,44 +34,31 @@ const tint = (items, color) => items.map((it) => ({ ...it, color }));
 // dimensione filtrata continua a mostrare le alternative selezionabili.
 const scopeFor = (dim) => applyFilters(state.startups, { except: dim });
 
-// Hero: numero-guida + statistiche di supporto.
-function hero(list, stageItems) {
+// Striscia di sintesi. Era un blocco scuro alto quanto un pannello, con dentro
+// il TRL medio (gia' nella toolbar) e una micro-barra della pipeline (gia' nel
+// grafico sotto): pesava molto e diceva poco di nuovo. Restano le sole misure
+// di copertura che nessun altro elemento porta.
+function hero(list) {
   const n = list.length;
-  const trls = list.map(trlOf).filter((t) => t != null);
-  const avgTrl = trls.length ? (trls.reduce((a, b) => a + b, 0) / trls.length).toFixed(1).replace(".", ",") : "—";
   const ready = list.filter((s) => maturityBucketOf(s) === "Ready to scale").length;
   const readyPct = n ? Math.round((ready / n) * 100) : 0;
-  const sectors = new Set(list.map(sectorOf).filter((v) => v !== "—")).size;
-  const verticals = new Set(list.map(psnPrimary).filter((v) => v !== "—")).size;
-  const cities = new Set(list.map(cityOf).filter((v) => v !== "—")).size;
-
-  // Micro-barra di composizione della pipeline dentro l'hero (contesto immediato).
-  const spark = stageItems.filter((x) => x.value > 0)
-    .map((x) => `<span style="flex:${x.value};background:${x.color}" title="${esc(x.label)}: ${x.value}"></span>`)
-    .join("");
-
   const stats = [
-    { v: avgTrl, l: "TRL medio" },
     { v: ready, l: "Ready to scale", s: `${readyPct}%` },
-    { v: sectors, l: "Settori" },
-    { v: verticals, l: "Verticali PSN" },
-    { v: cities, l: "Città" },
+    { v: new Set(list.map(sectorOf).filter((v) => v !== "—")).size, l: "Settori" },
+    { v: new Set(list.map(psnPrimary).filter((v) => v !== "—")).size, l: "Verticali PSN" },
+    { v: new Set(list.map(cityOf).filter((v) => v !== "—")).size, l: "Città" },
   ];
   return `
-    <section class="an-hero">
-      <div class="an-lead">
-        <div class="an-lead-val">${esc(n)}</div>
-        <div class="an-lead-lab">startup nel perimetro</div>
-        <div class="an-spark">${spark}</div>
-        <div class="an-lead-sub">composizione della pipeline</div>
+    <section class="an-strip">
+      <div class="an-strip-lead">
+        <span class="an-strip-val">${esc(n)}</span>
+        <span class="an-strip-lab">startup nel perimetro</span>
       </div>
-      <div class="an-stats">
-        ${stats.map((c) => `
-          <div class="an-stat">
-            <div class="an-stat-val">${esc(c.v)}${c.s ? `<span class="an-stat-tag">${esc(c.s)}</span>` : ""}</div>
-            <div class="an-stat-lab">${esc(c.l)}</div>
-          </div>`).join("")}
-      </div>
+      ${stats.map((c) => `
+        <div class="an-stat">
+          <div class="an-stat-val">${esc(c.v)}${c.s ? `<span class="an-stat-tag">${esc(c.s)}</span>` : ""}</div>
+          <div class="an-stat-lab">${esc(c.l)}</div>
+        </div>`).join("")}
     </section>`;
 }
 
@@ -140,7 +127,7 @@ export function renderAnalytics(container) {
   const act = (k) => (hasSelection(k) ? f[k] : null);
 
   container.innerHTML = `
-    ${hero(list, stageItems)}
+    ${hero(list)}
 
     ${sectionTitle("Pipeline e portafoglio")}
     <div class="an-grid">

@@ -2217,3 +2217,13 @@
     .auth-logos {
       justify-content: center !important;
     }
+
+    /* Il file logo-wda.png porta il 30,1% di larghezza trasparente a sinistra
+       (contenuto visibile: 241-559 di 800px): e' quel vuoto a far sembrare il
+       marchio rientrato rispetto al titolo, non un margine del layout. La
+       traslazione in percentuale si riferisce alla dimensione dell'elemento,
+       quindi resta corretta con qualunque larghezza venga applicata sopra. */
+    .cobrand-logos .brand-logo-wda,
+    .footer-brand .footer-logo-wda {
+      transform: translateX(-30.1%);
+    }

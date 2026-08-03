@@ -118,17 +118,28 @@ export function columnChart(items, { total = null, fk = null, active = null } = 
 export function donut(items, { size = 196, thickness = 22, fk = null, active = null } = {}) {
   const total = items.reduce((s, i) => s + i.value, 0);
   if (!total) return `<p class="muted chart-empty">Nessun dato.</p>`;
+  // Il centro segue la selezione. L'anello mostra tutte le categorie (serve a
+  // cambiare scelta), ma con un filtro attivo un totale complessivo al centro
+  // contraddiceva il conteggio della pagina: lì va il valore selezionato.
+  const hit = active == null ? null : items.find((x) => String(x.fv) === String(active));
+  const center = hit
+    ? { value: hit.value, label: hit.label }
+    : { value: total, label: "startup" };
   const r = (size - thickness) / 2;
   const cx = size / 2, cy = size / 2;
   const C = 2 * Math.PI * r;
-  const gap = items.length > 1 ? 4 : 0;
+  // Estremità piatte + stacco di 2px nel colore della superficie. Con le
+  // estremità arrotondate ogni segmento sborda di mezzo spessore per lato: sui
+  // segmenti piccoli i cappucci si accavallavano e uscivano dall'anello,
+  // facendolo sembrare rotto. È lo stacco a separare le fette, non un bordo.
+  const gap = items.length > 1 ? 2 : 0;
   let offset = 0;
   const segs = items
     .map((it, i) => {
       const len = (it.value / total) * C;
-      const draw = Math.max(0.6, len - gap);
+      const draw = Math.max(1, len - gap);
       const seg = `<circle class="${ck(it, fk, active, "donut-seg")}" cx="${cx}" cy="${cy}" r="${r}" fill="none"
-        stroke="${it.color || colorFor(i)}" stroke-width="${thickness}" stroke-linecap="round"
+        stroke="${it.color || colorFor(i)}" stroke-width="${thickness}" stroke-linecap="butt"
         stroke-dasharray="${draw} ${C - draw}" stroke-dashoffset="${-offset}"
         transform="rotate(-90 ${cx} ${cy})" ${tip(it.label, it.value, total)}${sel(it, fk, active)}></circle>`;
       offset += len;
@@ -147,8 +158,8 @@ export function donut(items, { size = 196, thickness = 22, fk = null, active = n
     <div class="donut-wrap">
       <svg class="donut" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="Composizione">
         ${segs}
-        <text x="${cx}" y="${cy - 2}" text-anchor="middle" class="donut-total">${total}</text>
-        <text x="${cx}" y="${cy + 16}" text-anchor="middle" class="donut-sub">startup</text>
+        <text x="${cx}" y="${cy - 2}" text-anchor="middle" class="donut-total">${esc(center.value)}</text>
+        <text x="${cx}" y="${cy + 15}" text-anchor="middle" class="donut-sub">${esc(center.label)}</text>
       </svg>
       <div class="donut-legend">${legend}</div>
     </div>`;
