@@ -2188,7 +2188,7 @@
     }
 
 
-    /* ===== v21 de-branding PSN: solo logo WDA, centrato ===== */
+    /* ===== v21 de-branding PSN: resta solo il logo WDA ===== */
     /* Qualsiasi marchio o separatore PSN sopravvissuto in pagina resta nascosto:
        la dashboard non gira su infrastruttura PSN e non deve esporne l'identità. */
     .brand-logo-psn,
@@ -2200,10 +2200,20 @@
       display: none !important;
     }
 
-    /* Con un solo marchio il co-branding non ha più senso: WDA va centrato. */
+    /* Rimasto un solo marchio, il gap del co-branding non serve più. */
     .cobrand-logos,
     .auth-logos,
     .footer-brand {
-      justify-content: center !important;
       gap: 0 !important;
+    }
+
+    /* Sidebar e footer sono colonne allineate a sinistra: il logo segue il
+       titolo. Nell'overlay di login, invece, tutto ruota attorno alla card
+       centrata, quindi lì il logo resta al centro. */
+    .cobrand-logos,
+    .footer-brand {
+      justify-content: flex-start !important;
+    }
+    .auth-logos {
+      justify-content: center !important;
     }
