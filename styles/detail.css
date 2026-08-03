@@ -4,6 +4,11 @@
    =========================================================================== */
 
 .sdetail { display: flex; flex-direction: column; }
+/* Annulla il margine globale di <section> (base.css): il ritmo verticale della
+   scheda è dato dal padding delle .dsection, non da margini ereditati. */
+.sdetail section { margin-top: 0; }
+.sdetail > .dsection:first-child,
+.sdetail > .dfold:first-child { border-top: 0; padding-top: 0; }
 
 /* ---- Lead di sintesi ---------------------------------------------------- */
 .detail-lead {
@@ -39,15 +44,21 @@ details.dfold > summary:hover { color: var(--psn-blue); }
 details.dfold[open] > summary .dchevron { transform: rotate(-135deg); }
 details.dfold > .dbody { padding: 0 0 16px; }
 
-/* ---- Facts (definition list) ------------------------------------------- */
-.facts { display: flex; flex-direction: column; }
-.fact {
-  display: grid; grid-template-columns: 190px 1fr; gap: 16px; align-items: baseline;
-  padding: 9px 0; border-bottom: 1px solid var(--line-soft);
+/* ---- Facts (scheda tecnica su due colonne) ------------------------------
+   Etichetta sopra, valore sotto: dimezza l'altezza rispetto alla vecchia
+   lista label/valore affiancati e toglie la colonna vuota a destra.
+   I valori lunghi (target, team, sito) occupano l'intera riga. */
+.facts {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 30px;
 }
-.fact:last-child { border-bottom: 0; }
-.fact-k { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
-.fact-v { font-size: 14px; color: var(--ink); line-height: 1.5; }
+.fact {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: 10px 0; border-bottom: 1px solid var(--line-soft); min-width: 0;
+}
+.fact-wide { grid-column: 1 / -1; }
+.fact-k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.fact-v { font-size: 14px; color: var(--ink); line-height: 1.5; overflow-wrap: anywhere; }
 .fact-v a { color: var(--wda-blue); text-decoration: none; word-break: break-all; }
 .fact-v a:hover { text-decoration: underline; }
 

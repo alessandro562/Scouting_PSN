@@ -122,7 +122,8 @@ function deepDivesSection(s) {
         </footer>` : ""}
       </article>`;
   }).join("");
-  return section(`Approfondimenti (${sorted.length})`, `<div class="dd-wrap">${cards}</div>`);
+  // Nessun titolo di sezione: la scheda ha già l'etichetta "Approfondimenti".
+  return `<div class="dd-wrap">${cards}</div>`;
 }
 
 // Clienti: muro di loghi + chip per quelli senza logo.
@@ -144,14 +145,11 @@ function clientsBlock(clients) {
 }
 
 // Riga anagrafica (label/valore) — vuota → stringa vuota (omessa).
-function fact(label, value, s, key) {
+// `wide` = il valore è discorsivo e occupa entrambe le colonne della griglia.
+function fact(label, value, s, key, wide) {
   if (!has(value)) return "";
-  return `<div class="fact"><span class="fact-k">${esc(label)}</span><span class="fact-v">${t(value)}${confirmBadge(s, key)}</span></div>`;
-}
-function factLink(label, url, s, key) {
-  if (!has(url)) return "";
-  const v = `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${t(url)}</a>`;
-  return `<div class="fact"><span class="fact-k">${esc(label)}</span><span class="fact-v">${v}${confirmBadge(s, key)}</span></div>`;
+  const cls = wide ? "fact fact-wide" : "fact";
+  return `<div class="${cls}"><span class="fact-k">${esc(label)}</span><span class="fact-v">${t(value)}${confirmBadge(s, key)}</span></div>`;
 }
 
 // Sotto-blocco prosa: titolo + paragrafo (omesso se vuoto).
@@ -175,7 +173,7 @@ function section(title, inner) {
   return `<section class="dsection"><div class="dsection-title static">${esc(title)}</div><div class="dbody">${inner}</div></section>`;
 }
 
-export function renderStartupDetail(s) {
+export function startupPanels(s) {
   const p = psn(s);
   const usecases = (Array.isArray(s.usecases) ? s.usecases : []).filter(has);
   const technologies = (Array.isArray(s.technologies) ? s.technologies : []).filter(
@@ -194,9 +192,10 @@ export function renderStartupDetail(s) {
     fact("Maturità / Valuation", s.valuation, s, "valuation"),
     fact("Fatturato", s.fatturato, s, "fatturato"),
     fact("Dipendenti", s.dipendenti, s, "dipendenti"),
-    factLink("Sito", s.website, s, "website"),
-    fact("Target di riferimento", s.audience, s, "audience"),
-    fact("Team", s.keyPeople, s, "keyPeople"),
+    // Il sito non è ripetuto qui: è già in evidenza nell'intestazione della
+    // scheda e sulla tile della board.
+    fact("Target di riferimento", s.audience, s, "audience", true),
+    fact("Team", s.keyPeople, s, "keyPeople", true),
   ].join("");
   const tractionBlock = has(s.traction)
     ? `<div class="callout-soft"><span class="cs-k">Traction &amp; riconoscimenti</span><p>${t(s.traction)}${confirmBadge(s, "traction")}</p></div>`
@@ -223,8 +222,8 @@ export function renderStartupDetail(s) {
     fact("Verticale PSN primario", p.primary),
     fact("Aree PSN correlate", p.secondary),
     fact("Aree di innovazione", p.innovation),
-    fact("Caso d'uso PSN", p.usecase),
-    fact("Ambito applicativo", s.area, s, "area"),
+    fact("Caso d'uso PSN", p.usecase, null, null, true),
+    fact("Ambito applicativo", s.area, s, "area", true),
   ].join("");
   const psnNote = has(p.note) ? `<div class="note-block">${t(p.note)}</div>` : "";
   const classificazione = (psnFacts || psnNote)
@@ -265,20 +264,19 @@ export function renderStartupDetail(s) {
         })
         .join("")}</ul>`
     : "";
-  const comeFunziona = fold(
+  const comeFunziona = section(
     "Come funziona",
     (flowHtml ? `<div class="dsub">Dai dati al risultato</div>${flowHtml}` : "") +
-      (techHtml ? `<div class="dsub">Tecnologie utilizzate</div>${techHtml}` : ""),
-    { open: false }
+      (techHtml ? `<div class="dsub">Tecnologie utilizzate</div>${techHtml}` : "")
   );
 
   // ---- Percorso in PSN (collassabile) ------------------------------------
   const pathFacts = [
-    fact("Verifica preliminare consigliata", s.deepen, s, "deepen"),
-    fact("Sperimentazione / PoC", s.poc, s, "poc"),
+    fact("Verifica preliminare consigliata", s.deepen, s, "deepen", true),
+    fact("Sperimentazione / PoC", s.poc, s, "poc", true),
     fact("Durata indicativa", s.duration),
-    fact("Indicatori di valutazione", s.kpi),
-    fact("Prerequisito principale", s.prereq),
+    fact("Indicatori di valutazione", s.kpi, null, null, true),
+    fact("Prerequisito principale", s.prereq, null, null, true),
   ].join("");
   const steps = [s.next1, s.next2, s.nextOut].filter(has);
   const stepsHtml = steps.length
@@ -286,25 +284,31 @@ export function renderStartupDetail(s) {
         .map((x) => `<li>${t(x)}</li>`)
         .join("")}</ol>`
     : "";
-  const percorso = fold(
+  const percorso = section(
     "Percorso in PSN",
-    (pathFacts ? `<div class="facts">${pathFacts}</div>` : "") + stepsHtml,
-    { open: false }
+    (pathFacts ? `<div class="facts">${pathFacts}</div>` : "") + stepsHtml
   );
 
-  return `
-    <div class="sdetail">
-      ${lead}
-      ${sintesi}
-      ${deepDivesSection(s)}
-      ${soluzione}
-      ${casiUso}
-      ${clienti}
-      ${credenziali}
-      ${investitori}
-      ${classificazione}
-      ${comeFunziona}
-      ${percorso}
-    </div>
-  `;
+  // La scheda è divisa in pannelli tematici (schede) invece di un unico
+  // scroll: si trova prima l'informazione e si scorre molto meno.
+  const wrap = (inner) => `<div class="sdetail">${inner}</div>`;
+  const dives = (Array.isArray(s.deepDives) ? s.deepDives : []).filter((d) => d && (has(d.date) || has(d.summary)));
+
+  const panels = [
+    { id: "overview", label: "Panoramica", html: wrap(lead + sintesi + soluzione + casiUso) },
+  ];
+  if (dives.length) {
+    panels.push({ id: "deepdives", label: "Approfondimenti", count: dives.length, html: wrap(deepDivesSection(s)) });
+  }
+  const relazioni = clienti + credenziali + investitori;
+  if (relazioni) panels.push({ id: "relations", label: "Clienti & credenziali", html: wrap(relazioni) });
+  const tecnico = comeFunziona + classificazione + percorso;
+  if (tecnico) panels.push({ id: "tech", label: "Tecnologia & PSN", html: wrap(tecnico) });
+
+  return panels;
+}
+
+// Compatibilità: markup completo in un unico blocco (usato fuori dalla modale).
+export function renderStartupDetail(s) {
+  return startupPanels(s).map((p) => p.html).join("");
 }
