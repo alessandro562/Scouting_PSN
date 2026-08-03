@@ -70,8 +70,7 @@
         <div class="nav-title">Viste</div>
         <nav class="nav-list">
           <a id="view-board-btn" class="active" href="#overview">🗂 Board pipeline</a>
-          <a id="view-table-btn" href="#overview">▦ Tabella / Database</a>
-          <a id="view-analytics-btn" href="#overview">📊 Analytics</a>
+          <a id="view-analytics-btn" href="#overview">📊 Analytics &amp; Database</a>
           <a id="view-report-btn" href="#overview">📄 Report &amp; sintesi</a>
         </nav>
       </div>
@@ -124,11 +123,24 @@
         <div id="board"></div>
       </div>
 
-      <!-- Tabella / Database view -->
-      <div id="table-view" class="hidden"></div>
+      <!-- Analytics & Database: una sola vista. Le statistiche stanno sopra, il
+           database sotto; cliccare un elemento dei grafici filtra entrambi. -->
+      <div id="analytics-view" class="hidden">
+        <div id="an-panels"></div>
 
-      <!-- Analytics view -->
-      <div id="analytics-view" class="hidden"></div>
+        <section class="db-section">
+          <div class="db-head">
+            <div class="db-head-main">
+              <h2>Database</h2>
+              <p id="db-sub">Elenco completo, ordinabile e modificabile in linea.</p>
+            </div>
+            <div class="db-head-actions">
+              <button id="db-export" class="btn ghost" title="Esporta le startup filtrate in CSV">⬇ Esporta CSV</button>
+            </div>
+          </div>
+          <div id="table-view"></div>
+        </section>
+      </div>
 
       <!-- Report view -->
       <div id="report-view" class="hidden">

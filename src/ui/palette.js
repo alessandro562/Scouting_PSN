@@ -20,8 +20,9 @@ function buildItems(query) {
   // Viste
   const views = [
     { key: "board", label: "Vai a · Board pipeline", icon: "🗂", run: () => ctx.setView("board") },
-    { key: "table", label: "Vai a · Tabella / Database", icon: "▦", run: () => ctx.setView("table") },
-    { key: "analytics", label: "Vai a · Analytics", icon: "📊", run: () => ctx.setView("analytics") },
+    { key: "analytics", label: "Vai a · Analytics & Database", icon: "📊", run: () => ctx.setView("analytics") },
+    // "Tabella"/"Database" restano cercabili: portano alla vista che li contiene.
+    { key: "table", label: "Vai a · Tabella / Database", icon: "▦", run: () => ctx.setView("analytics") },
     { key: "report", label: "Vai a · Report & sintesi", icon: "📄", run: () => ctx.setView("report") },
   ];
   // Azioni

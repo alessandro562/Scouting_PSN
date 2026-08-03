@@ -213,3 +213,74 @@
   .an-stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .an-lead-val { font-size: 54px; }
 }
+
+/* ===========================================================================
+   Cross-filtering: i grafici sono comandi, non solo figure
+   =========================================================================== */
+
+/* Affordance: ciò che filtra si comporta da pulsante. */
+.ck { cursor: pointer; }
+.ck:focus-visible { outline: 2px solid var(--wda-cyan); outline-offset: 2px; border-radius: 6px; }
+
+/* Con una selezione attiva la voce scelta resta piena e le altre si smorzano:
+   restano leggibili e cliccabili, così si può cambiare scelta in un gesto. */
+.ck.is-off { opacity: .34; }
+.ck.is-off:hover { opacity: .68; }
+.ck.is-on { opacity: 1; }
+
+/* Barre: la selezione è marcata dall'etichetta in grassetto e da un anello. */
+.bar-row.ck { border-radius: 8px; padding: 2px 6px; margin: 0 -6px; transition: background .16s ease; }
+.bar-row.ck:hover { background: var(--surface-soft); }
+.bar-row.is-on { background: var(--blue-soft); }
+.bar-row.is-on .bar-label { font-weight: 700; color: var(--ink); }
+
+/* Colonne TRL */
+.col-item.ck { border-radius: 10px; transition: background .16s ease; }
+.col-item.ck:hover { background: var(--surface-soft); }
+.col-item.is-on { background: var(--blue-soft); }
+.col-item.is-on .col-label, .col-item.is-on .col-val { font-weight: 800; color: var(--ink); }
+
+/* Segmenti della barra di pipeline e voci di legenda */
+.sb-seg.ck:hover { filter: brightness(1.12); }
+.sb-seg.is-on { box-shadow: inset 0 0 0 2px rgba(255,255,255,.85); }
+.sb-leg.ck { border-radius: 999px; padding: 3px 9px; margin: -3px 0; transition: background .16s ease; }
+.sb-leg.ck:hover { background: var(--surface-soft); }
+.sb-leg.is-on { background: var(--blue-soft); font-weight: 700; }
+
+/* Donut: la fetta scelta si stacca leggermente. */
+.donut-seg.ck:hover { filter: brightness(1.1); }
+.donut-seg.is-on { stroke-width: 26; }
+.legend-item.ck { border-radius: 8px; padding: 3px 7px; margin: 0 -7px; transition: background .16s ease; }
+.legend-item.ck:hover { background: var(--surface-soft); }
+.legend-item.is-on { background: var(--blue-soft); font-weight: 700; }
+
+.an-empty p { margin: 0 0 14px; }
+
+/* ---- Sezione Database sotto le statistiche ------------------------------ */
+.db-section { margin-top: 34px; }
+.db-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap; margin-bottom: 14px;
+  padding-top: 22px; border-top: 2px solid var(--line-soft);
+}
+.db-head h2 { margin: 0 0 3px; font-size: 17px; color: var(--ink); letter-spacing: -.01em; }
+.db-head p { margin: 0; font-size: 12.5px; color: var(--muted); }
+.db-head-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* ---- Pillole dei filtri attivi ------------------------------------------ */
+.fb-chips { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 0 2px; }
+.fb-chips.hidden { display: none; }
+.fb-chips-k { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.fb-chip {
+  display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--psn-blue) 26%, var(--line-soft));
+  background: var(--blue-soft); color: var(--ink);
+  border-radius: 999px; padding: 4px 11px; font-family: var(--font); font-size: 12px;
+  transition: background .16s ease, border-color .16s ease;
+}
+.fb-chip:hover { background: color-mix(in srgb, var(--psn-blue) 16%, var(--surface)); }
+.fb-chip-k { font-weight: 700; color: var(--wda-blue); }
+.fb-chip-v { color: var(--ink); }
+.fb-chip-x { color: var(--muted); font-size: 10px; }
+.fb-chip:hover .fb-chip-x { color: var(--red); }
+.fb-chip-all { background: none; border-style: dashed; color: var(--muted); font-weight: 600; }

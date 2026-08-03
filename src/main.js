@@ -12,12 +12,11 @@ import { renderTable, setTableNoteCounts } from "./ui/table.js";
 import { renderAnalytics } from "./ui/analytics.js";
 import { mountFilterBar, syncControls, renderSavedViews } from "./ui/filterBar.js";
 import {
-  onFiltersChange, getFilters, setFilters, getFilteredStartups,
+  onFiltersChange, getFilters, setFilters, getFilteredStartups, activeFilterCount, toggleFilter,
   psnPrimary, sectorOf, stageName, trlOf, valuationOf, sedeOf,
 } from "./ui/filters.js";
 import { openStartupForm } from "./ui/startupForm.js";
 import { openStageMenu } from "./ui/stages.js";
-import { cardsForStage } from "./store.js";
 import { subscribeRealtime, unsubscribeRealtime } from "./realtime.js";
 import { openPalette } from "./ui/palette.js";
 import { openActivityDrawer } from "./ui/activity.js";
@@ -33,12 +32,14 @@ let currentView = "board";
 let booted = false;
 let rendering = false;
 
+// Analytics e Database sono una vista sola: le statistiche servono a interrogare
+// l'elenco, e tenerle separate obbligava a rimbalzare tra due schermate.
 const VIEWS = {
   board: { title: "Board pipeline", showFilter: true, showKpis: true },
-  table: { title: "Tabella / Database", showFilter: true, showKpis: true },
-  analytics: { title: "Analytics", showFilter: true, showKpis: true },
+  analytics: { title: "Analytics & Database", showFilter: true, showKpis: true },
   report: { title: "Report & sintesi", showFilter: false, showKpis: false },
 };
+const VIEW_IDS = ["board", "analytics", "report"];
 
 // --------------------------------------------------------------------------
 // Rendering
@@ -56,8 +57,9 @@ async function render() {
 
     renderTopbar();
     renderBoard(el("board"));
+    renderAnalytics(el("an-panels"));
     renderTable(el("table-view"));
-    renderAnalytics(el("analytics-view"));
+    renderDbSubtitle();
     renderReport();
     renderSavedViews();
   } finally {
@@ -69,16 +71,31 @@ function escHtml(v) {
   return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-function avgTrl() {
-  const trls = state.startups
+// Sottotitolo del Database: dice quante righe si stanno guardando e perché,
+// così il legame fra grafici e tabella resta esplicito anche a scroll basso.
+function renderDbSubtitle() {
+  const sub = el("db-sub");
+  if (!sub) return;
+  const total = state.startups.length;
+  const shown = getFilteredStartups().length;
+  const n = activeFilterCount();
+  sub.textContent = n
+    ? `${shown} di ${total} startup — ${n} ${n === 1 ? "filtro attivo" : "filtri attivi"}`
+    : `Tutte le ${total} startup. Clicca una statistica qui sopra per filtrare.`;
+}
+
+function avgTrl(list) {
+  const trls = list
     .map((s) => parseInt(s.data && s.data.trl, 10))
     .filter((n) => !Number.isNaN(n));
   if (!trls.length) return null;
   return trls.reduce((a, b) => a + b, 0) / trls.length;
 }
 
-function kpiChip(label, value, tone = "") {
-  return `<span class="kpi ${tone}"><span class="kpi-val">${escHtml(value)}</span><span class="kpi-lab">${escHtml(label)}</span></span>`;
+function kpiChip(label, value, tone = "", fk = null, fv = null) {
+  const on = fk && String(getFilters()[fk]) === String(fv);
+  const attrs = fk ? ` data-kpi-fk="${escHtml(fk)}" data-kpi-fv="${escHtml(fv)}" role="button" tabindex="0"` : "";
+  return `<span class="kpi ${tone}${fk ? " kpi-ck" : ""}${on ? " is-on" : ""}"${attrs}><span class="kpi-val">${escHtml(value)}</span><span class="kpi-lab">${escHtml(label)}</span></span>`;
 }
 
 // Toolbar compatta: titolo vista, conteggio risultati, striscia KPI densa.
@@ -97,11 +114,34 @@ function renderTopbar() {
   if (!kpis) return;
   if (!cfg.showKpis) { kpis.classList.add("hidden"); kpis.innerHTML = ""; return; }
   kpis.classList.remove("hidden");
-  const avg = avgTrl();
-  const chips = [kpiChip("Totali", total, "kpi-strong")];
-  state.stages.forEach((st) => chips.push(kpiChip(st.name, cardsForStage(st.id).length)));
+
+  // I KPI leggono il perimetro filtrato: mostrare i totali di tutto il portfolio
+  // accanto a una tabella filtrata darebbe due verità in conflitto sullo schermo.
+  // Le fasi restano cliccabili e diventano un terzo modo di filtrare.
+  const shownList = getFilteredStartups();
+  const avg = avgTrl(shownList);
+  const chips = [kpiChip("Totali", shown === total ? total : `${shown}/${total}`, "kpi-strong")];
+  state.stages.forEach((st) =>
+    chips.push(kpiChip(st.name, shownList.filter((s) => s.stage_id === st.id).length, "", "stage", st.id)));
   chips.push(kpiChip("TRL medio", avg == null ? "—" : avg.toFixed(1).replace(".", ","), "kpi-accent"));
   kpis.innerHTML = chips.join("");
+}
+
+// Click su un chip di fase nella toolbar → stesso filtro dei grafici.
+function wireKpiFiltering() {
+  const kpis = el("topbar-kpis");
+  if (!kpis || kpis._wired) return;
+  kpis._wired = true;
+  const pick = (t) => toggleFilter(t.getAttribute("data-kpi-fk"), t.getAttribute("data-kpi-fv"));
+  kpis.addEventListener("click", (e) => {
+    const t = e.target.closest("[data-kpi-fk]");
+    if (t) pick(t);
+  });
+  kpis.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const t = e.target.closest("[data-kpi-fk]");
+    if (t) { e.preventDefault(); pick(t); }
+  });
 }
 
 // --------------------------------------------------------------------------
@@ -183,7 +223,10 @@ async function boot(session) {
 
   mountFilterBar(el("filter-bar"));
   subscribe(() => { render(); });
-  onFiltersChange(() => { persistFilters(); render(); });
+  // I filtri ora cambiano anche da fuori la barra (click sui grafici): i suoi
+  // controlli vanno risincronizzati a ogni variazione, non solo quando è lei a
+  // originarla, altrimenti mostrerebbero uno stato falso.
+  onFiltersChange(() => { persistFilters(); syncControls(); render(); });
   await render();
   syncControls();
   setView(currentView);
@@ -214,11 +257,11 @@ function wireChrome() {
   const onClick = (id, fn) =>
     el(id)?.addEventListener("click", (e) => { e.preventDefault(); fn(); });
 
-  // Switcher 4 viste
+  // Switcher viste
   onClick("view-board-btn", () => setView("board"));
-  onClick("view-table-btn", () => setView("table"));
   onClick("view-analytics-btn", () => setView("analytics"));
   onClick("view-report-btn", () => setView("report"));
+  onClick("db-export", () => exportCsv());
 
   // Nuova startup / nuova colonna (sidebar + topbar)
   onClick("nav-add-startup", () => openStartupForm(null, {}));
@@ -232,6 +275,8 @@ function wireChrome() {
   onClick("topbar-activity", () => openActivityDrawer());
   onClick("topbar-density", () => toggleDensity());
   onClick("topbar-export", () => exportCsv());
+
+  wireKpiFiltering();
 
   // Scorciatoie globali da tastiera
   document.addEventListener("keydown", onGlobalKey);
@@ -261,17 +306,20 @@ function onGlobalKey(e) {
   if (document.querySelector(".modal-overlay, .palette-overlay, .form-modal, .mini-dialog")) return;
 
   if (e.key === "1") { setView("board"); }
-  else if (e.key === "2") { setView("table"); }
-  else if (e.key === "3") { setView("analytics"); }
-  else if (e.key === "4") { setView("report"); }
+  else if (e.key === "2") { setView("analytics"); }
+  else if (e.key === "3") { setView("report"); }
   else if (e.key === "n" || e.key === "N") { e.preventDefault(); openStartupForm(null, {}); }
   else if (e.key === "/") { e.preventDefault(); document.getElementById("fb-search")?.focus(); }
 }
 
 function setView(view) {
-  currentView = view;
-  const cfg = VIEWS[view] || VIEWS.board;
-  ["board", "table", "analytics", "report"].forEach((v) => {
+  // "table" non esiste più come vista a sé: chi ci arriva da una vista salvata,
+  // dal localStorage o dalla palette finisce sulla vista unificata.
+  if (view === "table") view = "analytics";
+  currentView = VIEWS[view] ? view : "board";
+  view = currentView;
+  const cfg = VIEWS[view];
+  VIEW_IDS.forEach((v) => {
     el(`${v}-view`)?.classList.toggle("hidden", v !== view);
     el(`view-${v}-btn`)?.classList.toggle("active", v === view);
   });

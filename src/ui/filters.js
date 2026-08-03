@@ -10,6 +10,11 @@ const DEFAULTS = {
   stage: "all",
   psn: "all",
   valuation: "all",
+  // Dimensioni pilotate dal click sui grafici (cross-filtering).
+  city: "all",
+  area: "all",
+  maturity: "all",
+  trl: null,
   trlMin: null,
   trlMax: null,
   sort: { key: "name", dir: "asc" },
@@ -23,6 +28,23 @@ export function onFiltersChange(cb) { listeners.add(cb); return () => listeners.
 function emit() { listeners.forEach((l) => { try { l(); } catch (e) { console.error(e); } }); }
 
 export function setFilter(key, val) { f[key] = val; emit(); }
+
+// Click su un elemento di un grafico: seleziona il valore, oppure lo deseleziona
+// se era già attivo. È il gesto che collega le statistiche al resto della vista.
+export function toggleFilter(key, val) {
+  const off = key === "trl" ? null : "all";
+  const cur = f[key];
+  const next = key === "trl" ? Number(val) : String(val);
+  f[key] = String(cur) === String(next) ? off : next;
+  emit();
+}
+export function isFilterActive(key, val) {
+  if (f[key] == null || f[key] === "all") return false;
+  return String(f[key]) === String(val);
+}
+// Una dimensione è "in selezione" quando ha un valore attivo: serve ai grafici
+// per smorzare le voci non selezionate invece di nasconderle.
+export function hasSelection(key) { return f[key] != null && f[key] !== "all"; }
 export function setFilters(obj) { f = { ...structuredClone(DEFAULTS), ...obj, sort: { ...DEFAULTS.sort, ...(obj.sort || {}) } }; emit(); }
 export function resetFilters() { f = structuredClone(DEFAULTS); emit(); }
 
@@ -32,15 +54,33 @@ export function setSort(key) {
   emit();
 }
 
-export function activeFilterCount() {
-  let n = 0;
-  if (f.search) n++;
-  if (f.sector !== "all") n++;
-  if (f.stage !== "all") n++;
-  if (f.psn !== "all") n++;
-  if (f.valuation !== "all") n++;
-  if (f.trlMin != null || f.trlMax != null) n++;
-  return n;
+export function activeFilterCount() { return activeFilterChips().length; }
+
+// Descrizione dei filtri attivi: alimenta le "pillole" removibili sopra le viste,
+// così è sempre visibile *perché* l'elenco è ridotto.
+export function activeFilterChips() {
+  const chips = [];
+  if (f.search) chips.push({ key: "search", label: "Ricerca", value: f.search, off: "" });
+  if (f.sector !== "all") chips.push({ key: "sector", label: "Settore", value: f.sector });
+  if (f.stage !== "all") chips.push({ key: "stage", label: "Fase", value: stageName(f.stage) });
+  if (f.psn !== "all") chips.push({ key: "psn", label: "Verticale PSN", value: f.psn });
+  if (f.valuation !== "all") chips.push({ key: "valuation", label: "Valuation", value: f.valuation });
+  if (f.city !== "all") chips.push({ key: "city", label: "Città", value: f.city });
+  if (f.area !== "all") chips.push({ key: "area", label: "Macro-area", value: f.area });
+  if (f.maturity !== "all") chips.push({ key: "maturity", label: "Maturità", value: f.maturity });
+  if (f.trl != null) chips.push({ key: "trl", label: "TRL", value: `TRL ${f.trl}`, off: null });
+  if (f.trlMin != null || f.trlMax != null) {
+    chips.push({ key: "trlRange", label: "TRL", value: `${f.trlMin ?? 1}–${f.trlMax ?? 9}` });
+  }
+  return chips;
+}
+
+export function clearFilter(key) {
+  if (key === "trlRange") { f.trlMin = null; f.trlMax = null; }
+  else if (key === "search") f.search = "";
+  else if (key === "trl") f.trl = null;
+  else f[key] = "all";
+  emit();
 }
 
 // ---- Helper di lettura -----------------------------------------------------
@@ -90,13 +130,23 @@ export function distinctPsn() { return [...new Set(state.startups.map(psnPrimary
 export function distinctValuations() { return [...new Set(state.startups.map(valuationOf).filter((v) => v !== "—"))].sort(); }
 
 // ---- Applicazione ----------------------------------------------------------
-export function applyFilters(list) {
+// `except` esclude una dimensione dal filtro. Serve ai grafici: quello delle
+// città, se il filtro città è attivo, continua a mostrare *tutte* le città (con
+// quella scelta in evidenza), altrimenti resterebbe una barra sola e non si
+// potrebbe più cambiare selezione. Tabella e KPI usano invece il filtro pieno.
+export function applyFilters(list, { except = null } = {}) {
+  const skip = except == null ? [] : (Array.isArray(except) ? except : [except]);
+  const on = (k) => !skip.includes(k);
   return list.filter((s) => {
-    if (f.sector !== "all" && sectorOf(s) !== f.sector) return false;
-    if (f.stage !== "all" && s.stage_id !== f.stage) return false;
-    if (f.psn !== "all" && psnPrimary(s) !== f.psn) return false;
-    if (f.valuation !== "all" && valuationOf(s) !== f.valuation) return false;
+    if (on("sector") && f.sector !== "all" && sectorOf(s) !== f.sector) return false;
+    if (on("stage") && f.stage !== "all" && s.stage_id !== f.stage) return false;
+    if (on("psn") && f.psn !== "all" && psnPrimary(s) !== f.psn) return false;
+    if (on("valuation") && f.valuation !== "all" && valuationOf(s) !== f.valuation) return false;
+    if (on("city") && f.city !== "all" && cityOf(s) !== f.city) return false;
+    if (on("area") && f.area !== "all" && macroAreaOf(s) !== f.area) return false;
+    if (on("maturity") && f.maturity !== "all" && maturityBucketOf(s) !== f.maturity) return false;
     const t = trlOf(s);
+    if (on("trl") && f.trl != null && t !== f.trl) return false;
     if (f.trlMin != null && (t == null || t < f.trlMin)) return false;
     if (f.trlMax != null && (t == null || t > f.trlMax)) return false;
     if (f.search) {
