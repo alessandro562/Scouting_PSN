@@ -36,21 +36,40 @@ function ck(it, fk, active, base) {
 }
 
 // ---- Barre orizzontali. items: [{label, value, color}] --------------------
-export function barList(items, { total = null, fk = null, active = null } = {}) {
+// `maxRows` tiene la coda lunga (le voci da 1) ripiegata dietro un "+N altre":
+// su liste come le città erano metà dell'altezza del pannello per nessuna
+// informazione utile. Restano a un click, e una voce selezionata è sempre
+// visibile perché viene portata in cima.
+export function barList(items, { total = null, fk = null, active = null, maxRows = null } = {}) {
   if (!items.length) return `<p class="muted chart-empty">Nessun dato.</p>`;
   const max = Math.max(1, ...items.map((i) => i.value));
-  return `<div class="bar-list">${items
-    .map((it, i) => {
-      const w = Math.max(2, (it.value / max) * 100);
-      const color = it.color || colorFor(i);
-      return `
+  let list = items;
+  if (active != null) {
+    const i = list.findIndex((x) => String(x.fv) === String(active));
+    if (i > -1) list = [list[i], ...list.slice(0, i), ...list.slice(i + 1)];
+  }
+  const cut = maxRows && list.length > maxRows + 1 ? maxRows : null;
+
+  const rowHtml = (it, i) => {
+    const w = Math.max(2, (it.value / max) * 100);
+    const color = it.color || colorFor(i);
+    return `
       <div class="${ck(it, fk, active, "bar-row")}" ${tip(it.label, it.value, total)}${sel(it, fk, active)}>
         <div class="bar-label" title="${esc(it.label)}"><span class="bar-dot" style="background:${color}"></span>${esc(it.label)}</div>
         <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div>
         <div class="bar-value">${it.value}${total ? `<span class="bar-pct">${pctOf(it.value, total)}%</span>` : ""}</div>
       </div>`;
-    })
-    .join("")}</div>`;
+  };
+
+  if (!cut) return `<div class="bar-list">${list.map(rowHtml).join("")}</div>`;
+  const head = list.slice(0, cut).map(rowHtml).join("");
+  const tail = list.slice(cut).map((it, i) => rowHtml(it, i + cut)).join("");
+  return `<div class="bar-list">
+    ${head}
+    <div class="bar-more-wrap">${tail}</div>
+    <button type="button" class="bar-more" data-more
+      data-more-label="+${list.length - cut} altre" data-less-label="Mostra meno">+${list.length - cut} altre</button>
+  </div>`;
 }
 
 // ---- Barra 100% segmentata. items: [{label, value, color}] ----------------

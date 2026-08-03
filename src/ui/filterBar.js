@@ -38,7 +38,7 @@ export function mountFilterBar(container) {
       </div>
       <button id="fb-reset" class="btn ghost fb-reset">Azzera <span id="fb-count"></span></button>
       <div class="fb-spacer"></div>
-      <button id="fb-save" class="btn ghost">★ Salva vista</button>
+      <button id="fb-save" class="btn ghost" title="Salva i filtri correnti come vista condivisa">★ Salva</button>
     </div>
     <div class="fb-chips" id="fb-chips"></div>
     <div class="saved-views" id="saved-views"></div>
@@ -104,7 +104,10 @@ export function renderSavedViews() {
   const host = document.getElementById("saved-views");
   if (!host) return;
   const views = state.savedViews || [];
-  if (!views.length) { host.innerHTML = `<span class="sv-empty">Nessuna vista salvata</span>`; return; }
+  // Riga nascosta del tutto quando non ci sono viste: una frase che dice
+  // "niente" costava una riga di altezza su ogni schermata.
+  host.classList.toggle("hidden", !views.length);
+  if (!views.length) { host.innerHTML = ""; return; }
   host.innerHTML = views
     .map((v) => `
       <span class="sv-chip" data-apply="${v.id}" title="Applica vista di ${esc(v.owner_email || "")}">
