@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 8;
+export const SEED_CONTENT_VERSION = 9;
 
 export const startups = [
       {
@@ -46,7 +46,7 @@ export const startups = [
       {
         id:"fedro",
         website:"https://fedro-data.it/",
-        trl:"5",
+        trl:"7",
         toConfirm:["trl"],
         logo:"assets/logos/fedro.png",
         name:"FEDRO",
