@@ -205,3 +205,144 @@ details.dfold > .dbody { padding: 0 0 16px; }
   color: var(--muted); background: var(--surface-soft); border: 1px dashed var(--line);
   border-radius: 12px;
 }
+
+/* ===========================================================================
+   Pettine di blocchi collassabili — il componente unico della scheda
+   =========================================================================== */
+
+/* Apertura: l'unica cosa esposta. Nessun bordo, nessun fondo: il contrasto con
+   il pettine sotto la fa risaltare da sola. */
+.sdetail > .detail-lead {
+  font-size: 16px; line-height: 1.6; font-weight: 500; color: var(--ink);
+  max-width: 66ch; margin: 0 0 18px; text-wrap: pretty;
+}
+
+.acc { border-top: 1px solid var(--line-soft); }
+.acc:last-child { border-bottom: 1px solid var(--line-soft); }
+
+.acc-head {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  padding: 12px 10px; margin: 0 -10px; border-radius: 8px; list-style: none;
+  transition: background .16s ease;
+}
+.acc-head::-webkit-details-marker { display: none; }
+.acc-head:hover { background: var(--surface-soft); }
+.acc-head:hover .acc-title { color: var(--psn-blue); }
+.acc-head:focus-visible { outline: 2px solid var(--psn-blue); outline-offset: 2px; }
+
+/* Chevron a sinistra: il testo parte sempre alla stessa ascissa, che è ciò che
+   fa leggere il pettine come una colonna sola. */
+.acc-chev {
+  flex: 0 0 auto; width: 7px; height: 7px; margin-left: 4px; margin-right: 5px;
+  border-right: 1.6px solid var(--muted); border-bottom: 1.6px solid var(--muted);
+  transform: rotate(-45deg); transition: transform .18s cubic-bezier(.4,0,.2,1);
+}
+details.acc[open] > .acc-head .acc-chev { transform: rotate(45deg); }
+
+/* Etichetta con la sola iniziale maiuscola: in maiuscoletto le etichette
+   italiane, che sono lunghe, diventano illeggibili. */
+.acc-title { font-size: 13.5px; font-weight: 700; color: var(--ink); transition: color .16s ease; }
+.acc-meta {
+  margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--muted);
+  font-variant-numeric: tabular-nums; max-width: 40%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.acc-body { padding: 2px 0 18px 26px; }
+details.acc[open] > .acc-body { animation: accIn .18s ease; }
+@keyframes accIn { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) {
+  details.acc[open] > .acc-body { animation: none; }
+  .acc-chev { transition: none; }
+}
+.acc-p { margin: 0; font-size: 14px; line-height: 1.62; color: var(--text); max-width: 66ch; }
+.acc-body > .dsub:first-child { margin-top: 0; }
+
+/* Riga spenta: stessa altezza di una piena, ma non apribile — non promette
+   nulla, quindi non delude. */
+.acc-row.is-empty {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 10px; margin: 0 -10px; cursor: default;
+}
+.acc-row.is-empty .acc-title { color: var(--muted); font-weight: 600; }
+.acc-dash {
+  flex: 0 0 auto; width: 7px; height: 1.6px; margin-left: 4px; margin-right: 5px;
+  background: var(--line); opacity: .8;
+}
+
+/* ---- Flusso verticale (input → elaborazione → output) ------------------- */
+/* Verticale e non orizzontale: i valori reali sono frasi, non parole, e in tre
+   colonne andavano a capo male. */
+.flowrail { position: relative; padding-left: 20px; }
+.flowrail::before {
+  content: ""; position: absolute; left: 3px; top: 6px; bottom: 12px;
+  width: 1px; background: var(--line);
+}
+.flowrail-step { position: relative; padding-bottom: 14px; }
+.flowrail-step::before {
+  content: ""; position: absolute; left: -20px; top: 5px; width: 7px; height: 7px;
+  border-radius: 50%; background: var(--psn-blue); box-shadow: 0 0 0 3px var(--surface);
+}
+.flowrail-step:last-child::before { background: var(--psn-cyan); }
+.flowrail-step:last-child { padding-bottom: 0; }
+.flowrail-k {
+  display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--psn-blue); margin-bottom: 2px;
+}
+.flowrail-v { font-size: 13.5px; line-height: 1.5; color: var(--text); }
+
+/* ---- Tecnologie: filetti al posto dei box ------------------------------- */
+.tech-dl { margin: 0; columns: 2; column-gap: 30px; }
+.tech-item { break-inside: avoid; padding: 9px 0; border-bottom: 1px solid var(--line-soft); }
+.tech-item dt { font-size: 13px; font-weight: 700; color: var(--ink); }
+.tech-item dd { margin: 2px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--text); }
+@media (max-width: 720px) { .tech-dl { columns: 1; } }
+
+.psn-pill {
+  display: inline-block; margin-bottom: 10px; padding: 5px 12px; border-radius: 999px;
+  background: var(--blue-soft); color: var(--wda-blue); font-size: 12.5px; font-weight: 700;
+}
+
+/* ---- Da verificare: oggetto sopra, motivo sotto ------------------------- */
+.checkcard { border: 1px solid var(--line-soft); border-radius: 12px; padding: 12px 14px; background: var(--surface-soft); }
+.checkcard-k { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.checkcard-v { margin: 5px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--text); }
+
+/* ---- Premi ------------------------------------------------------------- */
+.award-list { list-style: none; margin: 0; padding: 0; }
+.award-list li {
+  position: relative; padding: 9px 0 9px 26px; font-size: 13.5px; color: var(--ink);
+  border-bottom: 1px solid var(--line-soft);
+}
+.award-list li:last-child { border-bottom: 0; }
+.award-list li::before { content: "🏅"; position: absolute; left: 0; top: 8px; font-size: 13px; }
+
+/* ---- Round di finanziamento -------------------------------------------- */
+.rounds { display: flex; flex-direction: column; gap: 10px; }
+.round {
+  border: 1px solid var(--line-soft); border-left: 3px solid var(--psn-blue);
+  border-radius: 12px; padding: 13px 15px; background: var(--surface);
+}
+.round-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.round-stage {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--wda-blue); background: var(--blue-soft); border-radius: 999px; padding: 3px 10px;
+}
+.round-amount { font-size: 18px; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.round-date { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.round-k {
+  display: block; font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--muted); margin-bottom: 2px;
+}
+.round-lead { margin-top: 9px; font-size: 13.5px; font-weight: 600; color: var(--ink); }
+.round-inv { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.round-note { margin: 9px 0 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+.round-total {
+  margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line-soft);
+  font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 620px) {
+  .acc-body { padding-left: 0; }
+  .sdetail > .detail-lead { font-size: 15.5px; line-height: 1.58; }
+}

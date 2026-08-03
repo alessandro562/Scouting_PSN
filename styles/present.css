@@ -85,3 +85,7 @@ body.presenting { overflow: hidden; }
   .ps-body { grid-template-columns: 1fr; }
   .ps-nav { width: 44px; height: 44px; font-size: 24px; }
 }
+
+/* Come in stampa: in presentazione i blocchi vanno tutti aperti. */
+#present-root details.acc > .acc-body { display: block !important; }
+#present-root .acc-chev, #present-root .acc-dash { display: none; }
