@@ -7,7 +7,7 @@
 
 // Bump di questa costante → i testi aggiornati vengono riapplicati alle card
 // già presenti in Supabase al prossimo login (senza toccare fase/posizione).
-export const SEED_CONTENT_VERSION = 9;
+export const SEED_CONTENT_VERSION = 10;
 
 export const startups = [
       {
@@ -804,14 +804,24 @@ export const startups = [
         founded:"2025",
         website:"https://beelzebub.ai/",
         trl:"8",
-        valuation:"Early-stage · pre-seed/seed (fondata 2025, 2-10 dipendenti; NVIDIA Inception)",
+        valuation:"Seed 3 M€ (lug 2026, lead United Ventures) · 3,3 M€ raccolti in totale",
+        funding:[
+          {tipo:"Seed",importo:"3 M€",data:"lug 2026",lead:"United Ventures",investitori:["United Ventures"],
+           nota:"Round guidato in esclusiva. Fondi per il team di ricerca, l'apertura di sedi commerciali a Roma e San Francisco entro fine 2026 e l'acquisizione clienti in Europa (organizzazioni soggette a NIS2)."},
+          {tipo:"Pre-seed",importo:"300 k€",data:"—",lead:"—",investitori:["Investitori strategici e advisor"]},
+        ],
+        totalRaised:"3,3 M€",
+        investors:["United Ventures"],
         traction:"2.000+ GitHub star, 450+ install/settimana in 45+ Paesi; engineer di Microsoft, Google, Cisco e Red Hat tra gli utenti; deployment presso organizzazioni corporate, critiche e governative. Membro NVIDIA Inception e Anthropic Cyber Verification Program. Dic 2025: cattura live dell'operazione del threat group TeamPCP, accreditata dalla Cloud Security Alliance. Prodotti: Beelzebub Cloud (managed), Arcangelo, Caronte.",
-        keyPeople:"Mario Candela (Founder, creatore del progetto open-source beelzebub)",
+        keyPeople:"Mario Candela (Founder e CEO, creatore del progetto open-source beelzebub)",
         logo:"assets/logos/beelzebub.png",
         dipendenti:"2-10",
         awards:["Membro NVIDIA Inception","Anthropic Cyber Verification Program"],
         clients:[{name:"Microsoft"},{name:"Google"},{name:"Cisco"},{name:"Red Hat"},{name:"Telekom Security"},{name:"OSRAM"},{name:"Datapizza"}],
-        toConfirm:["trl","valuation","keyPeople","clients"]
+        // valuation e keyPeople non sono piu dedotti: confermati dalla stampa sul
+        // round seed del 27/07/2026 (United Ventures), che cita Mario Candela come
+        // founder e CEO.
+        toConfirm:["trl","clients"]
       },
       {
         id:"focoos",
