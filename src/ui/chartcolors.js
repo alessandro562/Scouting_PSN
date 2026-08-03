@@ -2,25 +2,27 @@
 // chartcolors.js — sistema colore dei grafici Analytics.
 // Principio (dataviz): il colore segue l'ENTITÀ, non il rango — la stessa
 // categoria ha lo stesso colore in tutti i grafici.
-// La categoriale è la famiglia di brand PSN portata in banda leggibile
-// (indigo · violetto · teal · corallo): validata su superficie chiara —
-// lightness band PASS, chroma PASS, normal-vision ΔE 15.5 PASS, contrasto PASS.
+// Categoriale: blu · magenta · teal · corallo. Validata su superficie chiara
+// controllando TUTTE le coppie, non solo le adiacenti, perché nel donut due
+// fette qualsiasi possono ritrovarsi accostate. Peggior coppia ΔE 10.1 in
+// protanopia: sopra la soglia 8, senza affidarsi a codifiche secondarie.
+// (La versione precedente si fermava a 7.3 fra indigo e violetto.)
 // Le categorie oltre le quattro principali confluiscono in un NEUTRO ("Altro"),
 // come prescritto: mai generare una quinta tinta.
 // ===========================================================================
 
-export const CAT = ["#2E4BA8", "#8B4FC9", "#0E9BA8", "#E0533D"];
-export const NEUTRAL = "#7C86A8";
+export const CAT = ["#3B5BDB", "#B5179E", "#0F9B8A", "#E76F3C"];
+export const NEUTRAL = "#8A93AD";
 
 // Tinta unica per i grafici di magnitudo (non identità).
-export const SINGLE = "#3D57B4";
+export const SINGLE = "#3B5BDB";
 
 // Mappe stabili entità → colore (ordine fisso, mai ciclato).
 const SECTOR = {
-  "Cybersecurity": "#E0533D", // corallo: accento di brand
-  "AI": "#2E4BA8",            // indigo
-  "IoT/Edge": "#0E9BA8",      // teal
-  "GovTech": "#8B4FC9",       // violetto
+  "Cybersecurity": "#E76F3C", // corallo
+  "AI": "#3B5BDB",            // blu
+  "IoT/Edge": "#0F9B8A",      // teal
+  "GovTech": "#B5179E",       // magenta
   "Data": NEUTRAL,
   "FinTech": NEUTRAL,
   "HealthTech": NEUTRAL,
@@ -28,24 +30,22 @@ const SECTOR = {
 
 // Stadio di maturità: semantico ordinale (pronto → early → grezzo → n.d.).
 const MATURITY = {
-  "Ready to scale": "#0E9BA8",
-  "Seed / Early traction": "#8B4FC9",
-  "Early stage": "#3D57B4",
+  "Ready to scale": "#0F9B8A",
+  "Seed / Early traction": "#B5179E",
+  "Early stage": "#3B5BDB",
   "n.d.": NEUTRAL,
 };
 
 // Fasi pipeline: ramp sequenziale (ordinale) — progressione, non arcobaleno.
-export const STAGE_RAMP = ["#8FA2E0", "#5F75C5", "#3D57B4", "#28387E", "#161F52"];
+export const STAGE_RAMP = ["#9DB3E8", "#7C96DA", "#5C79C8", "#3F5CAA", "#26407F"];
 
 export function sectorColor(label) { return SECTOR[label] || NEUTRAL; }
 export function maturityColor(label) { return MATURITY[label] || NEUTRAL; }
 export function stageColor(i) { return STAGE_RAMP[Math.min(i, STAGE_RAMP.length - 1)]; }
 
-// Ramp sequenziale per il TRL (basso = chiaro, alto = scuro).
-export function trlColor(t) {
-  const stops = {
-    1:"#D6DDF3",2:"#C0CAEC",3:"#A9B6E4",4:"#92A2DC",5:"#7B8ED4",
-    6:"#647AC9",7:"#4C63B8",8:"#374C99",9:"#25356F",
-  };
-  return stops[t] || SINGLE;
-}
+// TRL: una sola serie ("quante startup per livello"), quindi una sola tinta.
+// Colorare ogni colonna secondo il proprio livello raddoppiava sull'asse
+// un'informazione che le etichette gia' danno, e nove passi della stessa tinta
+// non riescono a restare distinguibili: i gradini finivano sotto la soglia di
+// separazione e l'estremo chiaro spariva sul fondo bianco.
+export function trlColor() { return SINGLE; }
