@@ -200,6 +200,14 @@ function section(title, inner) {
   return `<section class="dsection"><div class="dsection-title static">${esc(title)}</div><div class="dbody">${inner}</div></section>`;
 }
 
+// Stato vuoto di un pannello: la struttura a schede è fissa su ogni scheda
+// (stesso numero di tab, stesso ordine), così passare da una card all'altra
+// non fa "saltare" la barra. Dove manca il contenuto, un messaggio dice cosa
+// comparirà lì appena disponibile, invece di far sparire la scheda.
+function panelEmpty(text) {
+  return `<div class="panel-empty">${esc(text)}</div>`;
+}
+
 export function startupPanels(s) {
   const p = psn(s);
   const usecases = (Array.isArray(s.usecases) ? s.usecases : []).filter(has);
@@ -322,16 +330,27 @@ export function startupPanels(s) {
   const dives = (Array.isArray(s.deepDives) ? s.deepDives : []).filter((d) => d && (has(d.date) || has(d.summary)));
   const teaser = dives.length ? lastDiveTeaser(dives) : "";
 
+  // Le quattro schede sono sempre presenti e nello stesso ordine: dove manca
+  // il contenuto compare un messaggio invece della scheda, così la barra non
+  // cambia forma spostandosi da una startup all'altra.
+  const relazioni = clienti + credenziali + investitori;
+  const tecnico = comeFunziona + classificazione + percorso;
+
   const panels = [
     { id: "overview", label: "Panoramica", html: wrap(lead + sintesi + (teaser ? `<div class="dsection">${teaser}</div>` : "") + soluzione + casiUso) },
+    {
+      id: "deepdives", label: "Approfondimenti", count: dives.length || undefined,
+      html: wrap(dives.length ? deepDivesSection(s) : panelEmpty("Nessun approfondimento ancora. Qui compariranno i verbali delle call fatte con la startup.")),
+    },
+    {
+      id: "relations", label: "Clienti & credenziali",
+      html: wrap(relazioni || panelEmpty("Nessuna credenziale raccolta ancora. Qui compariranno clienti, certificazioni, premi e investitori quando disponibili.")),
+    },
+    {
+      id: "tech", label: "Tecnologia & PSN",
+      html: wrap(tecnico || panelEmpty("Nessun dettaglio tecnico o di classificazione PSN disponibile ancora.")),
+    },
   ];
-  if (dives.length) {
-    panels.push({ id: "deepdives", label: "Approfondimenti", count: dives.length, html: wrap(deepDivesSection(s)) });
-  }
-  const relazioni = clienti + credenziali + investitori;
-  if (relazioni) panels.push({ id: "relations", label: "Clienti & credenziali", html: wrap(relazioni) });
-  const tecnico = comeFunziona + classificazione + percorso;
-  if (tecnico) panels.push({ id: "tech", label: "Tecnologia & PSN", html: wrap(tecnico) });
 
   return panels;
 }
