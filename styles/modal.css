@@ -22,11 +22,14 @@
 .modal-head h2 { margin: 0; font-size: 19px; color: var(--ink); }
 .modal-title-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
-/* Logo / monogramma nell'intestazione della scheda */
+/* Logo / monogramma nell'intestazione della scheda.
+   Sfondo bianco come sulla tile (board.css .kcard-logo): il fondo scuro usato
+   qui rendeva illeggibili i loghi con inchiostro scuro su PNG trasparente
+   (la maggioranza dei 19 loghi raccolti), che sparivano contro il navy. */
 .modal-logo {
   flex: 0 0 auto; width: 34px; height: 34px; border-radius: 9px;
   display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
-  background: #0B0F38; border: 1px solid var(--line-soft);
+  background: #fff; border: 1px solid var(--line-soft);
 }
 .modal-logo img { max-width: 78%; max-height: 78%; object-fit: contain; }
 .modal-mono {
